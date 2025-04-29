@@ -5,8 +5,11 @@ echo "Installing Oh-My-Taskfiles..."
 if [ ! -d "$HOME/.omt" ]; then
   git clone https://github.com/NeonTowel/oh-my-taskfiles.git "$HOME/.omt"
 
-  mkdir -p $HOME/bin
-  
+  if ! mkdir -p "$HOME/bin"; then
+    echo "ERROR: Failed to create $HOME/bin directory!"
+    exit 1
+  fi
+
   echo "Installing go-task to $HOME/bin..."
   (sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b $HOME/bin) || (
     echo "ERROR: Go-task installation failed, aborting!"
