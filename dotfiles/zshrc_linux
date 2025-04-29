@@ -14,13 +14,20 @@ source $ZSH/oh-my-zsh.sh
 # Completions
 fpath=(/usr/local/share/zsh-completions $fpath)
 
-# Aliases
+# Aliases: lsd
 if command -v lsd &> /dev/null; then
   alias ll='lsd -lh'
   alias ls='lsd'
   alias tree='ls --tree'
 fi
 
+# Aliases: bat
+if command -v bat &> /dev/null; then
+  alias cat='bat'
+  alias ccat='bat --style=-grid,-numbers --paging=never'
+fi
+
+# Aliases: git
 alias gl='git log --graph --decorate --pretty=oneline --abbrev-commit'
 alias gs='git status --renames'
 
