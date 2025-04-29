@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  install:
+    desc: "[LSD] ✨ Install lsd"
+    cmds:
+      - |
+        if command -v lsd >/dev/null 2>&1; then
+          echo "lsd is already installed."
+        else
+          curl -fsSL https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xfz -C $HOME/bin --strip-components=1 lsd-v1.1.5-x86_64-unknown-linux-gnu/lsd
+          echo "lsd has been installed successfully."
+        fi

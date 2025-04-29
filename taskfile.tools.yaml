@@ -1,7 +1,6 @@
 version: '3'
 
 includes:
-  zsh: 
-    taskfile: tools/zsh.yaml
-  starship:
-    taskfile: tools/starship.yaml
+  zsh: tools/zsh.yaml
+  starship: tools/starship.yaml
+  lsd: tools/lsd.yaml
