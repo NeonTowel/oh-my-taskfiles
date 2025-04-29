@@ -59,9 +59,25 @@ tasks:
           echo "Zsh is already your default shell."
         fi
 
+  zsh:install-zshrc:linux:
+    desc: Install .zshrc for Linux
+    internal: true
+    cmds:
+      - |
+        src="$HOME/.omt/dotfiles/zshrc_linux"
+        dest="$HOME/.zshrc"
+        if [ -f "$src" ]; then
+          echo "Installing .zshrc from $src"
+          cp "$src" "$dest"
+          echo ".zshrc installed successfully."
+        else
+          echo "Source file $src does not exist. Skipping .zshrc installation."
+        fi
+
   zsh:setup:
     desc: Install zsh, Oh My Zsh and set as default shell
     cmds:
       - task: zsh:install
       - task: oh-my-zsh:install
       - task: zsh:set-default
+      - task: zsh:install-zshrc:{{OS}}
