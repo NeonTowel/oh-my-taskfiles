@@ -3,7 +3,5 @@ version: '3'
 includes:
   zsh: 
     taskfile: tools/zsh.yaml
-    flatten: true
   starship:
     taskfile: tools/starship.yaml
-    flatten: true

@@ -1,12 +1,12 @@
 version: '3'
 
 tasks:
-  zsh:install:
+  install:
     desc: "[ZSH] Install zsh shell"
     cmds:
       - task: zsh:install:{{OS}}
 
-  zsh:install:linux:
+  install:linux:
     internal: true
     cmds:
       - |
@@ -23,7 +23,7 @@ tasks:
           exit 1
         fi
 
-  zsh:install:darwin:
+  install:darwin:
     internal: true
     cmds:
       - |
@@ -34,7 +34,7 @@ tasks:
           exit 1
         fi
 
-  oh-my-zsh:install:
+  zsh:omz:install:
     desc: "[ZSH] Install Oh My Zsh"
     cmds:
       - |
@@ -45,7 +45,7 @@ tasks:
           echo "Oh My Zsh has been installed successfully."
         fi
 
-  zsh:set-default:
+  set-default:
     desc: "[ZSH] Set zsh as default shell"
     cmds:
       - |
@@ -57,8 +57,8 @@ tasks:
           echo "Zsh is already your default shell."
         fi
 
-  zsh:install-zshrc:linux:
-    desc: "[ZSH] Install .zshrc for Linux"
+  install-zshrc:linux:
+    internal: true
     cmds:
       - |
         src="$HOME/.omt/dotfiles/zshrc_linux"
@@ -70,11 +70,16 @@ tasks:
         else
           echo "Source file $src does not exist. Skipping .zshrc installation."
         fi
-
-  zsh:setup:
-    desc: "[ZSH] Install zsh, Oh My Zsh and set as default shell"
+  
+  install-zshrc:
+    desc: "[ZSH] Install .zshrc"
     cmds:
-      - task: zsh:install
-      - task: oh-my-zsh:install
-      - task: zsh:set-default
-      - task: zsh:install-zshrc:{{OS}}
+    - task: install-zshrc:{{OS}}
+
+  setup:
+    desc: "[ZSH] ✨ Install zsh, Oh My Zsh and set as default shell"
+    cmds:
+      - task: install
+      - task: omz:install
+      - task: set-default
+      - task: install-zshrc:{{OS}}
