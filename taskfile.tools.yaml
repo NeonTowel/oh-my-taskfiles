@@ -1,80 +1,9 @@
 version: '3'
 
-tasks:
-  zsh:install:
-    desc: Install zsh shell
-    cmds:
-      - task: zsh:install:{{OS}}
-
-  zsh:install:linux:
-    internal: true
-    cmds:
-      - |
-        if command -v apt-get >/dev/null 2>&1; then
-          sudo apt-get update && sudo apt-get install -y zsh
-        elif command -v dnf >/dev/null 2>&1; then
-          sudo dnf install -y zsh
-        elif command -v yum >/dev/null 2>&1; then
-          sudo yum install -y zsh
-        elif command -v pacman >/dev/null 2>&1; then
-          sudo pacman -S --noconfirm zsh
-        else
-          echo "Unsupported package manager. Please install zsh manually."
-          exit 1
-        fi
-
-  zsh:install:darwin:
-    internal: true
-    cmds:
-      - |
-        if command -v brew >/dev/null 2>&1; then
-          brew install zsh
-        else
-          echo "Homebrew not found. Please install Homebrew first or install zsh manually."
-          exit 1
-        fi
-
-  oh-my-zsh:install:
-    desc: Install Oh My Zsh
-    cmds:
-      - |
-        if [ -d "$HOME/.oh-my-zsh" ]; then
-          echo "Oh My Zsh is already installed."
-        else
-          sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-          echo "Oh My Zsh has been installed successfully."
-        fi
-
-  zsh:set-default:
-    desc: Set zsh as default shell
-    cmds:
-      - |
-        if [ "$SHELL" != "$(which zsh)" ]; then
-          echo "Setting zsh as default shell..."
-          sudo chsh -s $(which zsh) $(whoami)
-          echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
-        else
-          echo "Zsh is already your default shell."
-        fi
-
-  zsh:install-zshrc:linux:
-    desc: Install .zshrc for Linux
-    cmds:
-      - |
-        src="$HOME/.omt/dotfiles/zshrc_linux"
-        dest="$HOME/.zshrc"
-        if [ -f "$src" ]; then
-          echo "Installing .zshrc from $src"
-          cp "$src" "$dest"
-          echo ".zshrc installed successfully."
-        else
-          echo "Source file $src does not exist. Skipping .zshrc installation."
-        fi
-
-  zsh:setup:
-    desc: Install zsh, Oh My Zsh and set as default shell
-    cmds:
-      - task: zsh:install
-      - task: oh-my-zsh:install
-      - task: zsh:set-default
-      - task: zsh:install-zshrc:{{OS}}
+includes:
+  zsh: 
+    taskfile: tools/zsh.yaml
+    flatten: true
+  starship:
+    taskfile: tools/starship.yaml
+    flatten: true
