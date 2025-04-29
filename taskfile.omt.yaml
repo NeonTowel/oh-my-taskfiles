@@ -2,4 +2,11 @@ version: '3'
 
 tasks:
   update:
-    - echo "Updating Oh-My-Taskfiles..."
+    desc: 'Update Oh-My-Taskfiles!'
+    cmds:
+      - echo "Updating Oh-My-Taskfiles..."
+      - |
+        CUR_PWD=$PWD
+        cd $HOME/.omt
+        git pull
+        cd $CUR_PWD
