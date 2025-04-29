@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  install-starship:
+  install:
     desc: "[STARSHIP] Install starship prompt"
     cmds:
-      - curl -sS https://starship.rs/install.sh | sh -- -y
+      - curl -sS 'https://starship.rs/install.sh' | sh
