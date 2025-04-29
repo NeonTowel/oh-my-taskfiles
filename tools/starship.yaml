@@ -17,3 +17,5 @@ tasks:
     cmds:
       - task: install
       - task: configure
+      - |
+        '[ "${SHELL##*/}" = "zsh" ] && source $HOME/.zshrc'
