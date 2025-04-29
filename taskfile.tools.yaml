@@ -36,7 +36,6 @@ tasks:
 
   oh-my-zsh:install:
     desc: Install Oh My Zsh
-    deps: [zsh:install]
     cmds:
       - |
         if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -48,7 +47,6 @@ tasks:
 
   zsh:set-default:
     desc: Set zsh as default shell
-    deps: [zsh:install]
     cmds:
       - |
         if [ "$SHELL" != "$(which zsh)" ]; then
@@ -61,7 +59,6 @@ tasks:
 
   zsh:install-zshrc:linux:
     desc: Install .zshrc for Linux
-    internal: true
     cmds:
       - |
         src="$HOME/.omt/dotfiles/zshrc_linux"
