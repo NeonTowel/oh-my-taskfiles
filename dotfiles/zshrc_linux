@@ -58,3 +58,8 @@ fi
 if [ -f "$HOME/.omt/taskfile.yaml" ]; then
   alias omt='task -d $HOME/.omt'
 fi
+
+# Go configuration
+if [ -x "/usr/local/go/bin" ]; then
+  export PATH=$PATH:/usr/local/go/bin
+fi
