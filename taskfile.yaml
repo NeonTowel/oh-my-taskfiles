@@ -10,4 +10,4 @@ includes:
 
 tasks:
   default:
-    - task --list
+    - task --list --sort none
