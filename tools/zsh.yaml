@@ -88,4 +88,6 @@ tasks:
     internal: true
     cmds:
     - |
-      [ "${SHELL##*/}" = "zsh" ] && source $HOME/.zshrc || exit 0
+      if [ "${SHELL##*/}" = "zsh" ]; then
+        source $HOME/.zshrc
+      fi
