@@ -11,15 +11,21 @@ tasks:
         git fetch
         if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
           echo "Changes since last update:"
-          git --no-pager log --oneline --graph --decorate HEAD..origin/main
+          git --no-pager log -5 origin/main --pretty=format:' ✨ %s (%ad)' --no-merges --date=relative HEAD..origin/main
           git pull
         else
           echo "Already up to date. No changes to pull."
         fi
         cd $CUR_PWD
+ 
   changelog:
-    desc: Show recent updates (last 10 commits)
+    desc: Show recent updates
     cmds:
       - |
-        git --no-pager log -10 --oneline --graph --decorate
- 
+        echo -e "\n\033[1;93mfeatures:\033[0m"
+        git --no-pager log -5 origin/main --grep '^feat' --pretty=format:' ✨ %s (%ad)' --no-merges --date=relative
+        echo -e "\n\n\033[1;92mfixes:\033[0m"
+        git --no-pager log -5 origin/main --grep '^fix' --pretty=format:' 🐛 %s (%ad)' --no-merges --date=relative
+        echo -e "\n\n\033[1;97mmisc:\033[0m"
+        git --no-pager log -5 origin/main --grep '^feat' --grep '^fix' --invert-grep --pretty=format:' 🔨 %s (%ad)' --no-merges --date=relative
+        echo -e "\n"
