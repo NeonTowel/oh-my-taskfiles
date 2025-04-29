@@ -12,8 +12,8 @@ tasks:
         if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
           echo "Changes since last update:"
           git log --oneline --graph --decorate HEAD..origin/main
+          git pull
         else
           echo "Already up to date. No changes to pull."
         fi
-        git pull
         cd $CUR_PWD
