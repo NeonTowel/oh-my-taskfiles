@@ -11,6 +11,6 @@ tasks:
         if command -v bat >/dev/null 2>&1; then
           echo "bat is already installed."
         else
-          curl -fsSL https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xz -C $HOME/bin --strip-components=1 bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu/bat
+          curl -fsSL "https://github.com/sharkdp/bat/releases/download/v{{ .BAT_VERSION }}/bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu/bat"
           echo "bat has been installed successfully."
         fi
