@@ -74,7 +74,7 @@ tasks:
   install-zshrc:
     desc: "[ZSH] Install .zshrc"
     cmds:
-    - task: install-zshrc:{{OS}}
+      - task: install-zshrc:{{OS}}
 
   setup:
     desc: "[ZSH] ✨ Install zsh, Oh My Zsh and set as default shell"
@@ -83,3 +83,9 @@ tasks:
       - task: omz:install
       - task: set-default
       - task: install-zshrc:{{OS}}
+
+  refresh-zshrc:
+    internal: true
+    cmds:
+    - |
+      [ "${SHELL##*/}" = "zsh" ] && source $HOME/.zshrc || exit 0
