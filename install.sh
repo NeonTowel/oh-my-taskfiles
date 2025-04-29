@@ -18,7 +18,7 @@ if [ ! -d "$HOME/.omt" ]; then
 
   echo "To complete the setup, please add the following to your ~/.bashrc file:"
   echo
-  echo "  export PATH=\$HOME/.omt/bin:\$PATH"
+  echo "  export PATH=\$HOME/bin:\$PATH"
   echo "  alias omt='task -d $HOME/.omt'"
   echo
   echo "Then, reload your bash configuration by running:"
