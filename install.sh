@@ -3,11 +3,15 @@
 echo "Installing Oh-My-Taskfiles..."
 
 if [ ! -d "$HOME/.omt" ]; then
-  echo "Cloning to $HOME/.omt..."
   git clone https://github.com/NeonTowel/oh-my-taskfiles.git "$HOME/.omt"
 
+  mkdir -p $HOME/bin
+  
   echo "Installing go-task to $HOME/bin..."
-  sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b $HOME/bin
+  (sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b $HOME/bin) || (
+    echo "ERROR: Go-task installation failed, aborting!"
+    exit 1
+  )
 
   echo "To complete the setup, please add the following to your ~/.bashrc file:"
   echo
@@ -18,7 +22,6 @@ if [ ! -d "$HOME/.omt" ]; then
   echo "  source ~/.bashrc"
   echo
   echo "Adapt the above for other shells (zsh, fish, etc)."
-
 
 else
   echo "Directory $HOME/.omt already exists, aborting..."
