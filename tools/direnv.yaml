@@ -1,0 +1,17 @@
+version: '3'
+
+vars:
+  DIRENV_VERSION: "2.36.0"
+
+tasks:
+  install:
+    desc: "[DIRENV] ✨ Install direnv"
+    cmds:
+      - |
+        if command -v direnv >/dev/null 2>&1; then
+          echo "direnv is already installed."
+        else
+          curl -fsSL "https://github.com/direnv/direnv/releases/download/v{{ .DIRENV_VERSION }}/direnv.linux-amd64" -o $HOME/bin/direnv
+          chmod +x $HOME/bin/direnv
+          echo "direnv has been installed successfully."
+        fi

@@ -5,3 +5,4 @@ includes:
   starship: tools/starship.yaml
   lsd: tools/lsd.yaml
   bat: tools/bat.yaml
+  direnv: tools/direnv.yaml
