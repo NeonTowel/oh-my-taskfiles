@@ -1,0 +1,8 @@
+version: '3'
+
+includes:
+  omt: taskfile.omt.yaml
+
+tasks:
+  default:
+    - task --list-all
