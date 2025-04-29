@@ -4,3 +4,4 @@ includes:
   zsh: tools/zsh.yaml
   starship: tools/starship.yaml
   lsd: tools/lsd.yaml
+  bat: tools/bat.yaml
