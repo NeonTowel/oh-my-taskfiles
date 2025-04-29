@@ -17,3 +17,9 @@ tasks:
           echo "Already up to date. No changes to pull."
         fi
         cd $CUR_PWD
+  changelog:
+    desc: Show recent updates (last 10 commits)
+    cmds:
+      - |
+        git --no-pager log -10 --oneline --graph --decorate
+ 
