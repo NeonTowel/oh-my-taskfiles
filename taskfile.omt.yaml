@@ -8,7 +8,7 @@ tasks:
       - |
         CUR_PWD=$PWD
         cd $HOME/.omt
-        git fetch
+        git fetch --quiet
         if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
           echo "Changes since last update:"
           git --no-pager log -5 origin/main --pretty=format:' * %s (%ad)' --no-merges --date=relative HEAD..origin/main
