@@ -6,6 +6,7 @@ includes:
   omt: 
     taskfile: taskfile.omt.yaml
     flatten: true
+  tools: taskfile.tools.yaml
 
 tasks:
   default:

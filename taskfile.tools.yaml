@@ -1,0 +1,67 @@
+version: '3'
+
+tasks:
+  zsh:install:
+    desc: Install zsh shell
+    cmds:
+      - task: zsh:install:{{OS}}
+
+  zsh:install:linux:
+    internal: true
+    cmds:
+      - |
+        if command -v apt-get >/dev/null 2>&1; then
+          sudo apt-get update && sudo apt-get install -y zsh
+        elif command -v dnf >/dev/null 2>&1; then
+          sudo dnf install -y zsh
+        elif command -v yum >/dev/null 2>&1; then
+          sudo yum install -y zsh
+        elif command -v pacman >/dev/null 2>&1; then
+          sudo pacman -S --noconfirm zsh
+        else
+          echo "Unsupported package manager. Please install zsh manually."
+          exit 1
+        fi
+
+  zsh:install:darwin:
+    internal: true
+    cmds:
+      - |
+        if command -v brew >/dev/null 2>&1; then
+          brew install zsh
+        else
+          echo "Homebrew not found. Please install Homebrew first or install zsh manually."
+          exit 1
+        fi
+
+  oh-my-zsh:install:
+    desc: Install Oh My Zsh
+    deps: [zsh:install]
+    cmds:
+      - |
+        if [ -d "$HOME/.oh-my-zsh" ]; then
+          echo "Oh My Zsh is already installed."
+        else
+          sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+          echo "Oh My Zsh has been installed successfully."
+        fi
+
+  zsh:set-default:
+    desc: Set zsh as default shell
+    deps: [zsh:install]
+    cmds:
+      - |
+        if [ "$SHELL" != "$(which zsh)" ]; then
+          echo "Setting zsh as default shell..."
+          chsh -s $(which zsh)
+          echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
+        else
+          echo "Zsh is already your default shell."
+        fi
+
+  zsh:setup:
+    desc: Install zsh, Oh My Zsh and set as default shell
+    cmds:
+      - task: zsh:install
+      - task: oh-my-zsh:install
+      - task: zsh:set-default
