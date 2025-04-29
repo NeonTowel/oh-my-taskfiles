@@ -11,7 +11,8 @@ tasks:
         git fetch
         if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
           echo "Changes since last update:"
-          git --no-pager log -5 origin/main --pretty=format:' ✨ %s (%ad)' --no-merges --date=relative HEAD..origin/main
+          git --no-pager log -5 origin/main --pretty=format:' * %s (%ad)' --no-merges --date=relative HEAD..origin/main
+          echo -e "\n"
           git pull
         else
           echo "Already up to date. No changes to pull."
