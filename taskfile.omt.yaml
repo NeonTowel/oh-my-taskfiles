@@ -8,5 +8,8 @@ tasks:
       - |
         CUR_PWD=$PWD
         cd $HOME/.omt
+        git fetch
+        echo "Changes since last update:"
+        git log --oneline --graph --decorate HEAD..origin/main        
         git pull
         cd $CUR_PWD
