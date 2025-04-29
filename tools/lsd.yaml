@@ -11,4 +11,3 @@ tasks:
           curl -fsSL https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xz -C $HOME/bin --strip-components=1 lsd-v1.1.5-x86_64-unknown-linux-gnu/lsd
           echo "lsd has been installed successfully."
         fi
-      - task: :zsh:refresh-zshrc
