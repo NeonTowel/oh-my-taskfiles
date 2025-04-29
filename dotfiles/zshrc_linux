@@ -53,3 +53,8 @@ fi
 if command -c task &> /dev/null; then
     eval "$(task --completion zsh)"
 fi
+
+# Oh-My-Taskfiles configuration
+if [ -f "$HOME/.omt/taskfile.yaml" ]; then
+  alias omt='task -d $HOME/.omt'
+fi
