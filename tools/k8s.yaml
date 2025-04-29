@@ -93,11 +93,15 @@ tasks:
   install-helm:
     cmds:
       - |
-        curl -LO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
-        echo "Downloaded helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
-        tar -xzf helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
-        chmod +x linux-amd64/helm
-        mv linux-amd64/helm ~/bin/helm
-        rm helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
-        rm -rf linux-amd64
+        if command -v helm >/dev/null 2>&1; then
+          echo "helm is already installed."
+        else
+          curl -LO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
+          tar -xzf helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+          chmod +x linux-amd64/helm
+          mv linux-amd64/helm ~/bin/helm
+          rm helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+          rm -rf linux-amd64
+          echo "helm has been installed successfully."
+        fi
     desc: "[K8S] Install helm"
