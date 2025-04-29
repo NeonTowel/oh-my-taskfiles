@@ -11,9 +11,9 @@ tasks:
         if command -v go >/dev/null 2>&1; then
           echo "go is already installed."
         else
-          curl -OL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+          curl -OL "https://go.dev/dl/go{{ .GO_VERSION }}.linux-amd64.tar.gz"
           sudo rm -rf /usr/local/go
-          sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
-          rm -f go${GO_VERSION}.linux-amd64.tar.gz
+          sudo tar -C /usr/local -xzf "go{{ .GO_VERSION }}.linux-amd64.tar.gz"
+          rm -f "go{{ .GO_VERSION }}.linux-amd64.tar.gz"
           echo "go has been installed successfully."
         fi
