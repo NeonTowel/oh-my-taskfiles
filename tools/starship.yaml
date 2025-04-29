@@ -2,12 +2,12 @@ version: '3'
 
 tasks:
   install:
-    desc: "[STARSHIP] 1. Install starship prompt"
+    desc: "[STARSHIP] Install starship prompt"
     cmds:
       - curl -sS 'https://starship.rs/install.sh' | sh -s -- -y -b $HOME/bin
 
   configure:
-    desc: "[STARSHIP] 2. Configure preset"
+    desc: "[STARSHIP] Configure preset"
     cmds:
       - mkdir -p ~/.config
       - starship preset pastel-powerline -o ~/.config/starship.toml
