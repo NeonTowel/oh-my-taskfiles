@@ -4,7 +4,7 @@ tasks:
   install:
     desc: "[STARSHIP] 1. Install starship prompt"
     cmds:
-      - curl -sS 'https://starship.rs/install.sh' | sh -- -y -b ~/bin
+      - curl -sS 'https://starship.rs/install.sh' | sh -s -- -y -b $HOME/bin
 
   configure:
     desc: "[STARSHIP] 2. Configure preset"
