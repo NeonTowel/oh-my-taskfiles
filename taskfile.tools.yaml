@@ -53,7 +53,7 @@ tasks:
       - |
         if [ "$SHELL" != "$(which zsh)" ]; then
           echo "Setting zsh as default shell..."
-          chsh -s $(which zsh)
+          sudo chsh -s $(which zsh) $(whoami)
           echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
         else
           echo "Zsh is already your default shell."
