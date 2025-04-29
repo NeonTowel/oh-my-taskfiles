@@ -6,3 +6,4 @@ includes:
   lsd: tools/lsd.yaml
   bat: tools/bat.yaml
   direnv: tools/direnv.yaml
+  k8s: tools/k8s.yaml

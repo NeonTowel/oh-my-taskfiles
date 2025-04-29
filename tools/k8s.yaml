@@ -1,0 +1,82 @@
+version: '3'
+
+vars:
+  KUBECM_VERSION: "v0.33.0"
+  KUBECTX_VERSION: "v0.9.5"
+  KUBENS_VERSION: "{{ .KUBECTX_VERSION }}"
+  HELM_VERSION: "v3.17.3"
+  FZF_VERSION: "0.61.3"
+
+tasks:
+  install:
+    cmds:
+      - task: install-kubecm
+      - task: install-kubectx
+      - task: install-kubens
+      - task: install-kubectl
+      - task: install-helm
+      - task: install-fzf
+    desc: "[K8S] ✨ Install all tools"
+
+  install-kubecm:
+    cmds:
+      - |
+        curl -LO "https://github.com/sunny0826/kubecm/releases/download/{{ .KUBECM_VERSION }}/kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz"
+        echo "Downloaded kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz"
+        tar -xzf kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
+        chmod +x kubecm
+        mv kubecm ~/bin/kubecm
+    desc: "[K8S] Install kubecm"
+
+  install-kubectx:
+    cmds:
+      - |
+        curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBECTX_VERSION }}/kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz"
+        echo "Downloaded kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz"
+        tar -xzf kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
+        chmod +x kubectx
+        mv kubectx ~/bin/kubectx
+        rm kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
+    desc: "[K8S] Install kubectx"
+
+  install-kubens:
+    cmds:
+      - |
+        curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBENS_VERSION }}/kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz"
+        echo "Downloaded kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz"
+        tar -xzf kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
+        chmod +x kubens
+        mv kubens ~/bin/kubens
+        rm kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
+    desc: "[K8S] Install kubens"
+
+  install-kubectl:
+    cmds:
+      - |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        mv kubectl ~/bin/kubectl
+    desc: "[K8S] Install kubectl"
+
+  install-fzf:
+    cmds:
+      - |
+        curl -LO "https://github.com/junegunn/fzf/releases/download/v{{ .FZF_VERSION }}/fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz"
+        echo "Downloaded fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz"
+        tar -xzf fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
+        chmod +x fzf
+        mv fzf ~/bin/fzf
+        rm -f fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
+    desc: "[K8S] Install fzf"
+
+  install-helm:
+    cmds:
+      - |
+        curl -LO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
+        echo "Downloaded helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
+        tar -xzf helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+        chmod +x linux-amd64/helm
+        mv linux-amd64/helm ~/bin/helm
+        rm helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+        rm -rf linux-amd64
+    desc: "[K8S] Install helm"
