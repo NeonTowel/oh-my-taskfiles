@@ -11,6 +11,6 @@ tasks:
         if command -v gum >/dev/null 2>&1; then
           echo "gum is already installed."
         else
-          curl -fsSL "https://github.com/charmbracelet/gum/releases/download/v{{ .GUM_VERSION }}/gum_v{{ .GUM_VERSION }}_linux_amd64.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "gum_v{{ .GUM_VERSION }}_linux_amd64/gum"
+          curl -fsSL "https://github.com/charmbracelet/gum/releases/download/v{{ .GUM_VERSION }}/gum_{{ .GUM_VERSION }}_Linux_x86_64.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "gum_{{ .GUM_VERSION }}_Linux_x86_64/gum"
           echo "gum has been installed successfully."
         fi
