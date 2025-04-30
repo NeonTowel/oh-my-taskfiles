@@ -1,8 +1,5 @@
 version: '3'
 
-vars:
-  RUST_VERSION: "1.76.0"
-
 tasks:
   install:
     desc: "[RUST] ✨ Install Rust"
