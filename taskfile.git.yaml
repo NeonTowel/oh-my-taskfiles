@@ -3,7 +3,7 @@ version: '3'
 tasks:
   config-global:
     deps: [ ":tools:gum:install" ]
-    desc: "Configure git globally"
+    desc: "[GIT] ✨ Configure git globally"
     cmds:
       - |
         user_name=$(gum input --placeholder "Enter your name")
@@ -22,7 +22,7 @@ tasks:
         git config --global pull.rebase true
   
   mkdir:
-    desc: "Create a git repo directory structure"
+    desc: "[GIT] Create a git repo directory structure"
     cmds:
       - |
         mkdir -p $HOME/git/{github.com,dev.azure.com}
@@ -38,7 +38,7 @@ tasks:
         echo "  $HOME/git/github.com/yourname/key.pub"
   
   create-config:
-    desc: "Create a ssh config and key for a specific organization/account"
+    desc: "[GIT] Create a ssh config and key for a specific organization/account"
     cmds:
       - |
         GIT_ROOT=$HOME/git
