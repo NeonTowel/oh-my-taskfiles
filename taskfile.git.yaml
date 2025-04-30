@@ -65,11 +65,18 @@ tasks:
           echo "Aborting"
           exit 1
         fi
-        ssh_key=$(gum input --placeholder "Enter the ssh public key")
+        pick=$(gum choose --header "Select the ssh key to use" "agent" "input manually")
+        if [ "$pick" = "agent" ]; then
+          ssh_key=$(ssh-add -l | gum choose --header "Select the ssh key to use")
+        else
+          ssh_key=$(gum input --placeholder "Enter the ssh public key")
+        fi
         if [ -z "$ssh_key" ]; then
             echo "Aborting"
             exit 1
         fi
+        echo "$ssh_key" > $GIT_ROOT/$git_provider/$org_name/key.pub
+        echo "Wrote Git ssh key to $GIT_ROOT/$git_provider/$org_name/key.pub"
         bash -c '
         cat <<EOF >> $GIT_ROOT/$git_provider/$org_name/config
         Host $git_provider
@@ -79,4 +86,4 @@ tasks:
           IdentitiesOnly yes
         EOF
         '
-        echo "Created ssh config."
+        echo "Wrote Git ssh config to $GIT_ROOT/$git_provider/$org_name/config"
