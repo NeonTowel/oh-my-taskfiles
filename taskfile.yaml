@@ -7,7 +7,8 @@ includes:
     taskfile: taskfile.omt.yaml
     flatten: true
   tools: taskfile.tools.yaml
-  go: taskfile.go.yaml
+  go: languages/go.yaml
+  rust: languages/rust.yaml
 
 tasks:
   default:

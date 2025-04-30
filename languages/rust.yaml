@@ -1,0 +1,16 @@
+version: '3'
+
+vars:
+  RUST_VERSION: "1.76.0"
+
+tasks:
+  install:
+    desc: "[RUST] ✨ Install Rust"
+    cmds:
+      - |
+        if command -v rustup >/dev/null 2>&1; then
+          echo "rustup is already installed."
+        else
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          echo "rustup has been installed successfully."
+        fi
