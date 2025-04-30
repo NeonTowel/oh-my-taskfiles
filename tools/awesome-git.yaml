@@ -1,0 +1,37 @@
+version: '3'
+
+vars:
+  AWESOME_GIT_VERSION: "0.0.2"
+
+tasks:
+  install:unzip:
+    internal: true
+    status:
+      - command -v unzip >/dev/null 2>&1
+    cmds:
+      - |
+        if command -v apt-get >/dev/null 2>&1; then
+          sudo apt-get update && sudo apt-get install -y unzip
+        elif command -v dnf >/dev/null 2>&1; then
+          sudo dnf install -y unzip
+        elif command -v yum >/dev/null 2>&1; then
+          sudo yum install -y unzip
+        elif command -v pacman >/dev/null 2>&1; then
+          sudo pacman -S --noconfirm unzip
+        else
+          echo "Unsupported package manager. Please install unzip manually."
+          exit 1
+        fi
+
+  install:
+    desc: "[AWESOME-GIT] ✨ Install awesome-git"
+    cmds:
+      - |
+        if command -v awesome-git >/dev/null 2>&1; then
+          echo "awesome-git is already installed."
+        else
+          curl -fsSL "https://github.com/NeonTowel/awesome-git/releases/download/v{{ .AWESOME_GIT_VERSION }}/awesome-git-linux.zip" -o $HOME/bin/awesome-git.zip
+          unzip $HOME/bin/awesome-git.zip -d $HOME/bin/awesome-git
+          rm $HOME/bin/awesome-git.zip
+          echo "awesome-git has been installed successfully."
+        fi
