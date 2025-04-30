@@ -59,3 +59,20 @@ tasks:
         echo
         echo "  $GIT_ROOT/$git_provider/$org_name/config"
         echo "  $GIT_ROOT/$git_provider/$org_name/key.pub"
+        echo
+        create_key=$(gum confirm "Create configuration now?")
+        if [ "$create_key" = "yes" ]; then
+          ssh_key=$(gum input --placeholder "Enter the ssh public key")
+          if [ -z "$ssh_key" ]; then
+            echo "Aborting"
+            exit 1
+          fi
+          cat <<EOF >> $GIT_ROOT/$git_provider/$org_name/config
+          Host $git_provider
+            HostName $git_provider
+            User git
+            IdentityFile $GIT_ROOT/$git_provider/$org_name/key.pub
+            IdentitiesOnly yes
+          EOF
+          echo "Created ssh config."
+        fi
