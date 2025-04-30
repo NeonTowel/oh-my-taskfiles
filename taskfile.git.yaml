@@ -54,8 +54,8 @@ tasks:
         mkdir -p $GIT_ROOT/$git_provider/$org_name
         touch $GIT_ROOT/$git_provider/$org_name/config
         touch $GIT_ROOT/$git_provider/$org_name/key.pub
-        echo "Created config and key files"
-        echo "You can now add the following to your ssh config:"
+        echo "Created placeholder Git ssh config and public key."
+        echo "You can now add the following to your Git ssh config:"
         echo
         echo "  $GIT_ROOT/$git_provider/$org_name/config"
         echo "  $GIT_ROOT/$git_provider/$org_name/key.pub"
