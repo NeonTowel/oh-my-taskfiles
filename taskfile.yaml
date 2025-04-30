@@ -8,6 +8,7 @@ includes:
     flatten: true
   tools: taskfile.tools.yaml
   lang: taskfile.languages.yaml
+  git: taskfile.git.yaml
 
 tasks:
   default:

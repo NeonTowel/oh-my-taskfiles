@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  config-global:
+    deps: [ ":tools:gum:install" ]
+    desc: "Configure git globally"
+    cmds:
+      - |
+        user_name=$(gum input --placeholder "Enter your name")
+        user_email=$(gum input --placeholder "Enter your email")
+        echo "Set global user name to $user_name"
+        git config --global user.name "$user_name"
+        echo "Set global user email to $user_email"
+        git config --global user.email "$user_email"
+        echo "Set global core editor to gum"
+        git config --global core.editor "gum pager -- git config --global core.editor"
+        echo "Set global core pager to gum"
+        git config --global core.pager "gum pager -- git config --global core.pager"
+        echo "Set global gpg format to ssh"
+        git config --global gpg.format "ssh"
+        echo "Set global commit.gpgsign to true"
+        git config --global commit.gpgsign true
+        echo "Set global pull.rebase to true"
+        git config --global pull.rebase true
