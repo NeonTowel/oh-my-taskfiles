@@ -48,9 +48,10 @@ source ~/.bashrc  # or source ~/.zshrc
 Now you can run Oh-My-Taskfiles commands like:
 
 ```bash
-omt update       # Update Oh-My-Taskfiles to the latest version
-omt changelog    # Show recent updates and changes
+omt update        # Update Oh-My-Taskfiles to the latest version
+omt changelog     # Show recent updates and changes
 omt tools:install # Install predefined tools like zsh, starship, etc.
+omt               # run without arguments to see full list of tasks available
 ```
 
 ---
@@ -97,7 +98,7 @@ Please follow the existing taskfile structure and conventions.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the The Unlicense License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
