@@ -21,6 +21,6 @@ tasks:
     cmds:
       - task: install-nvm
       - |
-        nvm install ${NODE_VERSION}
-        nvm use ${NODE_VERSION}
-        nvm alias default ${NODE_VERSION}
+        nvm install --lts
+        nvm use --lts
+        nvm alias default --lts
