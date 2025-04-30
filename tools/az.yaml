@@ -8,6 +8,27 @@ tasks:
         if command -v az >/dev/null 2>&1; then
           echo "az cli is already installed."
         else
-          curl -L https://aka.ms/InstallAzureCli | bash
+          if [ -f /etc/os-release ]; then
+            . /etc/os-release
+            case "$ID" in
+              ubuntu|debian)
+                curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+                ;;
+              fedora)
+                sudo dnf install -y https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/prod.repo
+                sudo dnf install -y azure-cli
+                ;;
+              centos|rhel)
+                sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+                sudo sh -c 'echo -e "[azure-cli]\nname=Azure CLI\nbaseurl=https://packages.microsoft.com/yumrepos/azure-cli\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/azure-cli.repo'
+                sudo yum install -y azure-cli
+                ;;
+              *)
+                curl -L https://aka.ms/InstallAzureCli | bash
+                ;;
+            esac
+          else
+            curl -L https://aka.ms/InstallAzureCli | bash
+          fi
           echo "az cli has been installed successfully."
         fi
