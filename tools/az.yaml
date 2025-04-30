@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  install:
+    desc: "[AZ] ✨ Install az cli"
+    cmds:
+      - |
+        if command -v az >/dev/null 2>&1; then
+          echo "az cli is already installed."
+        else
+          curl -L https://aka.ms/InstallAzureCli | bash
+          echo "az cli has been installed successfully."
+        fi

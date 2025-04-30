@@ -9,3 +9,4 @@ includes:
   k8s: tools/k8s.yaml
   gum: tools/gum.yaml
   awesome-git: tools/awesome-git.yaml
+  az: tools/az.yaml
