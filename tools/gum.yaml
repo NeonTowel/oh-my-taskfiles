@@ -1,0 +1,16 @@
+version: '3'
+
+vars:
+  GUM_VERSION: "0.16.0"
+
+tasks:
+  install:
+    desc: "[GUM] ✨ Install gum"
+    cmds:
+      - |
+        if command -v gum >/dev/null 2>&1; then
+          echo "gum is already installed."
+        else
+          curl -fsSL "https://github.com/charmbracelet/gum/releases/download/v{{ .GUM_VERSION }}/gum_v{{ .GUM_VERSION }}_linux_amd64.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "gum_v{{ .GUM_VERSION }}_linux_amd64/gum"
+          echo "gum has been installed successfully."
+        fi
