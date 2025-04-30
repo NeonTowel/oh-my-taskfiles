@@ -67,6 +67,7 @@ tasks:
             echo "Aborting"
             exit 1
           fi
+          bash -c '
           cat <<EOF >> $GIT_ROOT/$git_provider/$org_name/config
           Host $git_provider
             HostName $git_provider
@@ -74,5 +75,6 @@ tasks:
             IdentityFile $GIT_ROOT/$git_provider/$org_name/key.pub
             IdentitiesOnly yes
           EOF
+          '
           echo "Created ssh config."
         fi
