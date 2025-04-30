@@ -33,8 +33,10 @@ tasks:
         fi
       - task: install:unzip
       - |
-        curl -fsSL "https://github.com/NeonTowel/awesome-git/releases/download/{{ .AWESOME_GIT_VERSION }}/awesome-git-linux.zip" -o $HOME/bin/awesome-git.zip
-        unzip $HOME/bin/awesome-git.zip -d $HOME/bin/awesome-git --strip-components=1
-        chmod +x $HOME/bin/awesome-git
-        rm $HOME/bin/awesome-git.zip
+        curl -fsSL "https://github.com/NeonTowel/awesome-git/releases/download/{{ .AWESOME_GIT_VERSION }}/awesome-git-linux.zip" -o /tmp/awesome-git.zip
+        unzip /tmp/awesome-git.zip -d /tmp/awesome-git
+        chmod +x /tmp/awesome-git/awesome-git
+        mv /tmp/awesome-git/awesome-git $HOME/bin/
+        rm -rf /tmp/awesome-git
+        rm /tmp/awesome-git.zip
         echo "awesome-git has been installed successfully."
