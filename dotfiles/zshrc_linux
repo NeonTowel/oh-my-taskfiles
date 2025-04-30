@@ -63,3 +63,8 @@ fi
 if [ -x "/usr/local/go/bin" ]; then
   export PATH=$PATH:/usr/local/go/bin
 fi
+
+# Rust configuration
+if [ -x "$HOME/.cargo/bin/rustc" ]; then
+  source "$HOME/.cargo/env"
+fi
