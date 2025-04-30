@@ -2,14 +2,13 @@ version: '3'
 
 vars:
   NVM_VERSION: "0.40.3"
-  NODE_VERSION: "20.11.0"
 
 tasks:
   install-nvm:
     desc: "[NODE] Install nvm"
     cmds:
       - |
-        if command -v nvm >/dev/null 2>&1; then
+        if [ -x "$HOME/.nvm/nvm.sh" ]; then
           echo "nvm is already installed."
         else
           curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v{{ .NVM_VERSION }}/install.sh" | bash
@@ -21,6 +20,12 @@ tasks:
     cmds:
       - task: install-nvm
       - |
-        nvm install --lts
-        nvm use --lts
-        nvm alias default --lts
+        if [ -x "$HOME/.nvm/nvm.sh" ]; then
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+          nvm install --lts
+          nvm use --lts
+          nvm alias default --lts
+        else
+          echo "nvm is not installed. Please install nvm first."
+        fi
