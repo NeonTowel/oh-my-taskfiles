@@ -67,7 +67,7 @@ tasks:
         fi
         pick=$(gum choose --header "Select the ssh key to use" "agent" "input manually")
         if [ "$pick" = "agent" ]; then
-          ssh_key=$(ssh-add -L | gum filter --header "Select the ssh key to use")
+          ssh_key=$(ssh-add -L | gum filter --header "Select the ssh key to use for $git_provider/$org_name:")
         else
           ssh_key=$(gum input --placeholder "Enter the ssh public key")
         fi
