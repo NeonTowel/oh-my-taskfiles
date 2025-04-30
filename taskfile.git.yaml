@@ -67,7 +67,7 @@ tasks:
         fi
         pick=$(gum choose --header "Select the ssh key to use" "agent" "input manually")
         if [ "$pick" = "agent" ]; then
-          ssh_key=$(ssh-add -l | gum choose --header "Select the ssh key to use")
+          ssh_key=$(ssh-add -L | gum filter --header "Select the ssh key to use")
         else
           ssh_key=$(gum input --placeholder "Enter the ssh public key")
         fi
@@ -77,7 +77,7 @@ tasks:
         fi
         echo "$ssh_key" > $GIT_ROOT/$git_provider/$org_name/key.pub
         echo "Wrote Git ssh key to $GIT_ROOT/$git_provider/$org_name/key.pub"
-        bash -c '
+        bash -c "
         cat <<EOF >> $GIT_ROOT/$git_provider/$org_name/config
         Host $git_provider
           HostName $git_provider
@@ -85,5 +85,5 @@ tasks:
           IdentityFile $GIT_ROOT/$git_provider/$org_name/key.pub
           IdentitiesOnly yes
         EOF
-        '
+        "
         echo "Wrote Git ssh config to $GIT_ROOT/$git_provider/$org_name/config"
