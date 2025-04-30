@@ -20,3 +20,42 @@ tasks:
         git config --global commit.gpgsign true
         echo "Set global pull.rebase to true"
         git config --global pull.rebase true
+  
+  mkdir:
+    desc: "Create a git repo directory structure"
+    cmds:
+      - |
+        mkdir -p $HOME/git/{github.com,dev.azure.com}
+        echo "Created git repo directory structure"
+        echo "You can now clone your repositories into the following directories:"
+        echo "  $HOME/git/github.com"
+        echo "  $HOME/git/dev.azure.com"
+        echo
+        echo "You should create a ssh config and key for each organization/account you work with."
+        echo
+        echo "Example:"
+        echo "  $HOME/git/github.com/yourname/config"
+        echo "  $HOME/git/github.com/yourname/key.pub"
+  
+  create-config:
+    desc: "Create a ssh config and key for a specific organization/account"
+    cmds:
+      - |
+        GIT_ROOT=$HOME/git
+        git_provider=$(gum choose "github.com" "dev.azure.com")
+        echo "You are creating a new organization/account in $GIT_ROOT/$git_provider"
+        org_name=$(gum input --placeholder "Enter the organization or account name")
+        echo "Creating config and key files for $GIT_ROOT/$git_provider/$org_name"
+        continue=$(gum confirm "Continue?")
+        if [ "$continue" = "no" ]; then
+          echo "Aborting"
+          exit 1
+        fi
+        mkdir -p $GIT_ROOT/$git_provider/$org_name
+        touch $GIT_ROOT/$git_provider/$org_name/config
+        touch $GIT_ROOT/$git_provider/$org_name/key.pub
+        echo "Created config and key files"
+        echo "You can now add the following to your ssh config:"
+        echo
+        echo "  $GIT_ROOT/$git_provider/$org_name/config"
+        echo "  $GIT_ROOT/$git_provider/$org_name/key.pub"
