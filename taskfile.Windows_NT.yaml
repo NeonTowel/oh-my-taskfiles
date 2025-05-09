@@ -18,6 +18,8 @@ tasks:
       - |
         app=$(winget list "AgileBits.1Password" -e)
         echo "$app"
+      - |
+        app=$(winget list "AgileBits.1Password" -e)
         case "$app" in
           *"No installed package found matching input criteria."*)
             winget install --id AgileBits.1Password -e --accept-package-agreements --accept-source-agreements
