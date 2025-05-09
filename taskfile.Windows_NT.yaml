@@ -11,3 +11,15 @@ tasks:
         else
           echo "coreutils is already installed."
         fi
+
+  1password:install:
+    desc: "[WINDOWS] ✨ Install 1Password"
+    cmds:
+      - |
+        app=$(winget list "AgileBits.1Password" -e)
+        if [[ "$app" == *"No installed package found matching input criteria."* ]]; then
+          winget install "AgileBits.1Password"
+          echo "1Password has been installed successfully."
+        else
+          echo "1Password is already installed."
+        fi
