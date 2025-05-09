@@ -17,12 +17,15 @@ tasks:
     cmds:
       - |
         app=$(winget list "AgileBits.1Password" -e)
-        if [[ "$app" == *"No installed package found matching input criteria."* ]]; then
-          winget install --id AgileBits.1Password -e --accept-package-agreements --accept-source-agreements
-          echo "1Password has been installed successfully."
-        else
-          echo "1Password is already installed."
-        fi
+        case "$app" in
+          *"No installed package found matching input criteria."*)
+            winget install --id AgileBits.1Password -e --accept-package-agreements --accept-source-agreements
+            echo "1Password has been installed successfully."
+            ;;
+          *)
+            echo "1Password is already installed."
+            ;;
+        esac
 
   pwsh:install:
     desc: "[WINDOWS] ✨ Install pwsh"
