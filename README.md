@@ -22,10 +22,16 @@ Run the following command to install Oh-My-Taskfiles:
 sh -c "$(curl --location https://raw.githubusercontent.com/NeonTowel/oh-my-taskfiles/refs/heads/main/install.sh)"
 ```
 
+For Windows PowerShell, run this one-liner:
+
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/NeonTowel/oh-my-taskfiles/refs/heads/main/install.ps1'))
+```
+
 This will:
 
 - Clone the Oh-My-Taskfiles repository to `~/.omt`
-- Install `go-task` CLI to `~/bin`
+- Install `go-task` CLI to `~/bin` (or via scoop on Windows)
 - Provide you with an alias `omt` to run tasks easily
 
 ---
@@ -126,46 +132,4 @@ task: "git:config-global" finished
 - **Kubernetes:** Tasks for managing Kubernetes clusters.
 - **Language Support:** Predefined tasks for Go, Rust, Node.js, and more.
 
-Explore the `taskfile.yaml` and included taskfiles under `tools/` and `lang/` directories for full capabilities.
-
----
-
-## Updating Oh-My-Taskfiles
-
-Keep your Oh-My-Taskfiles installation up to date by running:
-
-```bash
-omt update
-```
-
-This will fetch the latest changes from the repository and apply them.
-
----
-
-## Contributing
-
-Contributions are welcome! Whether it's adding new tasks, improving documentation, or fixing bugs:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Open a Pull Request
-
-Please follow the existing taskfile structure and conventions.
-
----
-
-## License
-
-This project is licensed under the The Unlicense License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## Stay Connected
-
-Follow the repository for updates and new features!
-
----
-
-Happy tasking! 🎉
+Explore the `taskfile.yaml` and included taskfiles under `
