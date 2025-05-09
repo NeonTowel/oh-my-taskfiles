@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  coreutils:install:
+    desc: "[WINDOWS] ✨ Install coreutils"
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/coreutils/current" ]; then
+          scoop install coreutils
+          echo "coreutils has been installed successfully."
+        else
+          echo "coreutils is already installed."
+        fi

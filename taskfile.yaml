@@ -9,6 +9,9 @@ includes:
   tools: taskfile.tools.yaml
   lang: taskfile.languages.yaml
   git: taskfile.git.yaml
+  oslib: 
+    taskfile: taskfile.{{ .OS }}.yaml
+    optional: true
 
 tasks:
   default:
