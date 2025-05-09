@@ -23,3 +23,14 @@ tasks:
         else
           echo "1Password is already installed."
         fi
+
+  pwsh:install:
+    desc: "[WINDOWS] ✨ Install pwsh"
+    cmds:
+      - |
+        if command -v pwsh >/dev/null 2>&1; then
+          echo "pwsh is already installed."
+        else
+          scoop install pwsh
+          echo "pwsh has been installed successfully."
+        fi
