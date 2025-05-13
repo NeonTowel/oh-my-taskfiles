@@ -32,3 +32,15 @@ tasks:
           fi
           echo "az cli has been installed successfully."
         fi
+
+  install-azd:
+    desc: "[AZ] Install azd cli"
+    cmds:
+      - |
+        if command -v azd >/dev/null 2>&1; then
+          echo "azd cli is already installed."
+        else
+          curl -fsSL https://aka.ms/install-azd.sh | bash
+          echo "azd cli has been installed successfully."
+        fi
+        

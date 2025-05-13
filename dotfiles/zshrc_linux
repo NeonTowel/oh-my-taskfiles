@@ -3,6 +3,7 @@ ZSH_DISABLE_COMPFIX=true
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="mh"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
+AZURE_DEV_COLLECT_TELEMETRY=no
 
 # Path configuration
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
