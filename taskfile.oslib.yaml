@@ -2,6 +2,7 @@ version: '3'
 
 tasks:
   coreutils:install:
+    platforms: [windows]
     desc: "[WINDOWS] ✨ Install coreutils"
     cmds:
       - |
@@ -13,6 +14,7 @@ tasks:
         fi
 
   1password:install:
+    platforms: [windows]
     desc: "[WINDOWS] ✨ Install 1Password"
     cmds:
       - |

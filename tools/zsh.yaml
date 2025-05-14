@@ -4,23 +4,27 @@ tasks:
   install:
     desc: "[ZSH] Install zsh shell"
     cmds:
-      - task: zsh:install:{{OS}}
+      - task: install:{{OS}}
 
   install:linux:
     internal: true
     cmds:
       - |
-        if command -v apt-get >/dev/null 2>&1; then
-          sudo apt-get update && sudo apt-get install -y zsh
-        elif command -v dnf >/dev/null 2>&1; then
-          sudo dnf install -y zsh
-        elif command -v yum >/dev/null 2>&1; then
-          sudo yum install -y zsh
-        elif command -v pacman >/dev/null 2>&1; then
-          sudo pacman -S --noconfirm zsh
+        if ! command -v zsh >/dev/null 2>&1; then
+          if command -v apt-get >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y zsh
+          elif command -v dnf >/dev/null 2>&1; then
+            sudo dnf install -y zsh
+          elif command -v yum >/dev/null 2>&1; then
+            sudo yum install -y zsh
+          elif command -v pacman >/dev/null 2>&1; then
+            sudo pacman -S --noconfirm zsh
+          else
+            echo "Unsupported package manager. Please install zsh manually."
+            exit 1
+          fi
         else
-          echo "Unsupported package manager. Please install zsh manually."
-          exit 1
+          echo "Zsh is already installed."
         fi
 
   install:darwin:
@@ -34,7 +38,7 @@ tasks:
           exit 1
         fi
 
-  zsh:omz:install:
+  omz:install:
     desc: "[ZSH] Install Oh My Zsh"
     cmds:
       - |

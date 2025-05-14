@@ -2,6 +2,10 @@ version: '3'
 
 silent: true
 
+vars:
+  OS: 
+    sh: echo '{{ .OS | default "linux" }}'
+
 includes:
   omt: 
     taskfile: taskfile.omt.yaml
@@ -9,9 +13,7 @@ includes:
   tools: taskfile.tools.yaml
   lang: taskfile.languages.yaml
   git: taskfile.git.yaml
-  oslib: 
-    taskfile: taskfile.{{ .OS }}.yaml
-    optional: true
+  oslib: taskfile.oslib.yaml
 
 tasks:
   default:
