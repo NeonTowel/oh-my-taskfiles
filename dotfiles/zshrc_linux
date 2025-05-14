@@ -3,7 +3,8 @@ ZSH_DISABLE_COMPFIX=true
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="mh"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-AZURE_DEV_COLLECT_TELEMETRY=no
+export AZURE_DEV_COLLECT_TELEMETRY=no
+export PODMAN_IGNORE_CGROUPSV1_WARNING=1
 
 # Path configuration
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -80,4 +81,12 @@ fi
 # Awesome-git configuration
 if command -v awesome-git &> /dev/null; then
   alias ag='awesome-git'
+fi
+
+# 1Password SSH Agent bridge for WSL
+if [ -f "$HOME/.agent-bridge.sh" ]; then
+  source "$HOME/.agent-bridge.sh"
+  if [ -f "$HOME/.1password/agent.sock" ]; then
+    export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
+  fi
 fi
