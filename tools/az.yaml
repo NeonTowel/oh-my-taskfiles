@@ -15,7 +15,8 @@ tasks:
                 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
                 ;;
               fedora)
-                sudo dnf install -y https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/prod.repo
+                sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+                sudo dnf install -y https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/packages-microsoft-prod.rpm
                 sudo dnf install -y azure-cli
                 ;;
               centos|rhel)
