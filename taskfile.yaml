@@ -14,6 +14,7 @@ includes:
   lang: taskfile.languages.yaml
   git: taskfile.git.yaml
   oslib: taskfile.oslib.yaml
+  sudo: taskfiles/sudo.yaml
 
 tasks:
   default:

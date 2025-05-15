@@ -11,10 +11,12 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Oh My Zsh configuration
 plugins=(git)
-source $ZSH/oh-my-zsh.sh
 
 # Completions
 fpath=(/usr/local/share/zsh-completions $fpath)
+
+# Oh My Zsh
+source $ZSH/oh-my-zsh.sh
 
 # Aliases: lsd
 if command -v lsd &> /dev/null; then
@@ -52,7 +54,7 @@ if command -v starship &> /dev/null; then
 fi
 
 # Go-task configuration
-if command -c task &> /dev/null; then
+if command -v task &> /dev/null; then
     eval "$(task --completion zsh)"
 fi
 

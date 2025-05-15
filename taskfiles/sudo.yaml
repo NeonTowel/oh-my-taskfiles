@@ -1,0 +1,55 @@
+version: '3'
+
+tasks:
+  add-user:
+    desc: "Enable passwordless sudo access for a user (default to current user, change with user=<username>)"
+    platforms: [linux]
+    vars:
+      current_user:
+        sh: whoami
+      user: "{{.user | default .current_user }}"
+    cmds:
+      - |
+        if [ -f /etc/sudoers.d/{{ .user }} ]; then
+          echo "Sudoers file for user {{ .user }} already exists. Skipping."
+          exit 0
+        fi
+        echo "{{ .user }} ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/{{ .user }}
+        sudo chmod 440 /etc/sudoers.d/{{ .user }}
+        echo "Passwordless sudo access configured for {{ .user }}"
+  
+  remove-user:
+    desc: "Remove passwordless sudo access for a user (default to current user, change with user=<username>)"
+    platforms: [linux]
+    vars:
+      current_user:
+        sh: whoami
+      user: "{{.user | default .current_user }}"
+    cmds:
+      - |
+        if [ ! -f /etc/sudoers.d/{{ .user }} ]; then
+          echo "Sudoers file for user {{ .user }} does not exist. Skipping."
+          exit 0
+        fi
+        sudo rm -f /etc/sudoers.d/{{ .user }}
+        echo "Passwordless sudo access removed for {{ .user }}"
+
+  list-users:
+    desc: "List all users with passwordless sudo access"
+    platforms: [linux]
+    cmds:
+      - |
+        if [ -z "$(sudo ls -A /etc/sudoers.d)" ]; then
+          echo "No users with sudo access found."
+          exit 0
+        fi
+        for file in $(sudo ls /etc/sudoers.d/); do
+          if command -v bat >/dev/null 2>&1; then
+            echo "==> $file <=="
+            sudo cat "/etc/sudoers.d/$file" | bat --paging=never
+          else
+            echo "==> $file <=="
+            sudo cat "/etc/sudoers.d/$file"
+          fi
+          echo
+        done
