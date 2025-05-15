@@ -28,6 +28,7 @@ tasks:
           tar -xzf kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
           chmod +x kubecm
           mv kubecm ~/bin/kubecm
+          rm kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
           echo "kubecm has been installed successfully."
         fi
     desc: "[K8S] Install kubecm"
