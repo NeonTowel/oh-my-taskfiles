@@ -60,7 +60,7 @@ fi
 
 # Oh-My-Taskfiles configuration
 if [ -f "$HOME/.omt/taskfile.yaml" ]; then
-  alias omt='task -d $HOME/.omt'
+  alias omt='task -t $HOME/.omt/taskfile.yaml'
 fi
 
 # Go configuration
