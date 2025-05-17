@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  install:windows:
+    platforms: [windows]
+    deps: [ ":coreutils:install" ]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v chatbox >/dev/null 2>&1; then
+          if ! scoop bucket list | grep -q "^neontowel"; then
+            scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
+          fi
+          scoop install neontowel/chatbox
+          echo "chatbox has been installed successfully."
+        else
+          echo "chatbox is already installed."
+        fi
+
+  install:
+    desc: "[CHATBOX] ✨ Install Chatbox AI chat bot"
+    silent: true
+    cmds:
+      - task: install:windows

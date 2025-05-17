@@ -11,6 +11,7 @@ includes:
     taskfile: taskfile.omt.yaml
     flatten: true
   tools: taskfile.tools.yaml
+  apps: taskfile.apps.yaml
   lang: taskfile.languages.yaml
   git: taskfile.git.yaml
   oslib: taskfile.oslib.yaml
