@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v jq >/dev/null 2>&1; then
+          scoop install jq
+          echo "jq has been installed successfully."
+        else
+          echo "jq is already installed."
+        fi
+
+  install:
+    desc: "[JQ] ✨ Install jq"
+    silent: true
+    cmds:
+      - task: install:windows
