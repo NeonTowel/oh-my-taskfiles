@@ -19,3 +19,4 @@ includes:
 tasks:
   default:
     - task --list --sort none
+    - task: check-updates

@@ -1,6 +1,22 @@
 version: '3'
 
 tasks:
+
+  check-updates:
+    internal: true
+    cmds: 
+      - |
+        # use git to check if there are any changes to the omt repo that is cloned locally to $HOME/.omt
+        if [ -d "$HOME/.omt" ]; then
+          cd $HOME/.omt
+          git fetch --quiet
+          if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
+            echo ""
+            echo "Updates available, use 'omt update' to update!"
+            echo ""
+          fi
+        fi
+
   update:
     desc: 'Update Oh-My-Taskfiles!'
     cmds:
