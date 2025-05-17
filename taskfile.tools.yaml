@@ -16,3 +16,4 @@ includes:
   fonts: tools/fonts.yaml
   pwsh: tools/pwsh.yaml
   7zip: tools/7zip.yaml
+  gpg: tools/gpg.yaml

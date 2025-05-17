@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v gpg >/dev/null 2>&1; then
+          scoop install gpg
+          echo "gpg has been installed successfully."
+        else
+          echo "gpg is already installed."
+        fi
+
+  install:
+    desc: "[GPG] ✨ Install GPG"
+    silent: true
+    cmds:
+      - task: install:windows
