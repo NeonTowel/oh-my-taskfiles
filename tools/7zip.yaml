@@ -6,12 +6,10 @@ vars:
 tasks:
   install:windows:
     platforms: [windows]
-    deps: [ "::tools:coreutils:install" ]
     internal: true
     silent: true
     cmds:
       - |
-        # install using scoop if 7z command is not found
         if ! command -v 7z >/dev/null 2>&1; then
           scoop install 7zip
           echo "7zip has been installed successfully."
