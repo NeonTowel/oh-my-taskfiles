@@ -8,7 +8,7 @@ tasks:
     silent: true
     cmds:
       - |
-        if ! command -v chatbox >/dev/null 2>&1; then
+        if [ ! -d "$HOME/scoop/apps/chatbox/current" ]; then
           if ! scoop bucket list | grep -q "^neontowel"; then
             scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
           fi
