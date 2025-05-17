@@ -3,7 +3,7 @@ version: '3'
 tasks:
   install:windows:
     platforms: [windows]
-    deps: [ ":coreutils:install" ]
+    deps: [ "::tools:coreutils:install" ]
     internal: true
     silent: true
     cmds:
