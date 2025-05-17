@@ -1,21 +1,3 @@
 version: '3'
 
 tasks:
-  1password:install:
-    platforms: [windows]
-    desc: "[WINDOWS] ✨ Install 1Password"
-    cmds:
-      - |
-        app=$(winget list "AgileBits.1Password" -e)
-        echo "$app"
-      - |
-        app=$(winget list "AgileBits.1Password" -e)
-        case "$app" in
-          *"No installed package found matching input criteria."*)
-            winget install --id AgileBits.1Password -e --accept-package-agreements --accept-source-agreements
-            echo "1Password has been installed successfully."
-            ;;
-          *)
-            echo "1Password is already installed."
-            ;;
-        esac
