@@ -1,0 +1,50 @@
+version: '3'
+
+tasks:
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if ! command -v pwsh &> /dev/null; then
+          scoop install pwsh
+          echo "pwsh has been installed successfully."
+        else
+          echo "pwsh is already installed."
+        fi
+      - |
+        if [ ! -f "$HOME\.pwshrc.ps1" ]; then
+          cp dotfiles/pwshrc_windows.ps1 $HOME/.pwshrc.ps1
+          if [ ! -d "$HOME\Documents\PowerShell" ]; then
+            echo "Creating PowerShell core profile folder..."
+            mkdir -p "$HOME\Documents\PowerShell"
+          fi
+          echo ""
+          echo "Please add the following to your PowerShell profile:"
+          echo ". \$HOME\.pwshrc.ps1"
+          echo ""
+          echo "You can do this by running the following command:"
+          echo "Add-Content -Path \$PROFILE -Value \"\`r\`n. \`\$HOME\.pwshrc.ps1\""
+          echo ""
+          echo "To check where your PowerShell profile is located, run the following command:"
+          echo "\$PROFILE"
+          echo ""
+        else
+          cp dotfiles/pwshrc_windows.ps1 $HOME/.pwshrc.ps1
+        fi
+        echo "pwsh profile has been installed successfully to $HOME\.pwshrc.ps1"
+        echo "Ensure you source the profile to your current shell."
+
+  install:linux: # TODO: add Linux support
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        echo "Not implemented yet."
+
+  install:
+    silent: true
+    desc: "[PWSH] ✨ Install PowerShell"
+    cmds:
+      - task: install:windows
+      - task: install:linux

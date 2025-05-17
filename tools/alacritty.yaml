@@ -1,0 +1,76 @@
+version: '3'
+
+tasks:
+  themes:install:
+    internal: true
+    cmds:
+      - |
+        if [ ! -d "$HOME\.config\alacritty\themes" ]; then
+          mkdir -p $HOME/.config/alacritty/themes
+          git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes
+          echo "alacritty themes have been installed successfully."
+        else
+          echo "alacritty themes are already installed."
+        fi
+
+  configure:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        # on windows the alacritty.toml config is under $HOME\AppData\Roaming\alacritty\alacritty.toml
+        if [ ! -d "$HOME\AppData\Roaming\alacritty" ]; then
+          echo "Creating config directory in: $HOME\AppData\Roaming\alacritty"
+          mkdir -p "$HOME\AppData\Roaming\alacritty"
+        fi
+        echo "Copying alacritty.toml to $HOME\AppData\Roaming\alacritty\alacritty.toml"
+        cp dotfiles/alacritty.toml "$HOME\AppData\Roaming\alacritty\alacritty.toml"
+        echo "alacritty.toml has been copied to $HOME\AppData\Roaming\alacritty\alacritty.toml"
+
+  configure:linux:
+    platforms: [linux]
+    cmds:
+      - |
+        echo "Not implemented yet"
+        # TODO: implement configuring alacritty on linux
+
+  install:windows:
+    platforms: [windows]
+    deps: [ ":coreutils:install" ]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v alacritty >/dev/null 2>&1; then
+          if ! scoop bucket list | grep -q "^extras"; then
+            scoop bucket add extras
+          fi
+          scoop install extras/alacritty
+          echo "alacritty has been installed successfully."
+        else
+          echo "alacritty is already installed."
+        fi
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if command -v alacritty >/dev/null 2>&1; then
+          echo "Alacritty is already installed."
+          exit 0 
+        fi
+        echo "Installing Alacritty..."
+        echo "Not implemented yet"
+        # TODO: implement installing alacritty on linux
+
+  install:
+    desc: "[ALACRITTY] ✨ Install and configureAlacritty cross-platform terminal"
+    silent: true
+    cmds:
+      - task: install:windows
+      - task: install:linux
+      - task: themes:install
+      - task: configure:windows
+      - task: configure:linux

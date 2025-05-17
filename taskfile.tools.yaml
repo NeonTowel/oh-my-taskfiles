@@ -11,3 +11,7 @@ includes:
   awesome-git: tools/awesome-git.yaml
   az: tools/az.yaml
   lazygit: tools/lazygit.yaml
+  alacritty: tools/alacritty.yaml
+  coreutils: tools/coreutils.yaml
+  fonts: tools/fonts.yaml
+  pwsh: tools/pwsh.yaml

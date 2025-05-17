@@ -1,0 +1,46 @@
+version: '3'
+
+tasks:
+  install-font:
+    internal: true
+    platforms: [windows]
+    requires:
+      vars: [ font ]
+    cmds:
+      - |
+        if [ ! -d "$HOME\scoop\apps\{{ .font }}" ]; then
+          echo "Installing {{ .font }} font"
+          scoop install nerd-fonts/{{ .font }}
+        else
+          echo "{{ .font }} font is already installed"
+        fi
+
+  install:windows:
+    deps: [ ":coreutils:install" ]
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if ! scoop bucket list | grep -q "^nerd-fonts"; then
+          scoop bucket add nerd-fonts
+        fi
+      - task: install-font 
+        vars:
+          font: Mononoki-NF
+      - task: install-font
+        vars:
+          font: Mononoki-NF-Mono
+
+  install:linux: # TODO: add Linux support
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        echo "Not implemented yet."
+
+  install:
+    silent: true
+    desc: "[FONTS] ✨ Install fonts"
+    cmds:
+      - task: install:windows
+      - task: install:linux
