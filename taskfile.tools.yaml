@@ -15,3 +15,4 @@ includes:
   coreutils: tools/coreutils.yaml
   fonts: tools/fonts.yaml
   pwsh: tools/pwsh.yaml
+  7zip: tools/7zip.yaml

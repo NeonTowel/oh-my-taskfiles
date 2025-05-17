@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  7ZIP_LINUX_VERSION: "24.09"
+
+tasks:
+  install:windows:
+    platforms: [windows]
+    deps: [ "::tools:coreutils:install" ]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        # install using scoop if 7z command is not found
+        if ! command -v 7z >/dev/null 2>&1; then
+          scoop install 7zip
+          echo "7zip has been installed successfully."
+        else
+          echo "7zip is already installed."
+        fi
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        VERSION=$(echo "{{ .7ZIP_LINUX_VERSION }}" | tr -cd '[:alnum:]_.')
+        if [ ! -d "$HOME/bin/7z" ]; then
+          curl -L "https://github.com/ip7z/7zip/releases/download/{{ .7ZIP_LINUX_VERSION }}/7z{{ .VERSION }}-linux-x64.tar.xz" | tar -xJ -C $HOME/bin
+          echo "7zip has been installed successfully."
+        else
+          echo "7zip is already installed."
+        fi
+
+  install:
+    desc: "[7ZIP] ✨ Install 7zip"
+    silent: true
+    cmds:
+      - task: install:windows
+      - task: install:linux
