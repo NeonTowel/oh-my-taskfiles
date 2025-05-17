@@ -27,11 +27,12 @@ tasks:
       - task: :oslib:coreutils:install
         platforms: [windows]
       - |
-        mkdir -p $HOME/git/{github.com,dev.azure.com}
+        mkdir -p $HOME/git/{github.com,dev.azure.com,gitlab.com}
         echo "Created git repo directory structure"
         echo "You can now clone your repositories into the following directories:"
         echo "  $HOME/git/github.com"
         echo "  $HOME/git/dev.azure.com"
+        echo "  $HOME/git/gitlab.com"
         echo
         echo "You should create a ssh config and key for each organization/account you work with."
         echo
@@ -46,7 +47,7 @@ tasks:
         platforms: [windows]
       - |
         GIT_ROOT=$HOME/git
-        git_provider=$(gum choose "github.com" "dev.azure.com")
+        git_provider=$(gum choose "github.com" "dev.azure.com" "gitlab.com")
         echo "You are creating a new organization/account in $GIT_ROOT/$git_provider"
         org_name=$(gum input --placeholder "Enter the organization or account name")
         echo "Creating config and key files for $GIT_ROOT/$git_provider/$org_name"
