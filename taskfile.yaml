@@ -16,6 +16,7 @@ includes:
   git: taskfile.git.yaml
   oslib: taskfile.oslib.yaml
   sudo: taskfiles/sudo.yaml
+  wsl: taskfiles/wsl.yaml
 
 tasks:
   default:
