@@ -85,6 +85,13 @@ if command -v awesome-git &> /dev/null; then
   alias ag='awesome-git'
 fi
 
+# if npiperelay.exe is in the path, copy agent-bridge.sh to the home directory from $HOME/.omt/dotfiles/agent-bridge.sh
+if [ -f "/usr/local/bin/npiperelay.exe" ] && [ ! -f "$HOME/.agent-bridge.sh" ]; then
+  if [ -f "$HOME/.omt/dotfiles/agent-bridge.sh" ]; then
+    cp $HOME/.omt/dotfiles/agent-bridge.sh $HOME/.agent-bridge.sh
+  fi
+fi
+
 # 1Password SSH Agent bridge for WSL
 if [ -f "$HOME/.agent-bridge.sh" ]; then
   source "$HOME/.agent-bridge.sh"
