@@ -99,3 +99,8 @@ if [ -f "$HOME/.agent-bridge.sh" ]; then
     export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
   fi
 fi
+
+# Podman socket configuration
+if [ -S "$XDG_RUNTIME_DIR/podman/podman.sock" ]; then
+  export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+fi
