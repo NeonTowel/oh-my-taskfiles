@@ -79,7 +79,7 @@ tasks:
             echo "ERROR: cmd.exe not found, please install cmd.exe first."
             exit 1
           fi
-          username=$(/mnt/c/Windows/System32/cmd.exe /c "echo %USERNAME%")
+          username=$(/mnt/c/Windows/System32/cmd.exe /c "echo %USERNAME%" | tr -d '\r\n')
           echo "Username: $username"
           # if git is not found, throw an error
           if ! command -v git &> /dev/null; then
