@@ -24,7 +24,7 @@ tasks:
   mkdir:
     desc: "[GIT] Create a git repo directory structure"
     cmds:
-      - task: :oslib:coreutils:install
+      - task: :tools:coreutils:install
         platforms: [windows]
       - |
         mkdir -p $HOME/git/{github.com,dev.azure.com,gitlab.com}
@@ -43,7 +43,7 @@ tasks:
   create-config:
     desc: "[GIT] Create a ssh config and key for a specific organization/account"
     cmds:
-      - task: :oslib:coreutils:install
+      - task: :tools:coreutils:install
         platforms: [windows]
       - |
         GIT_ROOT=$HOME/git
