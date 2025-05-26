@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    - task --list --taskfile tools/fonts.yaml
+
   install-font:
     internal: true
     platforms: [windows]
@@ -19,17 +22,24 @@ tasks:
     deps: [ ":coreutils:install" ]
     internal: true
     platforms: [windows]
+    vars:
+      FONTS: 
+        - Mononoki-NF
+        - Mononoki-NF-Mono
+        - FantasqueSansMono-NF
+        - FantasqueSansMono-NF-Mono
+        - JetBrainsMono-NF
+        - JetBrainsMono-NF-Mono
+        - Lato
     cmds:
       - |
         if ! scoop bucket list | grep -q "^nerd-fonts"; then
           scoop bucket add nerd-fonts
         fi
-      - task: install-font 
+      - for: { var: FONTS }
+        task: install-font
         vars:
-          font: Mononoki-NF
-      - task: install-font
-        vars:
-          font: Mononoki-NF-Mono
+          font: "{{.ITEM}}"
 
   install:linux: # TODO: add Linux support
     internal: true
