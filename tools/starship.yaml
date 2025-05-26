@@ -1,19 +1,42 @@
 version: '3'
 
 tasks:
-  install:
-    desc: "[STARSHIP] Install starship prompt"
+  default:
+    - task --list --taskfile tools/starship.yaml
+
+  install:linux:
+    platforms: [linux]
+    internal: true
     cmds:
       - curl -sS 'https://starship.rs/install.sh' | sh -s -- -y -b $HOME/bin
 
-  configure:
-    desc: "[STARSHIP] Configure preset"
+  install:windows:
+    platforms: [windows]
+    internal: true
     cmds:
-      - mkdir -p ~/.config
-      - starship preset pastel-powerline -o ~/.config/starship.toml
+      - |
+        if ! command -v starship >/dev/null 2>&1; then
+          scoop install starship
+          echo "starship has been installed successfully."
+        else
+          echo "starship is already installed."
+        fi
+
+  configure:
+    internal: true
+    cmds:
+      - |
+        if [ ! -d "$HOME/.config" ]; then
+          mkdir -p "$HOME/.config"
+        fi
+        cp "$HOME/.omt/dotfiles/starship.toml" "$HOME/.config/starship.toml"
+        echo "starship has been configured successfully."
   
-  setup:
+  install:
     desc: "[STARSHIP] ✨ Install and configure starship prompt"
     cmds:
-      - task: install
+      - task: install:linux
+        platforms: [linux]
+      - task: install:windows
+        platforms: [windows]
       - task: configure
