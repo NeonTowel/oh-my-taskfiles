@@ -1,22 +1,19 @@
 version: '3'
 
 tasks:
-  themes:install:
-    internal: true
-    cmds:
-      - |
-        if [ ! -d "$HOME\.config\alacritty\themes" ]; then
-          mkdir -p $HOME/.config/alacritty/themes
-          git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes
-          echo "alacritty themes have been installed successfully."
-        else
-          echo "alacritty themes are already installed."
-        fi
+  default:
+    - task --list --taskfile tools/alacritty.yaml
 
   configure:windows:
     internal: true
     platforms: [windows]
     cmds:
+      - |
+        if [ ! -d "$HOME\.config\alacritty" ]; then
+          mkdir -p "$HOME\.config\alacritty"
+        fi
+        cp dotfiles/alacritty/catppuccin-frappe.toml "$HOME\.config\alacritty\catppuccin-frappe.toml"
+        echo "catppuccin-frappe.toml has been copied to $HOME\.config\alacritty\catppuccin-frappe.toml"
       - |
         # on windows the alacritty.toml config is under $HOME\AppData\Roaming\alacritty\alacritty.toml
         if [ ! -d "$HOME\AppData\Roaming\alacritty" ]; then
@@ -24,14 +21,14 @@ tasks:
           mkdir -p "$HOME\AppData\Roaming\alacritty"
         fi
         echo "Copying alacritty.toml to $HOME\AppData\Roaming\alacritty\alacritty.toml"
-        cp dotfiles/alacritty.toml "$HOME\AppData\Roaming\alacritty\alacritty.toml"
+        cp dotfiles/alacritty/alacritty.toml "$HOME\AppData\Roaming\alacritty\alacritty.toml"
         echo "alacritty.toml has been copied to $HOME\AppData\Roaming\alacritty\alacritty.toml"
 
   configure:linux:
     platforms: [linux]
     cmds:
       - |
-        echo "Not implemented yet"
+        echo "WARN: alacritty linux config not implemented yet"
         # TODO: implement configuring alacritty on linux
 
   install:windows:
@@ -66,11 +63,14 @@ tasks:
         # TODO: implement installing alacritty on linux
 
   install:
-    desc: "[ALACRITTY] ✨ Install and configureAlacritty cross-platform terminal"
+    desc: "[ALACRITTY] ✨ Install and configure Alacritty cross-platform terminal"
     silent: true
     cmds:
       - task: install:windows
+        platforms: [windows]
       - task: install:linux
-      - task: themes:install
+        platforms: [linux]
       - task: configure:windows
+        platforms: [windows]
       - task: configure:linux
+        platforms: [linux]
