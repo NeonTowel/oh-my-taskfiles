@@ -18,3 +18,4 @@ includes:
   7zip: tools/7zip.yaml
   gpg: tools/gpg.yaml
   jq: tools/jq.yaml
+  fonts: tools/fonts.yaml
