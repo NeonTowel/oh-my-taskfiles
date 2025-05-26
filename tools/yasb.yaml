@@ -1,0 +1,37 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/yasb.yaml
+
+  configure:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if [ ! -d "$HOME/.config/yasb" ]; then
+          mkdir -p "$HOME/.config/yasb"
+        fi
+        cp "$HOME/.omt/dotfiles/yasb/config.yaml" "$HOME/.config/yasb/config.yaml"
+        cp "$HOME/.omt/dotfiles/yasb/styles.css" "$HOME/.config/yasb/styles.css"
+        echo "yasb has been configured successfully."
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v yasb >/dev/null 2>&1; then
+          scoop install yasb
+          echo "yasb has been installed successfully."
+        else
+          echo "yasb is already installed."
+        fi
+
+  install:
+    desc: "[YASB] ✨ Install YASB"
+    silent: true
+    cmds:
+      - task: install:windows
+      - task: configure
