@@ -1,8 +1,12 @@
 version: '3'
 
 tasks:
-  install:
-    desc: "[LSD] ✨ Install lsd"
+  default:
+    - task --list --taskfile tools/lsd.yaml
+
+  install:linux:
+    internal: true
+    platforms: [linux]
     cmds:
       - |
         if command -v lsd >/dev/null 2>&1; then
@@ -11,3 +15,23 @@ tasks:
           curl -fsSL https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xz -C $HOME/bin --strip-components=1 lsd-v1.1.5-x86_64-unknown-linux-gnu/lsd
           echo "lsd has been installed successfully."
         fi
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if command -v lsd >/dev/null 2>&1; then
+          echo "lsd is already installed."
+        else
+          scoop install lsd
+          echo "lsd has been installed successfully."
+        fi
+
+  install:
+    desc: "[LSD] ✨ Install lsd"
+    cmds:
+      - task: install:linux
+        platforms: [linux]
+      - task: install:windows
+        platforms: [windows]
