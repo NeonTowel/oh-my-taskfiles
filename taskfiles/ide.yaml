@@ -1,0 +1,91 @@
+version: '3'
+
+vars:
+  IDE_EXTENSIONS_vscode:
+    - ms-vscode-remote.remote-containers
+    - ms-vscode-remote.remote-wsl
+    - ms-vscode-remote.remote-ssh
+    - Catppuccin.catppuccin-vsc
+    - Catppuccin.catppuccin-vsc-icons
+    - svelte.svelte-vscode
+    - tamasfe.even-better-toml
+    - golang.Go
+    - rust-lang.rust-analyzer
+    - oderwat.indent-rainbow
+    - tejasvi.rainbow-brackets-2
+    - humao.rest-client
+    - esbenp.prettier-vscode
+    - EditorConfig.EditorConfig
+    - redhat.vscode-yaml
+  IDE_EXTENSIONS_cursor: []
+  IDE_EXTENSIONS_vscodium: []
+
+tasks:
+  default:
+    - task --list --taskfile taskfiles/ide.yaml
+
+  install-extensions:
+    internal: true
+    requires:
+      vars: [ IDE, IDE_EXTENSIONS ]
+    cmds:
+      - |
+        echo "Configuring {{ .IDE }}..."
+        install_extensions="{{range .IDE_EXTENSIONS}}--install-extension {{.}} {{end}}"
+        echo "Installing extensions: $install_extensions"
+        {{ .IDE }} $install_extensions
+
+  configure:vscode:
+    internal: true
+    cmds:
+      - task: install-extensions
+        vars:
+          IDE: '{{ .IDE | default "vscode" }}'
+          IDE_EXTENSIONS: 
+            ref: .IDE_EXTENSIONS_vscode
+
+
+  configure:cursor:windows:
+    internal: true
+    platforms: [windows]
+    deps: [ ":tools:gum:install" ]
+    cmds:
+      - |
+        write_settings=true
+        if [ -f "$HOME/AppData/Roaming/Cursor/User/settings.json" ]; then
+          if ! gum confirm "The file $HOME/AppData/Roaming/Cursor/User/settings.json already exists. Overwrite?"; then
+            write_settings=false
+            echo "Skipping cursor config"
+          fi
+        fi
+        if $write_settings; then
+          cp dotfiles/vscode/settings.json "$HOME/AppData/Roaming/Cursor/User/settings.json"
+          echo "Cursor config has been overwritten"
+        fi
+
+  configure:cursor:
+    internal: true
+    cmds:
+      - task: configure:vscode
+        vars:
+          IDE: "{{ .IDE }}"
+      - task: configure:cursor:windows
+        platforms: [windows]
+
+  configure:vscodium:
+    internal: true
+    cmds:
+      - |
+        echo "WARN: vscodium config not implemented yet"
+        # TODO: implement vscodium config
+
+  configure:
+    internal: true
+    requires:
+      vars: 
+        - name: IDE
+          enum: [ vscode, cursor, vscodium ]
+    cmds:
+      - task: configure:{{ .IDE }}
+        vars:
+          IDE: "{{ .IDE }}"

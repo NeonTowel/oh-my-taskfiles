@@ -17,6 +17,7 @@ includes:
   oslib: taskfile.oslib.yaml
   sudo: taskfiles/sudo.yaml
   wsl: taskfiles/wsl.yaml
+  ide: taskfiles/ide.yaml
 
 tasks:
   default:

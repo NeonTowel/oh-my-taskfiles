@@ -1,0 +1,47 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/cursor.yaml
+
+  configure:
+    internal: true
+    cmds:
+      - |
+        if ! command -v cursor >/dev/null 2>&1; then
+          echo "❌ ERROR: cursor cli is not installed"
+          echo "Please install cursor cli first."
+          exit 1
+        fi
+      - task: ::ide:configure
+        vars:
+          IDE: "cursor"
+
+  install:windows:
+    platforms: [windows]
+    deps: [ "::tools:coreutils:install" ]
+    internal: true
+    silent: true
+    vars:
+      package: "Anysphere.Cursor"
+    cmds:
+      - |
+        if winget list "{{ .package }}" -e | grep -q "No installed package found matching input criteria."; then
+          if [ ! -d "$HOME/scoop/apps/cursor/current" ]; then
+            if ! scoop bucket list | grep -q "^neontowel"; then
+              scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
+            fi
+            scoop install neontowel/cursor
+            echo "cursor has been installed successfully."
+          fi
+        else
+          echo "cursor is already installed."
+        fi
+
+  install:
+    desc: "[CURSOR] ✨ Install Cursor AI code editor"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure

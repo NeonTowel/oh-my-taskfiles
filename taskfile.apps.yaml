@@ -3,3 +3,8 @@ version: '3'
 includes:
   chatbox: apps/chatbox.yaml
   1password: apps/1password.yaml
+  cursor: apps/cursor.yaml
+
+tasks:
+  default:
+    - task --list --taskfile taskfile.apps.yaml

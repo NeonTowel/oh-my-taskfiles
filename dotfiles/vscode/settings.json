@@ -1,0 +1,29 @@
+{
+  "window.commandCenter": true,
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.sideBar.location": "right",
+  "extensions.ignoreRecommendations": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "terminal.integrated.profiles.windows": {
+      "pwsh": {
+          "path": "pwsh",
+          "args": [ "-NoLogo" ]
+      }
+  },
+  "terminal.integrated.defaultProfile.windows": "pwsh",
+  "explorer.confirmDragAndDrop": false,
+  "dev.containers.dockerPath": "podman",
+  "svelte.enable-ts-plugin": true,
+  "window.restoreWindows": "none",
+  "diffEditor.renderSideBySide": false,
+  "redhat.telemetry.enabled": false,
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "workbench.iconTheme": "catppuccin-mocha",
+  "editor.cursorStyle": "block",
+  "editor.fontFamily": "'FantasqueSansM Nerd Font Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "terminal.integrated.fontLigatures": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true
+}
