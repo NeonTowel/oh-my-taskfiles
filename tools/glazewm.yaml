@@ -1,0 +1,36 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/glazewm.yaml
+
+  configure:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if [ ! -d "$HOME/.glzr/glazewm" ]; then
+          mkdir -p "$HOME/.glzr/glazewm"
+        fi
+        cp "$HOME/.omt/dotfiles/glazewm.yaml" "$HOME/.glzr/glazewm/config.yaml"
+        echo "glazewm has been configured successfully."
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v glazewm >/dev/null 2>&1; then
+          scoop install glazewm
+          echo "glazewm has been installed successfully."
+        else
+          echo "glazewm is already installed."
+        fi
+
+  install:
+    desc: "[GlazeWM] ✨ Install GlazeWM"
+    silent: true
+    cmds:
+      - task: install:windows
+      - task: configure
