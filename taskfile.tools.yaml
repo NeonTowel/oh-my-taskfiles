@@ -19,3 +19,10 @@ includes:
   gpg: tools/gpg.yaml
   jq: tools/jq.yaml
   fonts: tools/fonts.yaml
+  glazewm: tools/glazewm.yaml
+  yasb: tools/yasb.yaml
+  flow-launcher: tools/flow-launcher.yaml
+
+tasks:
+  default:
+    - task --list --taskfile taskfile.tools.yaml

@@ -1,0 +1,45 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/flow-launcher.yaml
+
+  configure:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/persist/flow-launcher/UserData" ]; then
+          echo "ERROR: flow-launcher scoop persit UserData folder not found:"
+          echo "  $HOME/scoop/persist/flow-launcher/UserData"
+          echo "Please install flow-launcher first."
+          exit 1
+        elif [ ! -f "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json" ]; then
+          echo "ERROR: flow-launcher settings.json not found:"
+          echo "  $HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
+          echo "Please run flow-launcher first."
+          exit 1
+        else
+          cp "$HOME/.omt/dotfiles/flow-launcher/settings.json" "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
+          echo "flow-launcher has been configured successfully."
+        fi
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if [ ! -f "$HOME/scoop/apps/flow-launcher/current/Flow.Launcher.exe" ]; then
+          scoop install flow-launcher
+          echo "flow-launcher has been installed successfully."
+        else
+          echo "flow-launcher is already installed."
+        fi
+
+  install:
+    desc: "[Flow Launcher] ✨ Install Flow Launcher"
+    silent: true
+    cmds:
+      - task: install:windows
+      - task: configure
