@@ -3,9 +3,8 @@ $env:Path += ";$HOME\bin"
 
 # Aliases for lsd (if installed)
 if (Get-Command lsd -ErrorAction SilentlyContinue) {
-    Set-Alias ll "lsd"
-    function ll { lsd -lh @args }
-    Set-Alias ls "lsd"
+    function l { lsd @args }
+    function ll { lsd -alh @args }
     function tree { lsd --tree @args }
 }
 
