@@ -4,6 +4,23 @@ tasks:
   default:
     - task --list --taskfile tools/flow-launcher.yaml
 
+
+
+  themes:
+    internal: true
+    platforms: [windows]
+    vars:
+      THEME_SOURCE_DIR: "$HOME/.omt/dotfiles/flow-launcher/themes"
+      THEME_DEST_DIR: "$HOME/scoop/persist/flow-launcher/UserData/Themes"
+    dir: '{{.THEME_SOURCE_DIR}}'
+    sources:
+      - '*.xaml'
+    cmds:
+      - for: sources
+        cmd: |
+          echo "Copying theme: {{.THEME_SOURCE_DIR}}/{{.ITEM}} to {{.THEME_DEST_DIR}}/{{.ITEM}}"
+          #cp {{joinPath .THEME_SOURCE_DIR .ITEM}} "{{.THEME_DEST_DIR}}/{{.ITEM}}"
+
   configure:
     internal: true
     platforms: [windows]
@@ -23,6 +40,7 @@ tasks:
           cp "$HOME/.omt/dotfiles/flow-launcher/settings.json" "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
           echo "flow-launcher has been configured successfully."
         fi
+      - task: themes
 
   install:windows:
     platforms: [windows]
