@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/fzf.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v fzf >/dev/null 2>&1; then
+          scoop install fzf
+          echo "fzf has been installed successfully."
+        else
+          echo "fzf is already installed."
+        fi
+
+  install:
+    desc: "[FZF] ✨ Install fzf"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
