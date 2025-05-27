@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/btop.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v btop >/dev/null 2>&1; then
+          scoop install btop
+          echo "btop has been installed successfully."
+        else
+          echo "btop is already installed."
+        fi
+
+  install:
+    desc: "[BTOP] ✨ Install btop"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
