@@ -1,0 +1,41 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/nvim.yaml
+
+  configure:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      NVIM_CONFIG_DIR: "$HOME/AppData/Local/nvim"
+    cmds:
+      - |
+        if [ ! -d "{{ .NVIM_CONFIG_DIR }}" ]; then
+          mkdir -p "{{ .NVIM_CONFIG_DIR }}"
+        fi
+        cp "dotfiles/nvim/init.lua" "{{ .NVIM_CONFIG_DIR }}/init.lua"
+        echo "nvim config has been configured successfully."
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v nvim >/dev/null 2>&1; then
+          scoop install neovim
+          echo "neovim has been installed successfully."
+        else
+          echo "neovim is already installed."
+        fi
+
+  install:
+    desc: "[NVIM] ✨ Install neovim"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]
