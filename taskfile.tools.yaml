@@ -18,10 +18,12 @@ includes:
   7zip: tools/7zip.yaml
   gpg: tools/gpg.yaml
   jq: tools/jq.yaml
-  fonts: tools/fonts.yaml
   glazewm: tools/glazewm.yaml
   yasb: tools/yasb.yaml
   flow-launcher: tools/flow-launcher.yaml
+  fzf: tools/fzf.yaml
+  nvim: tools/nvim.yaml
+  btop: tools/btop.yaml
 
 tasks:
   default:

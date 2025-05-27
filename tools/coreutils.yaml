@@ -25,3 +25,4 @@ tasks:
     silent: true
     cmds:
       - task: install:windows
+        platforms: [windows]

@@ -6,73 +6,76 @@ tasks:
     desc: "[GIT] ✨ Configure git globally"
     cmds:
       - |
-        user_name=$(gum input --placeholder "Enter your name")
-        user_email=$(gum input --placeholder "Enter your email")
-        echo "Set global user name to $user_name"
-        git config --global user.name "$user_name"
-        echo "Set global user email to $user_email"
-        git config --global user.email "$user_email"
-        echo "Set global core pager to gum"
-        git config --global core.pager "gum pager"
-        echo "Set global gpg format to ssh"
-        git config --global gpg.format "ssh"
-        echo "Set global commit.gpgsign to true"
-        git config --global commit.gpgsign true
-        echo "Set global pull.rebase to true"
-        git config --global pull.rebase true
-  
-  mkdir:
-    desc: "[GIT] Create a git repo directory structure"
-    cmds:
-      - task: :tools:coreutils:install
-        platforms: [windows]
-      - |
-        mkdir -p $HOME/git/{github.com,dev.azure.com,gitlab.com}
-        echo "Created git repo directory structure"
-        echo "You can now clone your repositories into the following directories:"
-        echo "  $HOME/git/github.com"
-        echo "  $HOME/git/dev.azure.com"
-        echo "  $HOME/git/gitlab.com"
+        user_name=$(gum input --value "$(git config --global user.name)" --placeholder "Enter your name" --header "Git Author Name (global)")
+        user_email=$(gum input --value "$(git config --global user.email)" --placeholder "Enter your email" --header "Git Author Email (global)")
+        
+        if [ -z "$user_name" ]; then
+          echo "Error: User name is not set"
+          exit 1
+        fi
+        if [ -z "$user_email" ]; then
+          echo "Error: User email is not set"
+          exit 1
+        fi
+        
+        gum format -- "
+        # Global Git Configuration Defaults
+
+        | Setting               | Value                                  |
+        |-----------------------|----------------------------------------|
+        | User Name             | \`$user_name\`                         |
+        | User Email            | \`$user_email\`                        |
+        | Core Pager            | \`gum pager\`                          |
+        | GPG Format            | \`ssh\`                               |
+        | Commit GPG Sign       | \`true\`                              |
+        | Pull Rebase           | \`true\`                              |
+        $(if [ -f 'C:\Windows\System32\OpenSSH\ssh.exe' ]; then
+          echo '| SSH Command           | `C:\Windows\System32\OpenSSH\ssh.exe` |'
+          echo '| Core Autocrlf         | `true`                              |'
+        fi)
+        
+        These settings will be used for \`all\` git repositories, but they can be overridden
+        on each repository using \`local\` configuration.
+        "
         echo
-        echo "You should create a ssh config and key for each organization/account you work with."
-        echo
-        echo "Example:"
-        echo "  $HOME/git/github.com/yourname/config"
-        echo "  $HOME/git/github.com/yourname/key.pub"
-  
-  create-config:
-    desc: "[GIT] Create a ssh config and key for a specific organization/account"
-    cmds:
-      - task: :tools:coreutils:install
-        platforms: [windows]
-      - |
-        GIT_ROOT=$HOME/git
-        git_provider=$(gum choose "github.com" "dev.azure.com" "gitlab.com")
-        echo "You are creating a new organization/account in $GIT_ROOT/$git_provider"
-        org_name=$(gum input --placeholder "Enter the organization or account name")
-        echo "Creating config and key files for $GIT_ROOT/$git_provider/$org_name"
         continue=$(gum confirm "Continue?")
         if [ "$continue" = "no" ]; then
           echo "Aborting"
+          exit 0
+        fi
+        git config --global user.name "$user_name"
+        git config --global user.email "$user_email"
+        git config --global core.pager "gum pager"
+        git config --global gpg.format "ssh"
+        git config --global commit.gpgsign true
+        git config --global pull.rebase true
+        if [ -f "C:\Windows\System32\OpenSSH\ssh.exe" ]; then
+          git config --global core.sshCommand "C:\Windows\System32\OpenSSH\ssh.exe"
+          git config --global core.autocrlf true
+        fi
+        echo "Completed!"
+        echo
+
+  create-config:
+    deps: [ ":tools:fzf:install", ":tools:coreutils:install" ]
+    desc: "[GIT] Create a ssh config and key for a specific organization/account"
+    vars:
+      HOME: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
+      GIT_ROOT: '{{ joinPath .HOME "git" | replace "\\" "/" }}'
+      GIT_PATH_FORMAT: '{{ joinPath .GIT_ROOT "%s" "%s" | replace "\\" "/" }}'
+    cmds:
+      - |
+        if [ ! -d "{{ .HOME }}" ]; then
+          echo "Error: HOME variable is not set or is not a directory ({{ .HOME }})"
           exit 1
         fi
-        mkdir -p $GIT_ROOT/$git_provider/$org_name
-        touch $GIT_ROOT/$git_provider/$org_name/config
-        touch $GIT_ROOT/$git_provider/$org_name/key.pub
-        echo "Created placeholder Git ssh config and public key."
-        echo "You can now add the following to your Git ssh config:"
-        echo
-        echo "  $GIT_ROOT/$git_provider/$org_name/config"
-        echo "  $GIT_ROOT/$git_provider/$org_name/key.pub"
-        echo
-        create_config=$(gum confirm "Create configuration now?")
-        if [ "$create_config" = "no" ]; then
-          echo "Aborting"
-          exit 1
-        fi
+        git_provider=$(gum choose "github.com" "dev.azure.com" "gitlab.com")
+        echo "You are creating a new configuration for '${git_provider}' in '{{ .GIT_ROOT }}'."
+        org_name=$(gum input --placeholder "Enter the organization or account name")
+        git_path=$(printf "{{ .GIT_PATH_FORMAT }}" "${git_provider}" "${org_name}")
         pick=$(gum choose --header "Select the ssh key to use" "agent" "input manually")
         if [ "$pick" = "agent" ]; then
-          ssh_key=$(ssh-add -L | gum filter --header "Select the ssh key to use for $git_provider/$org_name:")
+          ssh_key=$(ssh-add -L | fzf --prompt "Select the ssh key to use for $git_provider/$org_name: ")
         else
           ssh_key=$(gum input --placeholder "Enter the ssh public key")
         fi
@@ -80,15 +83,36 @@ tasks:
             echo "Aborting"
             exit 1
         fi
-        echo "$ssh_key" > $GIT_ROOT/$git_provider/$org_name/key.pub
-        echo "Wrote Git ssh key to $GIT_ROOT/$git_provider/$org_name/key.pub"
-        bash -c "
-        cat <<EOF >> $GIT_ROOT/$git_provider/$org_name/config
+        ssh_key_fingerprint=$(echo "$ssh_key" | ssh-keygen -l -f -)
+        gum format -- "
+        # New Git SSH Configuration
+
+        | Field               | Value                    |
+        |---------------------|--------------------------|
+        | Provider            | \`$git_provider\`          |
+        | Account             | \`$org_name\`              |
+        | SSH Key Fingerprint | \`$ssh_key_fingerprint\`   |
+        | Config Path         | \`$git_path/config\`       |
+        | Public Key Path     | \`$git_path/key.pub\`      |
+        |---------------------|--------------------------|
+        "
+
+        continue=$(gum confirm "Continue?")
+        if [ "$continue" = "no" ]; then
+          echo "Aborting"
+          exit 1
+        fi
+        echo "Writing..."
+        mkdir -p $git_path
+        touch $git_path/config
+        touch $git_path/key.pub
+        echo "$ssh_key" > $git_path/key.pub
+        cat <<EOF >> $git_path/config
         Host $git_provider
           HostName $git_provider
           User git
-          IdentityFile $GIT_ROOT/$git_provider/$org_name/key.pub
+          IdentityFile $git_path/key.pub
           IdentitiesOnly yes
         EOF
-        "
-        echo "Wrote Git ssh config to $GIT_ROOT/$git_provider/$org_name/config"
+        echo "Completed!"
+        echo
