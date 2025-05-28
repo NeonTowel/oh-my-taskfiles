@@ -1,0 +1,67 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/spotify.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/spotify/current" ]; then
+          scoop install spotify
+          echo "spotify has been installed successfully."
+        fi
+      - task: spicetify:install:windows
+        platforms: [windows]
+
+  spicetify:install:windows:
+    platforms: [windows]
+    internal: true
+    cmds:
+      - |
+        if ! command -v spicetify >/dev/null 2>&1; then
+          scoop install spicetify-cli
+          echo "spicetify has been installed successfully."
+        fi
+
+  spicetify:configure:windows:
+    platforms: [windows]
+    internal: true
+    cmds:
+      - |
+        if ! command -v spicetify >/dev/null 2>&1; then
+          echo "spicetify is not installed."
+          exit 0
+        fi
+        if [ ! -f "$HOME/AppData/Roaming/spicetify/config-xpui.ini" ]; then
+          spicetify >/dev/null
+          spicetify config spotify_path "$HOME\scoop\apps\spotify\current"
+          spicetify config prefs_path "$HOME\AppData\Roaming\Spotify\prefs"
+          spicetify apply
+          echo "spicetify has been configured successfully."
+        fi
+
+
+  configure:windows:
+    platforms: [windows]
+    internal: true
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/spotify/current" ]; then
+          echo "spotify is not installed."
+          exit 0
+        fi
+      - task: spicetify:configure:windows
+        platforms: [windows]
+
+
+  install:
+    desc: "[SPOTIFY] ✨ Install Spotify"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]

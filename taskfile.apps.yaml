@@ -4,6 +4,7 @@ includes:
   chatbox: apps/chatbox.yaml
   1password: apps/1password.yaml
   cursor: apps/cursor.yaml
+  spotify: apps/spotify.yaml
 
 tasks:
   default:
