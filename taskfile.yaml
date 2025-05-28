@@ -5,6 +5,7 @@ silent: true
 vars:
   OS: 
     sh: echo '{{ .OS | default "linux" }}'
+  LOG_PREFIX: "[{{ .TASK | lower }}]"
 
 includes:
   omt: 
@@ -18,6 +19,9 @@ includes:
   sudo: taskfiles/sudo.yaml
   wsl: taskfiles/wsl.yaml
   ide: taskfiles/ide.yaml
+  awesome: 
+    taskfile: taskfile.awesome.yaml
+    flatten: true
 
 tasks:
   default:
