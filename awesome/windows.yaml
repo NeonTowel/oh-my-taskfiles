@@ -27,6 +27,7 @@ tasks:
         fi
 
   awesome-windows:
+    deps: [ "tools:gum:install" ]
     dotenv: 
       - '{{ env "USERPROFILE" | replace "\\" "/" }}/.config/omt/awesome-{{ .ENVIRONMENT }}.env'
       - 'awesome/{{ .ENVIRONMENT }}.env'
