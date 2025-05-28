@@ -6,8 +6,18 @@ tasks:
     desc: "[GIT] ✨ Configure git globally"
     cmds:
       - |
-        user_name=$(gum input --value "$(git config --global user.name)" --placeholder "Enter your name" --header "Git Author Name (global)")
-        user_email=$(gum input --value "$(git config --global user.email)" --placeholder "Enter your email" --header "Git Author Email (global)")
+        if [ "{{ .UNATTENDED }}" = "true" ]; then
+          echo "Unattended mode enabled, skipping interactive configuration."
+          if [ ! -z "$(git config --global user.name)" ]; then
+            user_name=$(git config --global user.name)
+          fi
+          if [ ! -z "$(git config --global user.email)" ]; then
+            user_email=$(git config --global user.email)
+          fi
+        else
+          user_name=$(gum input --value "$(git config --global user.name)" --placeholder "Enter your name" --header "Git Author Name (global)")
+          user_email=$(gum input --value "$(git config --global user.email)" --placeholder "Enter your email" --header "Git Author Email (global)")
+        fi
         
         if [ -z "$user_name" ]; then
           echo "Error: User name is not set"
@@ -18,33 +28,39 @@ tasks:
           exit 1
         fi
         
-        gum format -- "
-        # Global Git Configuration Defaults
+        if [ "{{ .UNATTENDED }}" = "false" ]; then
+          gum format -- "
+          # Global Git Configuration Defaults
 
-        | Setting               | Value                                  |
-        |-----------------------|----------------------------------------|
-        | User Name             | \`$user_name\`                         |
-        | User Email            | \`$user_email\`                        |
-        | Core Pager            | \`gum pager\`                          |
-        | GPG Format            | \`ssh\`                               |
-        | Commit GPG Sign       | \`true\`                              |
-        | Pull Rebase           | \`true\`                              |
-        $(if [ -f 'C:\Windows\System32\OpenSSH\ssh.exe' ]; then
-          echo '| SSH Command           | `C:\Windows\System32\OpenSSH\ssh.exe` |'
-          echo '| Core Autocrlf         | `true`                              |'
-        fi)
-        
-        These settings will be used for \`all\` git repositories, but they can be overridden
-        on each repository using \`local\` configuration.
-        "
-        echo
-        continue=$(gum confirm "Continue?")
-        if [ "$continue" = "no" ]; then
-          echo "Aborting"
-          exit 0
+          | Setting               | Value                                  |
+          |-----------------------|----------------------------------------|
+          | User Name             | \`$user_name\`                         |
+          | User Email            | \`$user_email\`                        |
+          | Core Pager            | \`gum pager\`                          |
+          | GPG Format            | \`ssh\`                               |
+          | Commit GPG Sign       | \`true\`                              |
+          | Pull Rebase           | \`true\`                              |
+          $(if [ -f 'C:\Windows\System32\OpenSSH\ssh.exe' ]; then
+            echo '| SSH Command           | `C:\Windows\System32\OpenSSH\ssh.exe` |'
+            echo '| Core Autocrlf         | `true`                              |'
+          fi)
+          
+          These settings will be used for \`all\` git repositories, but they can be overridden
+          on each repository using \`local\` configuration.
+          "
+          echo
+          continue=$(gum confirm "Continue?")
+          if [ "$continue" = "no" ]; then
+            echo "Aborting"
+            exit 0
+          fi
         fi
-        git config --global user.name "$user_name"
-        git config --global user.email "$user_email"
+        if [ ! -z "$user_name" ]; then
+          git config --global user.name "$user_name"
+        fi
+        if [ ! -z "$user_email" ]; then
+          git config --global user.email "$user_email"
+        fi
         git config --global core.pager "gum pager"
         git config --global gpg.format "ssh"
         git config --global commit.gpgsign true
