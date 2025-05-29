@@ -55,6 +55,10 @@ if (Test-Path $goBin) {
 # Rust configuration
 if (Test-Path "$HOME\.cargo\env") {
     . "$HOME\.cargo\env"
+} else {
+    if (Test-Path "$HOME\.cargo\bin") {
+        $env:Path += ";$HOME\.cargo\bin"
+    }
 }
 
 # Node/NVM (PowerShell support is limited, but you can try)
