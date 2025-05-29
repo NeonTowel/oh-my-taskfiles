@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/helix.yaml
+
+  configure:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      HELIX_CONFIG_DIR: "$HOME/AppData/Roaming/helix"
+    cmds:
+      - |
+        echo "Not implemented yet."
+        exit 0
+      - |
+        if [ ! -d "{{ .HELIX_CONFIG_DIR }}" ]; then
+          mkdir -p "{{ .HELIX_CONFIG_DIR }}"
+        fi
+        cp "dotfiles/helix/config.toml" "{{ .HELIX_CONFIG_DIR }}/config.toml"
+        echo "helix config has been configured successfully."
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v helix >/dev/null 2>&1; then
+          scoop install helix
+          echo "helix has been installed successfully."
+        fi
+
+  install:
+    desc: "[HELIX] ✨ Install helix"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]
