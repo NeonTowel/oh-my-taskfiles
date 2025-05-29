@@ -68,7 +68,7 @@ tasks:
       - task: 1password:git:configure
 
   1password:git:configure:
-    desc: "[WSL] Configure Git to use 1Password SSH Agent"
+    desc: "[WSL] Configure Git to use 1Password for SSH Agent and sign commits"
     cmds:
       - |
         # if OS is linux get the username using cmd.exe
@@ -93,7 +93,11 @@ tasks:
             echo "ERROR: wsl command not found, please install WSL first."
             exit 1
           fi
-          username=$(powershell -c '[Console]::WriteLine($env:USERNAME)' | tr -d '\r\n')
+          if command -v pwsh &> /dev/null; then
+            username=$(pwsh -c '[Console]::WriteLine($env:USERNAME)' | tr -d '\r\n')
+          else
+            username=$(powershell -c '[Console]::WriteLine($env:USERNAME)' | tr -d '\r\n')
+          fi
 
           # if git is not found, throw an error
           if ! wsl zsh -lic 'command -v git >/dev/null 2>&1'; then
@@ -116,7 +120,7 @@ tasks:
         if [ -f /mnt/c/Windows/System32/OpenSSH/ssh.exe ]; then
           ssh_exe_path="/mnt/c/Windows/System32/OpenSSH/ssh.exe"
         elif [ -f C:\\Windows\\System32\\OpenSSH\\ssh.exe ]; then
-          ssh_exe_path="C:\\\Windows\\\System32\\\OpenSSH\\\ssh.exe"
+          ssh_exe_path="C:/Windows/System32/OpenSSH/ssh.exe"
         else
           echo "ERROR: ssh.exe not found on Windows or WSL"
           exit 1
@@ -124,8 +128,8 @@ tasks:
         op_ssh_sign_exe_path=""
         if [ -f /mnt/c/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe ]; then
           op_ssh_sign_exe_path="/mnt/c/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe"
-        elif [ -f C:\\Users\\$username\\AppData\\Local\\1Password\\app\\8\\op-ssh-sign.exe ]; then
-          op_ssh_sign_exe_path="C:\\\Users\\\\$username\\\AppData\\\Local\\\1Password\\\app\\\8\\\op-ssh-sign.exe"
+        elif [ -f C:/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe ]; then
+          op_ssh_sign_exe_path="C:/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe"
         else
           echo "ERROR: op-ssh-sign.exe not found on Windows or WSL (user: $username)"
           exit 1
