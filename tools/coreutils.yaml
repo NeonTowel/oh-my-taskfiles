@@ -9,15 +9,11 @@ tasks:
         if [ ! -d "$HOME/scoop/apps/coreutils/current" ]; then
           scoop install coreutils
           echo "coreutils has been installed successfully."
-        else
-          echo "coreutils is already installed."
         fi
       - |
         if ! command -v grep >/dev/null 2>&1; then
           scoop install grep
           echo "grep has been installed successfully."
-        else
-          echo "grep is already installed."
         fi
 
   install:
