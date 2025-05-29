@@ -4,16 +4,34 @@ vars:
   GO_VERSION: "1.24.2"
 
 tasks:
-  install:
-    desc: "[GO] ✨ Install Go"
+  install:linux:
+    platforms: [linux]
+    internal: true
     cmds:
       - |
-        if command -v go >/dev/null 2>&1; then
-          echo "go is already installed."
-        else
+        if ! command -v go >/dev/null 2>&1; then
           curl -OL "https://go.dev/dl/go{{ .GO_VERSION }}.linux-amd64.tar.gz"
           sudo rm -rf /usr/local/go
           sudo tar -C /usr/local -xzf "go{{ .GO_VERSION }}.linux-amd64.tar.gz"
           rm -f "go{{ .GO_VERSION }}.linux-amd64.tar.gz"
           echo "go has been installed successfully."
         fi
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    cmds:
+      - |
+        if ! command -v go >/dev/null 2>&1; then
+          scoop install go
+          echo "go has been installed successfully."
+        fi
+
+  install:
+    desc: "[GO] ✨ Install Go"
+    cmds:
+      - task: install:linux
+        platforms: [linux]
+      - task: install:windows
+        platforms: [windows]
+
