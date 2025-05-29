@@ -26,6 +26,7 @@ includes:
   btop: tools/btop.yaml
   helix: tools/helix.yaml
   gomplate: tools/gomplate.yaml
+  rose-pine-cursor: tools/rose-pine-cursor.yaml
 
 tasks:
   default:
