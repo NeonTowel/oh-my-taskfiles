@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    - task --list --taskfile tools/pwsh.yaml
+
   install:windows:
     internal: true
     platforms: [windows]
@@ -12,6 +15,12 @@ tasks:
         else
           echo "pwsh is already installed."
         fi
+
+  configure:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
       - |
         if [ ! -f "$HOME\.pwshrc.ps1" ]; then
           cp dotfiles/pwshrc_windows.ps1 $HOME/.pwshrc.ps1
@@ -47,4 +56,8 @@ tasks:
     desc: "[PWSH] ✨ Install PowerShell"
     cmds:
       - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]
       - task: install:linux
+        platforms: [linux]

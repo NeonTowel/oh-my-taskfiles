@@ -75,3 +75,8 @@ if (Test-Path "$HOME\.agent-bridge.ps1") {
         $env:SSH_AUTH_SOCK = "$HOME\.1password\agent.sock"
     }
 }
+
+# Helix configuration
+if (Get-Command helix -ErrorAction SilentlyContinue) {
+    Set-Alias vim "helix"
+}
