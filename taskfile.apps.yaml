@@ -5,6 +5,7 @@ includes:
   1password: apps/1password.yaml
   cursor: apps/cursor.yaml
   spotify: apps/spotify.yaml
+  heroic: apps/heroic.yaml
 
 tasks:
   default:

@@ -25,6 +25,7 @@ includes:
   nvim: tools/nvim.yaml
   btop: tools/btop.yaml
   helix: tools/helix.yaml
+  gomplate: tools/gomplate.yaml
 
 tasks:
   default:

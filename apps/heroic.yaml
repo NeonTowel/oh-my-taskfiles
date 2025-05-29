@@ -1,0 +1,75 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/heroic.yaml
+
+  themes:
+    internal: true
+    platforms: [windows]
+    vars:
+      APP_NAME: heroic
+      THEME_SOURCE_DIR: "dotfiles/{{ .APP_NAME }}/themes"
+      THEME_DEST_DIR: "$HOME/.config/{{ .APP_NAME }}/themes"
+    dir: '{{ .THEME_SOURCE_DIR }}'
+    sources:
+      - '*.css'
+    method: none
+    cmds:
+      - |
+        if [ ! -d "$HOME/.config/{{ .APP_NAME }}/themes" ]; then
+          mkdir -p "$HOME/.config/{{ .APP_NAME }}/themes"
+        fi
+      - for: sources
+        cmd: |
+          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .THEME_DEST_DIR .ITEM | osDir}}"
+
+  install:windows:
+    deps: [ "::tools:coreutils:install" ]
+    platforms: [windows]
+    internal: true
+    vars:
+      APP_NAME: heroic
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
+          if ! scoop bucket list | grep -q "^neontowel"; then
+            scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
+          fi
+          scoop install neontowel/{{ .APP_NAME }}
+          echo "{{ .APP_NAME }} has been installed successfully."
+        fi
+
+  configure:windows:
+    platforms: [windows]
+    deps: [ "::tools:gomplate:install" ]
+    internal: true
+    vars:
+      APP_NAME: heroic
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
+          echo "{{ .APP_NAME }} is not installed."
+          exit 0
+        fi
+        if [ ! -f "$HOME/AppData/Roaming/{{ .APP_NAME }}/config.json" ]; then
+          mkdir -p "$HOME/AppData/Roaming/{{ .APP_NAME }}"
+          gomplate -f "dotfiles/{{ .APP_NAME }}/config.json.tmpl" -o "$HOME/AppData/Roaming/{{ .APP_NAME }}/config.json"
+        fi
+        if [ ! -f "$HOME/AppData/Roaming/{{ .APP_NAME }}/store/config.json" ]; then
+          mkdir -p "$HOME/AppData/Roaming/{{ .APP_NAME }}/store"
+          cp "dotfiles/{{ .APP_NAME }}/user_config.json" "$HOME/AppData/Roaming/{{ .APP_NAME }}/store/config.json"
+        fi
+
+      - task: themes
+
+  install:
+    vars:
+      APP_NAME: heroic
+    desc: "[{{ .APP_NAME | upper }}] ✨ Install {{ .APP_NAME | title }}"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]
