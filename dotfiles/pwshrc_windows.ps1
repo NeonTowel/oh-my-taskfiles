@@ -84,3 +84,11 @@ if (Test-Path "$HOME\.agent-bridge.ps1") {
 if (Get-Command helix -ErrorAction SilentlyContinue) {
     Set-Alias vim "helix"
 }
+
+# Dotnet configuration
+if (Test-Path "C:\Program Files\dotnet\dotnet.exe") {
+    $env:Path += ";C:\Program Files\dotnet"
+}
+
+
+
