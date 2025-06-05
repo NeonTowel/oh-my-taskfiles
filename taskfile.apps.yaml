@@ -6,6 +6,7 @@ includes:
   cursor: apps/cursor.yaml
   spotify: apps/spotify.yaml
   heroic: apps/heroic.yaml
+  postman: apps/postman.yaml
 
 tasks:
   default:
