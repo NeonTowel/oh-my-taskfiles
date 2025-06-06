@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/joplin.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    vars:
+      APP_NAME: joplin
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
+          scoop install {{ .APP_NAME }}
+          echo "{{ .APP_NAME }} has been installed successfully."
+        fi
+
+  install:
+    vars:
+      APP_NAME: joplin
+    desc: "[{{ .APP_NAME | upper }}] ✨ Install {{ .APP_NAME | title }}"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+
