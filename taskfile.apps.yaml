@@ -8,6 +8,7 @@ includes:
   heroic: apps/heroic.yaml
   postman: apps/postman.yaml
   joplin: apps/joplin.yaml
+  cryptomator: apps/cryptomator.yaml
 
 tasks:
   default:
