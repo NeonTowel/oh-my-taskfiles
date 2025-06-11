@@ -1,69 +1,45 @@
 version: '3'
 
-vars:
-  gum_info:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 240"
-      else
-        echo "echo"
-      fi
-  gum_warn:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 208 --bold"
-      else
-        echo "echo"
-      fi
-  gum_error:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 196 --bold"
-      else
-        echo "echo"
-      fi
-  gum_ok:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 46 --bold"
-      else
-        echo "echo"
-      fi
-
 tasks:
-  cursor:rules:
-    silent: true
-    deps: [ ":tools:gum:install" ]
-    desc: "[CURSOR] Install Cursor rules to current repository"
+  rules:
+    internal: true
     vars:
-      RULES_DIR: $HOME/.omt/dotfiles/cursor-rules
+      HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
+      RULES_SOURCE_DIR: '{{ joinPath .HOME_DIR ".omt/dotfiles/cursor-rules" | replace "\\" "/" }}'
+      RULES_DEST_DIR: ".cursorrules"
+    env:
+      ALWAYS_OVERWRITE: false
+      OPERATION_CANCELLED: false
+    dir: '{{ .RULES_SOURCE_DIR }}'
+    sources:
+      - '*.mdc'
+    method: none
     cmds:
       - |
-        if [ ! -d "{{ .RULES_DIR }}" ]; then
-          {{ .gum_error }} "❌ Cursor rules directory not found: {{ .RULES_DIR }}"
-          return 1
+        if [ ! -d "{{ .RULES_SOURCE_DIR }}" ]; then
+          {{ .gum_error }} "❌ Cursor rules directory not found: {{ .RULES_SOURCE_DIR }}"
+          exit 1
         fi
       - |
-        if [ ! -f "{{ .RULES_DIR }}/*" ]; then
-          {{ .gum_error }} "❌ No files found in {{ .RULES_DIR }}"
-          return 1
+        if [ ! -d "{{ .RULES_DEST_DIR }}" ]; then
+          {{ .gum_info }} "[info] Creating {{ .RULES_DEST_DIR }} directory..."
+          mkdir -p "{{ .RULES_DEST_DIR }}"
         fi
-      - |
-        echo "Installing Cursor rules to current directory..."
-        {{ .gum_info }} "[info] Creating .cursorrules directory..."
-        mkdir -p .cursorrules
-        for file in {{ .RULES_DIR }}/*; do
+      - for: sources
+        cmd: |
+
           if [ ! -f ".cursorrules/$(basename $file)" ]; then
-            cp -r $file .cursorrules
+            {{ .gum_info }} "[info] Installing {{ .ITEM }}..."
+            cp "{{joinPath .ITEM | osClean}}" "{{joinPath .RULES_DEST_DIR .ITEM | osDir}}"
           else
 
             if [[ "$ALWAYS_OVERWRITE" == "true" ]]; then
-                cp -r $file .cursorrules
+                cp "{{joinPath .ITEM | osClean}}" "{{joinPath .RULES_DEST_DIR .ITEM | osDir}}"
                 continue
             fi
             
             if [[ "$OPERATION_CANCELLED" == "true" ]]; then
-                return 1
+                exit 1
             fi
             
             # Styled warning message
@@ -98,5 +74,26 @@ tasks:
                     ;;
             esac
           fi
+
+  cursor:rules:
+    silent: true
+    deps: [ ":tools:gum:install" ]
+    desc: "[CURSOR] Install Cursor rules to current repository"
+    vars:
+      HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
+      RULES_SOURCE_DIR: '{{ joinPath .HOME_DIR ".omt/dotfiles/cursor-rules" | replace "\\" "/" }}'
+      RULES_DEST_DIR: ".cursorrules"
+    cmds:
+      - |
+        if [ ! -d "{{ .RULES_SOURCE_DIR }}" ]; then
+          {{ .gum_error }} "❌ Cursor rules directory not found: {{ .RULES_SOURCE_DIR }}"
+          exit 1
+        fi
+      - |
+        echo "Installing Cursor rules to current directory..."
+        {{ .gum_info }} "[info] Creating .cursorrules directory..."
+        mkdir -p .cursorrules
+        for file in {{ .RULES_DIR }}/*.mdc; do
+
         done
         {{ .gum_ok }} "✓ Cursor rules installed successfully."

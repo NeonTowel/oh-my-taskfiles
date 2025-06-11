@@ -3,6 +3,41 @@ version: '3'
 vars:
   GUM_VERSION: "0.16.0"
 
+  # These helper global template functions can be used in any taskfile to style output with gum.
+  # If gum is not installed, the template function will use echo instead.
+  # Example:
+  # {{ .gum_info }} "This is an info message"
+  # {{ .gum_warn }} "This is a warning message"
+  # {{ .gum_error }} "This is an error message"
+  # {{ .gum_ok }} "This is an ok message"
+  gum_info:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 240"
+      else
+        echo "echo"
+      fi
+  gum_warn:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 208 --bold"
+      else
+        echo "echo"
+      fi
+  gum_error:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 196 --bold"
+      else
+        echo "echo"
+      fi
+  gum_ok:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 46 --bold"
+      else
+        echo "echo"
+      fi
 tasks:
   install:windows:
     internal: true
