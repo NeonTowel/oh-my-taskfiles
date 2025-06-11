@@ -2,7 +2,15 @@
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     Write-Host "Installing Scoop..."
     Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-    iwr -useb get.scoop.sh | iex
+    
+    # Check if running as administrator
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+    
+    if ($isAdmin) {
+        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+    } else {
+        iex "& {$(irm get.scoop.sh)}"
+    }
 } else {
     Write-Host "Scoop is already installed."
 }
