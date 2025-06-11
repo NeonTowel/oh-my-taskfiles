@@ -4,24 +4,22 @@ vars:
   GUM_VERSION: "0.16.0"
 
 tasks:
-  install:Windows_NT:
+  install:windows:
     internal: true
+    platforms: [windows]
     cmds:
       - |
-        if command -v gum >/dev/null 2>&1; then
-          echo "gum is already installed."
-        else
+        if ! command -v gum >/dev/null 2>&1; then
           scoop install charm-gum
           echo "gum has been installed successfully."
         fi
 
   install:linux:
     internal: true
+    platforms: [linux]
     cmds:
       - |
-        if command -v gum >/dev/null 2>&1; then
-          echo "gum is already installed."
-        else
+        if ! command -v gum >/dev/null 2>&1; then
           curl -fsSL "https://github.com/charmbracelet/gum/releases/download/v{{ .GUM_VERSION }}/gum_{{ .GUM_VERSION }}_Linux_x86_64.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "gum_{{ .GUM_VERSION }}_Linux_x86_64/gum"
           echo "gum has been installed successfully."
         fi
@@ -29,4 +27,7 @@ tasks:
   install:
     desc: "[GUM] ✨ Install gum"
     cmds:
-      - task: install:{{ .OS }}
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
