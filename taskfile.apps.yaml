@@ -10,6 +10,7 @@ includes:
   joplin: apps/joplin.yaml
   cryptomator: apps/cryptomator.yaml
   librehardwaremonitor: apps/librehardwaremonitor.yaml
+  royal-ts: apps/royal-ts.yaml
 
 tasks:
   default:
