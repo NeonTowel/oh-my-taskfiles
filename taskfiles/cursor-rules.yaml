@@ -3,16 +3,11 @@ version: '3'
 tasks:
   rules:
     internal: true
-    vars:
-      HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
-      RULES_SOURCE_DIR: '{{ joinPath .HOME_DIR ".omt/dotfiles/cursor-rules" | replace "\\" "/" }}'
-      RULES_DEST_DIR: ".cursorrules"
-    env:
-      ALWAYS_OVERWRITE: false
-      OPERATION_CANCELLED: false
+    requires:
+      vars: [ HOME_DIR, RULES_SOURCE_DIR, RULES_DEST_DIR ]
     dir: '{{ .RULES_SOURCE_DIR }}'
     sources:
-      - '*.mdc'
+      - '{{ .RULES_SOURCE_DIR }}/*.mdc'
     method: none
     cmds:
       - |
@@ -26,51 +21,38 @@ tasks:
           mkdir -p "{{ .RULES_DEST_DIR }}"
         fi
       - for: sources
+        vars:
+          DEST_FILE: '{{ .RULES_DEST_DIR }}/{{ .ITEM | osBase }}'
         cmd: |
-
-          if [ ! -f ".cursorrules/$(basename $file)" ]; then
-            {{ .gum_info }} "[info] Installing {{ .ITEM }}..."
-            cp "{{joinPath .ITEM | osClean}}" "{{joinPath .RULES_DEST_DIR .ITEM | osDir}}"
+          item="{{ .ITEM }}"
+          file="{{ .ITEM | osBase }}"
+          dest_file="{{ .RULES_DEST_DIR }}/{{ .ITEM | osBase }}"
+          if [ ! -f "$dest_file" ]; then
+            {{ .gum_info }} "[info] Installing $file..."
+            cp "$item" "$dest_file"
           else
-
-            if [[ "$ALWAYS_OVERWRITE" == "true" ]]; then
-                cp "{{joinPath .ITEM | osClean}}" "{{joinPath .RULES_DEST_DIR .ITEM | osDir}}"
-                continue
-            fi
-            
-            if [[ "$OPERATION_CANCELLED" == "true" ]]; then
-                exit 1
-            fi
-            
-            # Styled warning message
             {{ .gum_warn }} "⚠️  File already exists: $file"
-            
-            # Choice with custom styling
+
             CHOICE=$(gum choose \
                 --header "$(gum style --foreground 212 --bold --background 235 'Choose an action:')" \
                 --cursor.foreground 212 \
                 --selected.foreground 212 \
                 --selected.bold \
                 "yes - overwrite this file" \
-                "always - overwrite all remaining files" \
                 "no - skip this file" \
                 "cancel - abort entire operation")
             
             case "$CHOICE" in
                 "yes - overwrite this file")
-                    return 0
-                    ;;
-                "always - overwrite all remaining files")
-                    ALWAYS_OVERWRITE=true
-                    {{ .gum_ok }} "✓ Will overwrite all remaining files"
-                    return 0
+                    cp "$item" "$dest_file"
+                    {{ .gum_ok }} "✓ Overwriting $file"
                     ;;
                 "no - skip this file")
-                    return 1
+                    {{ .gum_info }} "[info] Skipping $file"
                     ;;
                 "cancel - abort entire operation")
                     {{ .gum_error }} "❌ Operation cancelled"
-                    return 1
+                    exit 1
                     ;;
             esac
           fi
@@ -79,21 +61,20 @@ tasks:
     silent: true
     deps: [ ":tools:gum:install" ]
     desc: "[CURSOR] Install Cursor rules to current repository"
+    dir: '{{ .USER_WORKING_DIR }}'
     vars:
       HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
       RULES_SOURCE_DIR: '{{ joinPath .HOME_DIR ".omt/dotfiles/cursor-rules" | replace "\\" "/" }}'
-      RULES_DEST_DIR: ".cursorrules"
+      RULES_DEST_DIR: "{{ .USER_WORKING_DIR }}/.cursorrules"
     cmds:
       - |
         if [ ! -d "{{ .RULES_SOURCE_DIR }}" ]; then
           {{ .gum_error }} "❌ Cursor rules directory not found: {{ .RULES_SOURCE_DIR }}"
           exit 1
         fi
-      - |
-        echo "Installing Cursor rules to current directory..."
-        {{ .gum_info }} "[info] Creating .cursorrules directory..."
-        mkdir -p .cursorrules
-        for file in {{ .RULES_DIR }}/*.mdc; do
-
-        done
-        {{ .gum_ok }} "✓ Cursor rules installed successfully."
+      - task: rules
+        dir: '{{ .RULES_SOURCE_DIR }}'
+        vars:
+          HOME_DIR: '{{ .HOME_DIR }}'
+          RULES_SOURCE_DIR: '{{ .RULES_SOURCE_DIR }}'
+          RULES_DEST_DIR: '{{ .RULES_DEST_DIR }}'
