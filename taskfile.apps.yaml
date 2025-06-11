@@ -9,6 +9,7 @@ includes:
   postman: apps/postman.yaml
   joplin: apps/joplin.yaml
   cryptomator: apps/cryptomator.yaml
+  librehardwaremonitor: apps/librehardwaremonitor.yaml
 
 tasks:
   default:
