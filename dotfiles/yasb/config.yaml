@@ -38,6 +38,7 @@ bars:
       ]
       right: [
         "cpu",
+        "libre_cpu_temp",
         "memory",
         "taskbar",
         "wifi",
@@ -238,6 +239,7 @@ widgets:
         color: "black"
         radius: 3
         offset: [ 1, 1 ]
+
   memory:
     type: "yasb.memory.MemoryWidget"
     options:
@@ -252,6 +254,37 @@ widgets:
         low: 25
         medium: 50
         high: 90
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [ 1, 1 ]
+
+  libre_cpu_temp:
+    type: "yasb.libre_monitor.LibreHardwareMonitorWidget"
+    options:
+      label: "<span>\uf2db</span> {info[value]}{info[unit]}"
+      label_alt: "<span>\uf2db</span> {info[histogram]} {info[value]} ({info[min]}/{info[max]}) {info[unit]}"
+      sensor_id: "/lpc/nct6686d/0/temperature/0"
+      update_interval: 30000
+      precision: 1
+      histogram_num_columns: 10
+      class_name: "libre-monitor-widget"
+      history_size: 60
+      histogram_icons:
+        - '\u2581'
+        - '\u2581'
+        - '\u2582'
+        - '\u2583'
+        - '\u2584'
+        - '\u2585'
+        - '\u2586'
+        - '\u2587'
+        - '\u2588'
+      callbacks:
+        on_left: "toggle_label"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
       label_shadow:
         enabled: true
         color: "black"
