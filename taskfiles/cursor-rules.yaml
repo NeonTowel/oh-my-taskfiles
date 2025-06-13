@@ -5,7 +5,6 @@ tasks:
     internal: true
     requires:
       vars: [ HOME_DIR, RULES_SOURCE_DIR, RULES_DEST_DIR ]
-    dir: '{{ .RULES_SOURCE_DIR }}'
     sources:
       - '{{ .RULES_SOURCE_DIR }}/*.mdc'
     method: none
