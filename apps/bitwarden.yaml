@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/bitwarden.yaml
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    deps: [ "::tools:coreutils:install" ]
+    vars:
+      package: "Bitwarden.Bitwarden"
+    cmds:
+      - |
+        if winget list "{{ .package }}" -e | grep -q "No installed package found matching input criteria."; then
+          winget install --id "{{ .package }}" -e --accept-package-agreements --accept-source-agreements
+          echo "Bitwarden has been installed successfully."
+        else
+          echo "Bitwarden is already installed."
+        fi
+
+  install:
+    desc: "[BITWARDEN] ✨ Install Bitwarden"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
