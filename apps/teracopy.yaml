@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/teracopy.yaml
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    deps: [ "::tools:coreutils:install" ]
+    vars:
+      package: "CodeSector.TeraCopy"
+    cmds:
+      - |
+        if winget list "{{ .package }}" -e | grep -q "No installed package found matching input criteria."; then
+          winget install --id "{{ .package }}" -e --accept-package-agreements --accept-source-agreements
+          echo "TeraCopy has been installed successfully."
+        else
+          echo "TeraCopy is already installed."
+        fi
+
+  install:
+    desc: "[TERACOPY] ✨ Install TeraCopy"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
