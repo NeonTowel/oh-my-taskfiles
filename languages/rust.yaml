@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    - task --list --taskfile languages/rust.yaml
+
   install:
     desc: "[RUST] ✨ Install Rust"
     cmds:
@@ -11,3 +14,20 @@ tasks:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           echo "rustup has been installed successfully."
         fi
+
+  mcp-server:
+    desc: "[RUST] Install MCP Server"
+    cmds:
+      - |
+        if ! command -v cargo >/dev/null 2>&1; then
+          gum_error "cargo is not installed. Please install cargo first."
+          exit 1
+        fi
+        cargo install rust-mcp-server
+        gum_info "MCP Server has been installed successfully."
+      - |
+        gum_info "Installing MCP Server tool dependencies..."
+        cargo install cargo-deny
+        cargo install cargo-machete
+        cargo install cargo-hack
+        gum_info "Dependencies have been installed successfully."

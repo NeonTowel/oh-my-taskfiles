@@ -64,7 +64,7 @@ tasks:
     vars:
       HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
       RULES_SOURCE_DIR: '{{ joinPath .HOME_DIR ".omt/dotfiles/cursor-rules" | replace "\\" "/" }}'
-      RULES_DEST_DIR: "{{ .USER_WORKING_DIR }}/.cursorrules"
+      RULES_DEST_DIR: "{{ .USER_WORKING_DIR }}/.cursor/rules"
     cmds:
       - |
         if [ ! -d "{{ .RULES_SOURCE_DIR }}" ]; then
