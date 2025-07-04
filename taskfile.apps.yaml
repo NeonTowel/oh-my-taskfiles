@@ -11,6 +11,8 @@ includes:
   cryptomator: apps/cryptomator.yaml
   librehardwaremonitor: apps/librehardwaremonitor.yaml
   royal-ts: apps/royal-ts.yaml
+  bitwarden: apps/bitwarden.yaml
+  teracopy: apps/teracopy.yaml
 
 tasks:
   default:
