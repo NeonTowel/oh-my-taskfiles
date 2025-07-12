@@ -13,6 +13,7 @@ includes:
   royal-ts: apps/royal-ts.yaml
   bitwarden: apps/bitwarden.yaml
   teracopy: apps/teracopy.yaml
+  simplenote: apps/simplenote.yaml
 
 tasks:
   default:
