@@ -55,7 +55,6 @@ tasks:
     cmds:
       - task: install-nvm:windows
       - |
-        . $PROFILE
         if ! command -v nvm >/dev/null 2>&1; then
           echo "❌ ERROR: nvm is not installed"
           echo "Please install nvm first."

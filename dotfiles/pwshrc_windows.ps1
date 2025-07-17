@@ -69,6 +69,8 @@ if (Test-Path "$nvmDir\nvm.ps1") {
     if (Test-Path "$HOME\scoop\apps\nvm\current\nvm.exe") {
         $env:PATH += ";$HOME\scoop\apps\nvm\current\"
         $env:PATH += ";$HOME\scoop\apps\nvm\current\nodejs\nodejs"
+        $env:NVM_HOME = "$HOME\scoop\apps\nvm\current"
+        $env:NVM_SYMLINK = $HOME\scoop\apps\nvm\current\nodejs\nodejs
     }
 }
 
