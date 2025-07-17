@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/vscodium.yaml
+
+  configure:
+    internal: true
+    cmds:
+      - |
+        if ! command -v codium >/dev/null 2>&1; then
+          echo "❌ ERROR: codium cli is not installed"
+          echo "Please install codium cli first."
+          exit 1
+        fi
+      - task: ::ide:configure
+        vars:
+          IDE: "vscodium"
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    vars:
+      APP_NAME: vscodium
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
+          scoop install {{ .APP_NAME }}
+          echo "{{ .APP_NAME }} has been installed successfully."
+        fi
+
+  install:
+    desc: "[VSCODIUM] ✨ Install VS Codium libre code editor"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure

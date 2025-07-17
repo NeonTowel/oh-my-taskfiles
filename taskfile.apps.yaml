@@ -14,6 +14,7 @@ includes:
   bitwarden: apps/bitwarden.yaml
   teracopy: apps/teracopy.yaml
   simplenote: apps/simplenote.yaml
+  vscodium: apps/vscodium.yaml
 
 tasks:
   default:

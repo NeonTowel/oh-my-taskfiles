@@ -24,7 +24,19 @@ vars:
     - EditorConfig.EditorConfig
     - redhat.vscode-yaml
   IDE_EXTENSIONS_cursor: []
-  IDE_EXTENSIONS_vscodium: []
+  IDE_EXTENSIONS_vscodium:
+    - Catppuccin.catppuccin-vsc
+    - Catppuccin.catppuccin-vsc-icons
+    - svelte.svelte-vscode
+    - tamasfe.even-better-toml
+    - golang.Go
+    - rust-lang.rust-analyzer
+    - oderwat.indent-rainbow
+    - humao.rest-client
+    - esbenp.prettier-vscode
+    - EditorConfig.EditorConfig
+    - redhat.vscode-yaml
+    - sourcegraph.amp
 
 tasks:
   default:
@@ -50,7 +62,6 @@ tasks:
           IDE_EXTENSIONS: 
             ref: .IDE_EXTENSIONS_vscode
 
-
   configure:cursor:windows:
     internal: true
     platforms: [windows]
@@ -69,6 +80,24 @@ tasks:
           echo "Cursor config has been overwritten"
         fi
 
+  configure:vscodium:windows:
+    internal: true
+    platforms: [windows]
+    deps: [ ":tools:gum:install" ]
+    cmds:
+      - |
+        write_settings=true
+        if [ -f "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json" ]; then
+          if ! gum confirm "The file $HOME/scoop/persist/vscodium/data/user-data/User/settings.json already exists. Overwrite?"; then
+            write_settings=false
+            echo "Skipping VSCodium config"
+          fi
+        fi
+        if $write_settings; then
+          cp dotfiles/vscode/settings.json "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json"
+          echo "VSCodium config has been overwritten"
+        fi
+
   configure:cursor:
     internal: true
     cmds:
@@ -81,9 +110,13 @@ tasks:
   configure:vscodium:
     internal: true
     cmds:
-      - |
-        echo "WARN: vscodium config not implemented yet"
-        # TODO: implement vscodium config
+      - task: install-extensions
+        vars:
+          IDE: 'vscodium'
+          IDE_EXTENSIONS: 
+            ref: .IDE_EXTENSIONS_vscodium
+      - task: configure:vscodium:windows
+        platforms: [windows]
 
   configure:
     internal: true
