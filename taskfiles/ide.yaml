@@ -37,6 +37,8 @@ vars:
     - EditorConfig.EditorConfig
     - redhat.vscode-yaml
     - sourcegraph.amp
+    - vizzletf.geminicommit
+
 
 tasks:
   default:

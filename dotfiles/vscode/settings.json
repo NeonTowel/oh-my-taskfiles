@@ -25,5 +25,10 @@
   "editor.fontLigatures": true,
   "terminal.integrated.fontLigatures": true,
   "editor.tabSize": 2,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "commitSage.commit.onlyStagedChanges": true,
+  "commitSage.gemini.model": "gemini-2.5-flash",
+  "commitSage.openai.model": "gpt-4.1-mini",
+  "commitSage.telemetry.enabled": false
+
 }
