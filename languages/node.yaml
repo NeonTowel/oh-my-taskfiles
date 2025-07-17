@@ -4,8 +4,12 @@ vars:
   NVM_VERSION: "0.40.3"
 
 tasks:
-  install-nvm:
-    desc: "[NODE] Install nvm"
+  default:
+    - task --list --taskfile languages/node.yaml
+
+  install-nvm:linux:
+    internal: true
+    platforms: [linux]
     cmds:
       - |
         if [ -x "$HOME/.nvm/nvm.sh" ]; then
@@ -15,8 +19,9 @@ tasks:
           echo "nvm has been installed successfully."
         fi
 
-  install:
-    desc: "[NODE] ✨ Install node"
+  install:linux:
+    internal: true
+    platforms: [linux]
     cmds:
       - task: install-nvm
       - |
@@ -31,3 +36,40 @@ tasks:
         else
           echo "nvm is not installed. Please install nvm first."
         fi
+
+  install-nvm:windows:
+    internal: true
+    platforms: [windows]
+    vars:
+      APP_NAME: nvm
+    cmds:
+      - |
+        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
+          scoop install {{ .APP_NAME }}
+          echo "{{ .APP_NAME }} has been installed successfully."
+        fi
+
+  install:windows:
+    internal: true
+    platforms: [windows] 
+    cmds:
+      - task: install-nvm:windows
+      - |
+        . $PROFILE
+        if ! command -v nvm >/dev/null 2>&1; then
+          echo "❌ ERROR: nvm is not installed"
+          echo "Please install nvm first."
+          exit 1
+        fi
+      - |
+          nvm install --lts
+          nvm use --lts
+          nvm alias default node
+
+  install:
+    desc: "[NODE] ✨ Install node"
+    cmds:
+      - task: install:linux
+        platforms: [linux]
+      - task: install:windows
+        platforms: [windows]

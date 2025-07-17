@@ -65,6 +65,11 @@ if (Test-Path "$HOME\.cargo\env") {
 $nvmDir = "$HOME\.nvm"
 if (Test-Path "$nvmDir\nvm.ps1") {
     . "$nvmDir\nvm.ps1"
+} else {
+    if (Test-Path "$HOME\scoop\apps\nvm\current\nvm.exe") {
+        $env:PATH += ";$HOME\scoop\apps\nvm\current\"
+        $env:PATH += ";$HOME\scoop\apps\nvm\current\nodejs\nodejs"
+    }
 }
 
 # Awesome-git alias
