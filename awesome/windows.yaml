@@ -65,6 +65,7 @@ tasks:
         - starship
         - yasb
         - translucenttb
+        - fonts
       ALL_APPS:
         - 1password
         - cursor
