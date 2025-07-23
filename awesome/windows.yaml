@@ -64,10 +64,13 @@ tasks:
         - pwsh
         - starship
         - yasb
+        - translucenttb
       ALL_APPS:
         - 1password
         - cursor
         - spotify
+        - teracopy
+        - librehardwaremonitor
       ALL_RUNS:
         - git:config-global
       DEFAULT_SPINNER: "gum spin --show-stderr --show-error --title"
