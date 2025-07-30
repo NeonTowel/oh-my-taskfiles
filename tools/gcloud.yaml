@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/gcloud.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      APP_NAME: gcloud
+    cmds:
+      - |
+        if ! command -v {{ .APP_NAME }} >/dev/null 2>&1; then
+          scoop install {{ .APP_NAME }}
+          echo "{{ .APP_NAME }} has been installed successfully."
+        else
+          echo "{{ .APP_NAME }} is already installed."
+        fi
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    vars:
+      APP_NAME: gcloud
+    cmds:
+      - |
+        if [ ! -d "$HOME/google-cloud-sdk" ]; then
+          curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz -o /tmp/google-cloud-cli-linux-x86_64.tar.gz
+          tar -xzf /tmp/google-cloud-cli-linux-x86_64.tar.gz
+          mv google-cloud-sdk $HOME/google-cloud-sdk
+          $HOME/google-cloud-sdk/install.sh --quiet
+          rm /tmp/google-cloud-cli-linux-x86_64.tar.gz
+          echo "{{ .APP_NAME }} has been installed successfully."
+        else
+          echo "{{ .APP_NAME }} is already installed."
+        fi
+
+  install:
+    desc: "[GCLOUD] ✨ Install gcloud cli"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]

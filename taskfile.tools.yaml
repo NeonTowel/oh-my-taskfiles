@@ -27,6 +27,7 @@ includes:
   helix: tools/helix.yaml
   gomplate: tools/gomplate.yaml
   rose-pine-cursor: tools/rose-pine-cursor.yaml
+  gcloud: tools/gcloud.yaml
   translucenttb: tools/translucenttb.yaml
 
 tasks:
