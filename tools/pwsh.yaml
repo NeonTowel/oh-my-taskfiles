@@ -12,8 +12,6 @@ tasks:
         if ! command -v pwsh &> /dev/null; then
           scoop install pwsh
           echo "pwsh has been installed successfully."
-        else
-          echo "pwsh is already installed."
         fi
 
   configure:windows:

@@ -33,6 +33,7 @@ if (Test-Path "$HOME\google-cloud-sdk\completion.ps1") {
 
 # Direnv (if installed)
 if (Get-Command direnv -ErrorAction SilentlyContinue) {
+    $env:DIRENV_CONFIG = "$HOME\.direnv"
     Invoke-Expression "$(direnv hook pwsh)"
 }
 
