@@ -22,6 +22,9 @@ includes:
   awesome: 
     taskfile: taskfile.awesome.yaml
     flatten: true
+  lib:
+    taskfile: taskfile.lib.yaml
+    flatten: true
 
 tasks:
   default:
