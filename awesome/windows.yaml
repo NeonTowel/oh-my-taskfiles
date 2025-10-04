@@ -53,7 +53,9 @@ tasks:
         - flow-launcher
         - fonts
         - fzf
+        - gcloud
         - glazewm
+        - gomplate
         - gpg
         - gum
         - jq
@@ -62,18 +64,25 @@ tasks:
         - lsd
         - nvim
         - pwsh
+        - rose-pine-cursor
         - starship
-        - yasb
         - translucenttb
-        - fonts
+        - yasb
       ALL_APPS:
         - 1password
         - cursor
         - spotify
         - teracopy
-        - librehardwaremonitor
+        - postman
+        - royal-ts
+        - cryptomator
+        - joplin
+        - simplenote
       ALL_RUNS:
         - git:config-global
+        - lang:go:install
+        - lang:rust:install
+        - lang:node:install
       DEFAULT_SPINNER: "gum spin --show-stderr --show-error --title"
       TOOL_SPINNER: "{{ .DEFAULT_SPINNER }} \"Installing tool: $tool\""
       APP_SPINNER: "{{ .DEFAULT_SPINNER }} \"Installing app: $app\""
