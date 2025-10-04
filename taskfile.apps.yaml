@@ -15,6 +15,7 @@ includes:
   teracopy: apps/teracopy.yaml
   simplenote: apps/simplenote.yaml
   vscodium: apps/vscodium.yaml
+  podman-desktop: apps/podman-desktop.yaml
 
 tasks:
   default:
