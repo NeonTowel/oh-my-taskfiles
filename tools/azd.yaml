@@ -1,0 +1,36 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/azd.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      APP_NAME: azd
+    cmds:
+      - task: ::scoop-extras-install
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if command -v azd >/dev/null 2>&1; then
+          echo "azd cli is already installed."
+        else
+          curl -fsSL https://aka.ms/install-azd.sh | bash
+          echo "azd cli has been installed successfully."
+        fi
+
+  install:
+    desc: "[AZD] ✨ Install azd cli"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]

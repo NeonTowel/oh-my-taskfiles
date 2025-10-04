@@ -10,6 +10,7 @@ includes:
   gum: tools/gum.yaml
   awesome-git: tools/awesome-git.yaml
   az: tools/az.yaml
+  azd: tools/azd.yaml
   lazygit: tools/lazygit.yaml
   alacritty: tools/alacritty.yaml
   coreutils: tools/coreutils.yaml
