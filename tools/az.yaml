@@ -1,8 +1,13 @@
 version: '3'
 
 tasks:
-  install:
-    desc: "[AZ] ✨ Install az cli"
+  default:
+    - task --list --taskfile tools/az.yaml
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
     cmds:
       - |
         if command -v az >/dev/null 2>&1; then
@@ -34,8 +39,19 @@ tasks:
           echo "az cli has been installed successfully."
         fi
 
-  install-azd:
-    desc: "[AZ] Install azd cli"
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      APP_NAME: azure-cli
+    cmds:
+      - task: scoop-install
+
+  install-azd:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
     cmds:
       - |
         if command -v azd >/dev/null 2>&1; then
@@ -44,4 +60,30 @@ tasks:
           curl -fsSL https://aka.ms/install-azd.sh | bash
           echo "azd cli has been installed successfully."
         fi
-        
+
+  install-azd:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      APP_NAME: azd
+    cmds:
+      - task: scoop-extras-install
+
+  install:
+    desc: "[AZD] ✨ Install azure cli"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
+
+  install-azd:
+    desc: "[AZD] ✨ Install azd cli"
+    silent: true
+    cmds:
+      - task: install-azd:windows
+        platforms: [windows]
+      - task: install-azd:linux
+        platforms: [linux]
