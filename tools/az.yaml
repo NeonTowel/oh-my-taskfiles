@@ -46,7 +46,7 @@ tasks:
     vars:
       APP_NAME: azure-cli
     cmds:
-      - task: scoop-install
+      - task: :scoop-install
 
   install-azd:linux:
     platforms: [linux]
@@ -68,7 +68,7 @@ tasks:
     vars:
       APP_NAME: azd
     cmds:
-      - task: scoop-extras-install
+      - task: :scoop-extras-install
 
   install:
     desc: "[AZD] ✨ Install azure cli"
