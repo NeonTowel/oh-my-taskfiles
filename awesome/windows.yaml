@@ -49,7 +49,6 @@ tasks:
         - bat
         - btop
         - coreutils
-        - direnv
         - flow-launcher
         - fonts
         - fzf

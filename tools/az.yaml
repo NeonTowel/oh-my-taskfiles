@@ -43,10 +43,10 @@ tasks:
     platforms: [windows]
     internal: true
     silent: true
-    vars:
-      APP_NAME: azure-cli
     cmds:
       - task: ::scoop-install
+        vars:
+          APP_NAME: azure-cli
 
   install:
     desc: "[AZ] ✨ Install azure cli"

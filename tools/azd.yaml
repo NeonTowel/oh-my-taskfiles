@@ -8,10 +8,10 @@ tasks:
     platforms: [windows]
     internal: true
     silent: true
-    vars:
-      APP_NAME: azd
     cmds:
       - task: ::scoop-extras-install
+        vars:
+          APP_NAME: azd
 
   install:linux:
     platforms: [linux]

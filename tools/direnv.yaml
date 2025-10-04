@@ -5,6 +5,7 @@ vars:
 
 tasks:
   install:
+    platforms: [linux]
     desc: "[DIRENV] ✨ Install direnv"
     cmds:
       - |
