@@ -9,10 +9,16 @@ tasks:
     cmds:
       - |
         if ! command -v cursor >/dev/null 2>&1; then
-          echo "❌ ERROR: cursor cli is not installed"
-          echo "Please install cursor cli first."
-          exit 1
+          echo "cursor cli is not installed, trying to look up the cli binary..."
+          CLI_BINARY="$HOME/scoop/apps/cursor/current/bin/cursor"
+          if [ ! -f "$CLI_BINARY" ]; then
+            echo "ERROR: CLI_BINARY is not found, exiting..."
+            exit 1
+          fi
+        else
+          CLI_BINARY="cursor"
         fi
+        $CLI_BINARY --version
       - task: ::ide:configure
         vars:
           IDE: "cursor"
