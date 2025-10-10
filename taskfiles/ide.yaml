@@ -57,13 +57,13 @@ tasks:
           echo "{{ .IDE }} is not installed, trying to look up the cli binary..."
           case "{{ .IDE }}" in
             "vscode")
-              CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code"
+              CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code.cmd"
               ;;
             "cursor")
-              CLI_BINARY="$HOME/scoop/apps/cursor/current/bin/cursor"
+              CLI_BINARY="$HOME/scoop/apps/cursor/current/Cursor.exe"
               ;;
             "vscodium")
-              CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium"
+              CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium.cmd"
               ;;
           esac
           # if CLI_BINARY does not exist, exit with error
