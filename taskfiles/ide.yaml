@@ -53,7 +53,28 @@ tasks:
         echo "Configuring {{ .IDE }}..."
         install_extensions="{{range .IDE_EXTENSIONS}}--install-extension {{.}} {{end}}"
         echo "Installing extensions: $install_extensions"
-        {{ .IDE }} $install_extensions
+        if ! command -v "{{ .IDE }}" >/dev/null 2>&1; then
+          echo "{{ .IDE }} is not installed, trying to look up the cli binary..."
+          case "{{ .IDE }}" in
+            "vscode")
+              CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code"
+              ;;
+            "cursor")
+              CLI_BINARY="$HOME/scoop/apps/cursor/current/bin/cursor"
+              ;;
+            "vscodium")
+              CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium"
+              ;;
+          esac
+          # if CLI_BINARY does not exist, exit with error
+          if [ ! -f "$CLI_BINARY" ]; then
+            echo "ERROR: CLI_BINARY is not found, exiting..."
+            exit 1
+          fi
+        else
+          CLI_BINARY="{{ .IDE }}"
+        fi
+        $CLI_BINARY $install_extensions
 
   configure:vscode:
     internal: true
@@ -72,9 +93,13 @@ tasks:
       - |
         write_settings=true
         if [ -f "$HOME/AppData/Roaming/Cursor/User/settings.json" ]; then
-          if ! gum confirm "The file $HOME/AppData/Roaming/Cursor/User/settings.json already exists. Overwrite?"; then
-            write_settings=false
-            echo "Skipping cursor config"
+          if [ "{{ .UNATTENDED }}" = "true" ]; then
+            echo "!! Unattended mode enabled, overwriting cursor config."
+          else
+            if ! gum confirm "The file $HOME/AppData/Roaming/Cursor/User/settings.json already exists. Overwrite?"; then
+              write_settings=false
+              echo "Skipping cursor config"
+            fi
           fi
         fi
         if $write_settings; then
@@ -90,9 +115,13 @@ tasks:
       - |
         write_settings=true
         if [ -f "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json" ]; then
-          if ! gum confirm "The file $HOME/scoop/persist/vscodium/data/user-data/User/settings.json already exists. Overwrite?"; then
-            write_settings=false
-            echo "Skipping VSCodium config"
+          if [ "{{ .UNATTENDED }}" = "true" ]; then
+            echo "!! Unattended mode enabled, overwriting VSCodium config."
+          else
+            if ! gum confirm "The file $HOME/scoop/persist/vscodium/data/user-data/User/settings.json already exists. Overwrite?"; then
+              write_settings=false
+              echo "Skipping VSCodium config"
+            fi
           fi
         fi
         if $write_settings; then
