@@ -60,7 +60,7 @@ tasks:
               CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code.cmd"
               ;;
             "cursor")
-              CLI_BINARY="$HOME/scoop/apps/cursor/current/Cursor.exe"
+              CLI_BINARY="$HOME/scoop/apps/cursor/current/resources/app/bin/cursor.cmd"
               ;;
             "vscodium")
               CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium.cmd"

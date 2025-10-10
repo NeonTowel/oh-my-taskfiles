@@ -10,7 +10,7 @@ tasks:
       - |
         if ! command -v cursor >/dev/null 2>&1; then
           echo "cursor cli is not installed, trying to look up the cli binary..."
-          CLI_BINARY="$HOME/scoop/apps/cursor/current/Cursor.exe"
+          CLI_BINARY="$HOME/scoop/apps/cursor/current/resources/app/bin/cursor.cmd"
           if [ ! -f "$CLI_BINARY" ]; then
             echo "ERROR: $CLI_BINARY is not found, exiting..."
             exit 1
