@@ -8,7 +8,36 @@ vars:
   FZF_VERSION: "0.61.3"
 
 tasks:
-  install:
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop-install
+        vars:
+          APP_NAME: kubecm
+      - task: ::scoop-install
+        vars:
+          APP_NAME: kubectx
+      - task: ::scoop-install
+        vars:
+          APP_NAME: kubens
+      - task: ::scoop-install
+        vars:
+          APP_NAME: kubectl
+      - task: ::scoop-install
+        vars:
+          APP_NAME: helm
+      - task: ::scoop-install
+        vars:
+          APP_NAME: fzf
+    
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
     cmds:
       - task: install-kubecm
       - task: install-kubectx
@@ -16,7 +45,16 @@ tasks:
       - task: install-kubectl
       - task: install-helm
       - task: install-fzf
+    
+  install:
     desc: "[K8S] ✨ Install all tools"
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
+
+  ############################################################
 
   install-kubecm:
     cmds:
