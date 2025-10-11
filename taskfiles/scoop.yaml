@@ -11,7 +11,7 @@ tasks:
     internal: true
     required:
       vars: [ APP ]
-    deps: [ "::tools:coreutils:install" ]
+    deps: [ ":tools:coreutils:install" ]
     cmds:
       - |
         if [ ! scoop list | grep -q {{ .APP }} ]; then
