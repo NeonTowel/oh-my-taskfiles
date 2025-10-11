@@ -1,46 +1,6 @@
 version: '3'
 
-tasks:
-  scoop-install:
-    platforms: [windows]
+includes:
+  scoop: 
+    taskfile: taskfiles/scoop.yaml
     internal: true
-    required:
-      vars: [ APP_NAME ]
-    cmds:
-      - |
-        if command -v {{ .APP_NAME }} >/dev/null 2>&1; then
-          echo "{{ .APP_NAME }} is already installed."  
-        else
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
-
-  scoop-neontowel-install:
-    platforms: [windows]
-    internal: true
-    required:
-      vars: [ APP_NAME ]
-    cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          if ! scoop bucket list | grep -q "^neontowel"; then
-            scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
-          fi
-          scoop install neontowel/{{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
-
-  scoop-extras-install:
-    platforms: [windows]
-    internal: true
-    required:
-      vars: [ APP_NAME ]
-    cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          if ! scoop bucket list | grep -q "^extras"; then
-            scoop bucket add extras
-          fi
-          scoop install extras/{{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi

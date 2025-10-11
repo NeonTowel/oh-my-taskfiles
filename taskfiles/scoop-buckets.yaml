@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  add:
+    aliases: [ ensure ]
+    requires:
+      vars: [ BUCKET ]
+    cmds:
+      - |
+        # if scoop bucket does not already exist, add it
+        if ! scoop bucket list | grep -q {{ .BUCKET }}; then
+          scoop bucket add {{ .BUCKET }}
+          echo "Scoop bucket {{ .BUCKET }} has been added successfully."
+        fi
+
+  list:
+    - scoop bucket list
+
+  remove:
+    requires:
+      vars: [ BUCKET ]
+    cmds:
+      - |
+        # if scoop bucket exists, remove it
+        if scoop bucket list | grep -q {{ .BUCKET }}; then
+          scoop bucket rm {{ .BUCKET }}
+          echo "Scoop bucket {{ .BUCKET }} has been removed successfully."
+        fi

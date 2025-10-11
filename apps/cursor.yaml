@@ -25,24 +25,12 @@ tasks:
 
   install:windows:
     platforms: [windows]
-    deps: [ "::tools:coreutils:install" ]
     internal: true
     silent: true
-    vars:
-      package: "Anysphere.Cursor"
     cmds:
-      - |
-        if winget list "{{ .package }}" -e | grep -q "No installed package found matching input criteria."; then
-          if [ ! -d "$HOME/scoop/apps/cursor/current" ]; then
-            if ! scoop bucket list | grep -q "^neontowel"; then
-              scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
-            fi
-            scoop install neontowel/cursor
-            echo "cursor has been installed successfully."
-          fi
-        else
-          echo "cursor is already installed."
-        fi
+      - task: ::winget:install
+        vars:
+          APP: "cursor"
 
   install:
     desc: "[CURSOR] ✨ Install Cursor AI code editor"

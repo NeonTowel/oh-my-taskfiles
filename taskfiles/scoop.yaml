@@ -1,0 +1,52 @@
+version: '3'
+
+includes:
+  buckets: 
+    internal: true
+    taskfile: scoop-buckets.yaml
+
+tasks:
+  install:
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - |
+        if [ ! scoop list | grep -q {{ .APP }} ]; then
+          scoop install {{ .APP }}
+          echo "{{ .APP }} has been installed successfully."
+        fi
+
+  neontowel-install:
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - task: buckets:ensure
+        vars: { BUCKET: "neontowel" }
+      - task: install
+        vars: { APP: "{{ .APP }}" }
+
+  extras-install:
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - task: buckets:ensure
+        vars: { BUCKET: "extras" }
+      - task: install
+        vars: { APP: "{{ .APP }}" }
+
+  nonportable-install:
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - task: buckets:ensure
+        vars: { BUCKET: "nonportable" }
+      - task: install
+        vars: { APP: "{{ .APP }}" }

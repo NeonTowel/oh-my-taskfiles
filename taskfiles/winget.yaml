@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  install:
+    deps: [ "::tools:coreutils:install" ]
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - |
+        if winget list "{{ .APP }}" -e | grep -q "No installed package found matching input criteria."; then
+          winget install --id "{{ .APP }}" -e --accept-package-agreements --accept-source-agreements
+          echo "{{ .APP }} has been installed successfully."
+        fi
