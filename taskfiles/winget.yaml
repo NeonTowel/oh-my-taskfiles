@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   install:
-    deps: [ "::tools:coreutils:install" ]
+    deps: [ ":tools:coreutils:install" ]
     platforms: [windows]
     internal: true
     required:
