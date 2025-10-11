@@ -14,7 +14,7 @@ tasks:
     deps: [ ":tools:coreutils:install" ]
     cmds:
       - |
-        if [ ! scoop list | grep -q "{{ .APP }}" ]; then
+        if ! scoop list | grep -q "{{ .APP }}"; then
           scoop install {{ .APP }}
           echo "{{ .APP }} has been installed successfully."
         fi

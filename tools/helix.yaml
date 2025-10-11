@@ -12,9 +12,6 @@ tasks:
       HELIX_CONFIG_DIR: "$HOME/AppData/Roaming/helix"
     cmds:
       - |
-        echo "Not implemented yet."
-        exit 0
-      - |
         if [ ! -d "{{ .HELIX_CONFIG_DIR }}" ]; then
           mkdir -p "{{ .HELIX_CONFIG_DIR }}"
         fi
