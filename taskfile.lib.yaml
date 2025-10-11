@@ -4,3 +4,6 @@ includes:
   scoop: 
     taskfile: taskfiles/scoop.yaml
     internal: true
+  winget: 
+    taskfile: taskfiles/winget.yaml
+    internal: true
