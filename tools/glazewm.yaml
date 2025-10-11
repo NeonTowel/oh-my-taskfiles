@@ -20,13 +20,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v glazewm >/dev/null 2>&1; then
-          scoop install glazewm
-          echo "glazewm has been installed successfully."
-        else
-          echo "glazewm is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: glazewm
 
   install:
     desc: "[GlazeWM] ✨ Install GlazeWM"

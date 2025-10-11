@@ -14,22 +14,22 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: kubecm
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: kubectx
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: kubens
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: kubectl
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: helm
-      - task: ::scoop-install
+      - task: ::scoop:install
         vars:
           APP_NAME: fzf
     

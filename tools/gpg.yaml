@@ -6,13 +6,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v gpg >/dev/null 2>&1; then
-          scoop install gpg
-          echo "gpg has been installed successfully."
-        else
-          echo "gpg is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: gpg
 
   install:
     desc: "[GPG] ✨ Install GPG"

@@ -11,6 +11,7 @@ tasks:
     internal: true
     required:
       vars: [ APP ]
+    deps: [ "::tools:coreutils:install" ]
     cmds:
       - |
         if [ ! scoop list | grep -q {{ .APP }} ]; then
@@ -48,5 +49,16 @@ tasks:
     cmds:
       - task: buckets:ensure
         vars: { BUCKET: "nonportable" }
+      - task: install
+        vars: { APP: "{{ .APP }}" }
+
+  nerd-fonts-install:
+    platforms: [windows]
+    internal: true
+    required:
+      vars: [ APP ]
+    cmds:
+      - task: buckets:ensure
+        vars: { BUCKET: "nerd-fonts" }
       - task: install
         vars: { APP: "{{ .APP }}" }

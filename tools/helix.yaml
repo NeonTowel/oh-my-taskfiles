@@ -26,11 +26,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v helix >/dev/null 2>&1; then
-          scoop install helix
-          echo "helix has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: helix
 
   install:
     desc: "[HELIX] ✨ Install helix"

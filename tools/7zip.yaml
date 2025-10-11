@@ -9,13 +9,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v 7z >/dev/null 2>&1; then
-          scoop install 7zip
-          echo "7zip has been installed successfully."
-        else
-          echo "7zip is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: 7zip
 
   install:linux:
     platforms: [linux]

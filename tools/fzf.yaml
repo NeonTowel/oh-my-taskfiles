@@ -9,13 +9,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v fzf >/dev/null 2>&1; then
-          scoop install fzf
-          echo "fzf has been installed successfully."
-        else
-          echo "fzf is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: fzf
 
   install:
     desc: "[FZF] ✨ Install fzf"

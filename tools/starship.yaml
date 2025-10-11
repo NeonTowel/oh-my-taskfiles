@@ -14,13 +14,9 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - |
-        if ! command -v starship >/dev/null 2>&1; then
-          scoop install starship
-          echo "starship has been installed successfully."
-        else
-          echo "starship is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: starship
 
   configure:
     internal: true

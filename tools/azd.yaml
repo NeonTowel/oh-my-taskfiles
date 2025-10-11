@@ -9,9 +9,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: ::scoop-extras-install
+      - task: ::scoop:extras-install
         vars:
-          APP_NAME: azd
+          APP: azd
 
   install:linux:
     platforms: [linux]

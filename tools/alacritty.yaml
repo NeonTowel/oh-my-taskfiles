@@ -33,20 +33,12 @@ tasks:
 
   install:windows:
     platforms: [windows]
-    deps: [ ":coreutils:install" ]
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v alacritty >/dev/null 2>&1; then
-          if ! scoop bucket list | grep -q "^extras"; then
-            scoop bucket add extras
-          fi
-          scoop install extras/alacritty
-          echo "alacritty has been installed successfully."
-        else
-          echo "alacritty is already installed."
-        fi
+      - task: ::scoop:extras-install
+        vars:
+          APP: alacritty
 
   install:linux:
     platforms: [linux]

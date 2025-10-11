@@ -8,23 +8,18 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/spotify/current" ]; then
-          scoop install spotify
-          echo "spotify has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: spotify
       - task: spicetify:install:windows
-        platforms: [windows]
 
   spicetify:install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - |
-        if ! command -v spicetify >/dev/null 2>&1; then
-          scoop install spicetify-cli
-          echo "spicetify has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: spicetify-cli
 
   spicetify:configure:windows:
     platforms: [windows]

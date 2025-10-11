@@ -25,20 +25,12 @@ tasks:
           cp "{{joinPath .ITEM | osClean}}" "{{joinPath .THEME_DEST_DIR .ITEM | osDir}}"
 
   install:windows:
-    deps: [ "::tools:coreutils:install" ]
     platforms: [windows]
     internal: true
-    vars:
-      APP_NAME: heroic
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          if ! scoop bucket list | grep -q "^neontowel"; then
-            scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
-          fi
-          scoop install neontowel/{{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
+      - task: ::scoop:neontowel-install
+        vars:
+          APP: "{{ .APP_NAME }}"
 
   configure:windows:
     platforms: [windows]

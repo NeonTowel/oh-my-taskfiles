@@ -9,13 +9,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v btop >/dev/null 2>&1; then
-          scoop install btop
-          echo "btop has been installed successfully."
-        else
-          echo "btop is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: btop
 
   install:
     desc: "[BTOP] ✨ Install btop"

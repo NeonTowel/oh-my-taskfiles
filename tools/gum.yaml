@@ -43,11 +43,9 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - |
-        if ! command -v gum >/dev/null 2>&1; then
-          scoop install charm-gum
-          echo "gum has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: charm-gum
 
   install:linux:
     internal: true

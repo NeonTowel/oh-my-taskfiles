@@ -49,17 +49,10 @@ tasks:
     platforms: [windows]
     internal: true
     silent: true
-    vars:
-      APP_NAME: awesome-git
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          if ! scoop bucket list | grep -q "^neontowel"; then
-            scoop bucket add neontowel https://github.com/neontowel/scoop-bucket
-          fi
-          scoop install neontowel/{{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: awesome-git
       
 
   install:

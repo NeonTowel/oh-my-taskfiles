@@ -9,13 +9,9 @@ tasks:
   install:Windows_NT:
     internal: true
     cmds:
-      - |
-        if command -v lazygit >/dev/null 2>&1; then
-          echo "lazygit is already installed."
-        else
-          scoop install lazygit
-          echo "lazygit has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: lazygit
 
   install:linux:
     internal: true

@@ -11,13 +11,9 @@ tasks:
     vars:
       APP_NAME: gcloud
     cmds:
-      - |
-        if ! command -v {{ .APP_NAME }} >/dev/null 2>&1; then
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        else
-          echo "{{ .APP_NAME }} is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: gcloud
 
   install:linux:
     platforms: [linux]

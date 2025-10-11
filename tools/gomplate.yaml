@@ -5,16 +5,12 @@ tasks:
     - task --list --taskfile tools/gomplate.yaml
 
   install:windows:
-    vars:
-      APP_NAME: gomplate
     platforms: [windows]
     internal: true
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: gomplate
 
   install:
     vars:

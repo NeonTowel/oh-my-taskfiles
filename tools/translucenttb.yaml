@@ -9,13 +9,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if [ ! -f "$HOME/scoop/apps/TranslucentTB/current/TranslucentTB.exe" ]; then
-          scoop install translucenttb
-          echo "translucenttb has been installed successfully."
-        else
-          echo "translucenttb is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: translucenttb
 
   install:
     desc: "[TRANSLUCENTTB] ✨ Install TranslucentTB"

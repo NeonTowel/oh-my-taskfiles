@@ -7,14 +7,10 @@ tasks:
   install:windows:
     platforms: [windows]
     internal: true
-    vars:
-      APP_NAME: cryptomator
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: cryptomator
 
   install:
     vars:

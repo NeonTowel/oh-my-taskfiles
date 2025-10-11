@@ -3,11 +3,10 @@ version: '3'
 tasks:
   install:windows:
     platforms: [windows]
-    deps: [ "::tools:coreutils:install" ]
     internal: true
     silent: true
     cmds:
-      - task: ::scoop-extras-install
+      - task: ::scoop:extras-install
         vars:
           APP_NAME: podman-desktop
 

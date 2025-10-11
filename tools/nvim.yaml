@@ -23,13 +23,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v nvim >/dev/null 2>&1; then
-          scoop install neovim
-          echo "neovim has been installed successfully."
-        else
-          echo "neovim is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: neovim
 
   install:
     desc: "[NVIM] ✨ Install neovim"

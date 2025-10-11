@@ -21,13 +21,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v yasb >/dev/null 2>&1; then
-          scoop install yasb
-          echo "yasb has been installed successfully."
-        else
-          echo "yasb is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: yasb
 
   install:
     desc: "[YASB] ✨ Install YASB"

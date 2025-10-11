@@ -6,13 +6,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if ! command -v jq >/dev/null 2>&1; then
-          scoop install jq
-          echo "jq has been installed successfully."
-        else
-          echo "jq is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: jq
 
   install:
     desc: "[JQ] ✨ Install jq"

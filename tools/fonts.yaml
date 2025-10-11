@@ -10,16 +10,11 @@ tasks:
     requires:
       vars: [ font ]
     cmds:
-      - |
-        if [ ! -d "$HOME\scoop\apps\{{ .font }}" ]; then
-          echo "Installing {{ .font }} font"
-          scoop install nerd-fonts/{{ .font }}
-        else
-          echo "{{ .font }} font is already installed"
-        fi
+      - task: ::scoop:nerd-fonts-install
+        vars:
+          APP: "{{ .font }}"
 
   install:windows:
-    deps: [ ":coreutils:install" ]
     internal: true
     platforms: [windows]
     vars:
@@ -32,10 +27,6 @@ tasks:
         - JetBrainsMono-NF-Mono
         - Lato
     cmds:
-      - |
-        if ! scoop bucket list | grep -q "^nerd-fonts"; then
-          scoop bucket add nerd-fonts
-        fi
       - for: { var: FONTS }
         task: install-font
         vars:

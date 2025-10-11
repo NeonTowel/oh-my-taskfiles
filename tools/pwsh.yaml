@@ -8,11 +8,9 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - |
-        if ! command -v pwsh &> /dev/null; then
-          scoop install pwsh
-          echo "pwsh has been installed successfully."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: pwsh
 
   configure:windows:
     platforms: [windows]

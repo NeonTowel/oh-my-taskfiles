@@ -30,15 +30,11 @@ tasks:
           echo "  $HOME/scoop/persist/flow-launcher/UserData"
           echo "Please install flow-launcher first."
           exit 1
-        elif [ ! -f "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json" ]; then
-          echo "ERROR: flow-launcher settings.json not found:"
-          echo "  $HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
-          echo "Please run flow-launcher first."
-          exit 1
-        else
-          cp "$HOME/.omt/dotfiles/flow-launcher/settings.json" "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
-          echo "flow-launcher has been configured successfully."
+        elif [ ! -d "$HOME/scoop/persist/flow-launcher/UserData/Settings" ]; then
+          mkdir -p "$HOME/scoop/persist/flow-launcher/UserData/Settings"
         fi
+        cp "$HOME/.omt/dotfiles/flow-launcher/settings.json" "$HOME/scoop/persist/flow-launcher/UserData/Settings/Settings.json"
+        echo "flow-launcher has been configured successfully."
       - task: themes
 
   install:windows:
@@ -46,13 +42,9 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        if [ ! -f "$HOME/scoop/apps/flow-launcher/current/Flow.Launcher.exe" ]; then
-          scoop install flow-launcher
-          echo "flow-launcher has been installed successfully."
-        else
-          echo "flow-launcher is already installed."
-        fi
+      - task: ::scoop:install
+        vars:
+          APP: flow-launcher
 
   install:
     desc: "[Flow Launcher] ✨ Install Flow Launcher"
