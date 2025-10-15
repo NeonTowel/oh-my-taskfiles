@@ -7,11 +7,13 @@ includes:
 
 tasks:
   awesome-macos:
+    platforms: [darwin]
     internal: true
     cmds:
       - echo "Awesome MacOS Not implemented yet!"
 
   awesome-linux:
+    platforms: [linux]
     internal: true
     cmds:
       - echo "Awesome Linux Not implemented yet!"
