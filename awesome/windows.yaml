@@ -61,17 +61,17 @@ tasks:
         gum confirm "Are you sure you want to continue?"
 
       - for: TOOLS
-        task: ":tools:{{ .ITEM }}:install"
+        task: tools:{{ .ITEM }}:install
         vars:
           UNATTENDED: "true"
 
       - for: APPS
-        task: ":apps:{{ .ITEM }}:install"
+        task: apps:{{ .ITEM }}:install
         vars:
           UNATTENDED: "true"
 
       - for: RUN
-        task: ":{{ .ITEM }}"
+        task: {{ .ITEM }}
         vars:
           UNATTENDED: "true"
 
