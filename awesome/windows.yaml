@@ -2,45 +2,12 @@
 version: '3'
 
 tasks:
-  preflight-windows:
-    internal: true
-    platforms: [windows]
-    requires:
-      vars: [ ENVIRONMENT ]
-    cmds:
-      - |
-        if [ -z "{{ .ENVIRONMENT }}" ]; then
-          echo "{{ .LOG_PREFIX }} ERROR: Variable ENVIRONMENT is not set!"
-          exit 1
-        fi
-        if [ -z "{{ env "USERPROFILE" }}" ]; then
-          echo "{{ .LOG_PREFIX }} ERROR: Environment variable USERPROFILE is not set!"
-          exit 1
-        fi
-        if [ ! -d "{{ env "USERPROFILE" }}" ]; then
-          echo "{{ .LOG_PREFIX }} ERROR: Directory {{ env "USERPROFILE" }} does not exist!"
-          exit 1
-        fi
-        env_file='{{ env "USERPROFILE" | replace "\\" "/" }}/.config/omt/awesome-{{ .ENVIRONMENT }}.env'
-        if [ -f "$env_file" ]; then
-          echo "{{ .LOG_PREFIX }} Using overrides from $env_file"
-        fi
-
   awesome-windows:
     deps: [ "tools:gum:install" ]
-    dotenv: 
-      - '{{ env "USERPROFILE" | replace "\\" "/" }}/.config/omt/awesome-{{ .ENVIRONMENT }}.env'
-      - 'awesome/{{ .ENVIRONMENT }}.env'
     internal: true
     platforms: [windows]
-    requires:
-      vars: [ ENVIRONMENT ]
-    env:
-      ENV: "{{ .ENVIRONMENT }}"
-      HOME: '{{ env "USERPROFILE" | replace "\\" "/" }}'
     vars:
-      # TODO: These needs to be tested on a clean install :-)
-      ALL_TOOLS:
+      TOOLS:
         - 7zip
         - alacritty
         - awesome-git
@@ -67,7 +34,7 @@ tasks:
         - starship
         - translucenttb
         - yasb
-      ALL_APPS:
+      APPS:
         - 1password
         - cursor
         - spotify
@@ -78,73 +45,33 @@ tasks:
         - joplin
         - simplenote
         - podman-desktop
-      ALL_RUNS:
+      RUN:
         - git:config-global
         - lang:go:install
         - lang:rust:install
         - lang:node:install
-      DEFAULT_SPINNER: "gum spin --show-stderr --show-error --title"
-      TOOL_SPINNER: "{{ .DEFAULT_SPINNER }} \"Installing tool: $tool\""
-      APP_SPINNER: "{{ .DEFAULT_SPINNER }} \"Installing app: $app\""
-      RUN_SPINNER: "{{ .DEFAULT_SPINNER }} \"Running configuration: $run\""
-      TOOL_COMMAND: 'task -t {{ .ROOT_TASKFILE | replace "\\" "/" }} awesome-install-tool:$tool -- --unattended'
-      APP_COMMAND: 'task -t {{ .ROOT_TASKFILE | replace "\\" "/" }} awesome-install-app:$app -- --unattended'
-      RUN_COMMAND: 'task -t {{ .ROOT_TASKFILE | replace "\\" "/" }} awesome-run-configuration:$run -- --unattended'
     cmds:
       - |
         echo "Welcome to the Awesome Windows Experience!"
         echo
-        echo "Tools to install: $TOOLS"
-        echo "Apps to install: $APPS"
-        echo "Additional configurations to run: $RUN"
+        echo "Tools to install: {{ .TOOLS | join ", " }}"
+        echo "Apps to install: {{ .APPS | join ", " }}"
+        echo "Additional configurations to run: {{ .RUN | join ", " }}"
         echo
         gum confirm "Are you sure you want to continue?"
 
-      - | # Install tools
-        if [ "${TOOLS}" = "*" ]; then
-          TOOLS="{{ .ALL_TOOLS | join "," }}"
-        fi
-        for tool in ${TOOLS//,/ }; do
-          {{ if .CLI_VERBOSE }}
-            echo "Installing tool: $tool"
-          {{ end }}
-          if command -v gum > /dev/null 2>&1; then
-            {{ .TOOL_SPINNER }} -- {{ .TOOL_COMMAND }}
-          else
-            {{ .TOOL_COMMAND }}
-          fi
-        done
+      - for: TOOLS
+        task: "::tools:{{ .ITEM }}:install"
+        vars:
+          UNATTENDED: "true"
 
-      - | # Install apps
-        if [ "${APPS}" = "*" ]; then
-          APPS="{{ .ALL_APPS | join "," }}"
-        fi
-        for app in ${APPS//,/ }; do
-          {{ if .CLI_VERBOSE }}
-            echo "Installing app: $app"
-          {{ end }}
-          if command -v gum > /dev/null 2>&1; then
-            {{ .APP_SPINNER }} -- {{ .APP_COMMAND }}
-          else
-            {{ .APP_COMMAND }}
-          fi
-        done
+      - for: APPS
+        task: "::apps:{{ .ITEM }}:install"
+        vars:
+          UNATTENDED: "true"
 
-      - | # Run configurations
-        if [ "${RUN}" = "*" ]; then
-          RUNS="{{ .ALL_RUNS | join "," }}"
-        else
-          RUNS="${RUN}"
-        fi
-        for run in ${RUNS//,/ }; do
-          {{ if .CLI_VERBOSE }}
-            echo "Running configuration: $run"
-          {{ end }}
-          if command -v gum > /dev/null 2>&1; then
-            {{ .RUN_SPINNER }} -- {{ .RUN_COMMAND }}
-          else
-            {{ .RUN_COMMAND }}
-          fi
-        done
-      - |
-        echo "Awesome Windows Experience completed!"
+      - for: RUN
+        task: "::{{ .ITEM }}"
+        vars:
+          UNATTENDED: "true"
+

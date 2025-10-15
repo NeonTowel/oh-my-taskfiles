@@ -16,84 +16,12 @@ tasks:
     cmds:
       - echo "Awesome Linux Not implemented yet!"
 
-  awesome:*:
-    desc: "[AWESOME] ✨ Setup Awesome Experience for your environment (run: awesome:windows, awesome:linux, or awesome:macos)"
-    vars:
-      ENVIRONMENT: "{{ index .MATCH 0}}"
-    requires:
-      vars:
-        - name: ENVIRONMENT
-          enum: ["windows", "linux", "macos"]
+  awesome:
+    desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
     cmds:
-      - task: preflight-{{ .ENVIRONMENT }}
-        vars:
-          ENVIRONMENT: "{{ .ENVIRONMENT }}"
-      - echo "Installing {{ .ENVIRONMENT }} experience..."
-      - task: awesome-{{ .ENVIRONMENT }}
-        vars:
-          ENVIRONMENT: "{{ .ENVIRONMENT }}"
-
-  # common tasks
-  awesome-install-tool:*:
-    internal: false
-    silent: true
-    vars:
-      TOOL: "{{ index .MATCH 0 }}"
-      UNATTENDED: '{{ if eq .CLI_ARGS "--unattended" }}true{{ else }}false{{ end }}'
-    requires:
-      vars: [ TOOL ]
-    cmds:
-      - |
-        {{ if .CLI_VERBOSE }}
-          echo "Installing tool..."
-          echo "Tool to install: {{ .TOOL }}"
-          if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "Unattended mode enabled."
-          fi
-        {{ end }}
-      - task: tools:{{ .TOOL }}:install
-        vars:
-          UNATTENDED: "{{ .UNATTENDED }}"
-
-
-  awesome-install-app:*:
-    internal: false
-    silent: true
-    vars:
-      APP: "{{ index .MATCH 0 }}"
-      UNATTENDED: '{{ if eq .CLI_ARGS "--unattended" }}true{{ else }}false{{ end }}'
-    requires:
-      vars: [ APP ]
-    cmds:
-      - |
-        {{ if .CLI_VERBOSE }}
-          echo "Installing app..."
-          echo "App to install: {{ .APP }}"
-          if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "Unattended mode enabled."
-          fi
-        {{ end }}
-      - task: apps:{{ .APP }}:install
-        vars:
-          UNATTENDED: "{{ .UNATTENDED }}"
-
-  awesome-run-configuration:*:
-    internal: false
-    silent: true
-    vars:
-      RUN: "{{ index .MATCH 0 }}"
-      UNATTENDED: '{{ if eq .CLI_ARGS "--unattended" }}true{{ else }}false{{ end }}'
-    requires:
-      vars: [ RUN ]
-    cmds:
-      - |
-        {{ if .CLI_VERBOSE }}
-          echo "Running configuration..."
-          echo "Configuration to run: {{ .RUN }}"
-          if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "Unattended mode enabled."
-          fi
-        {{ end }}
-      - task: "{{ .RUN }}"  
-        vars:
-          UNATTENDED: "{{ .UNATTENDED }}"
+      - task: awesome-windows
+        platforms: [windows]
+      - task: awesome-linux
+        platforms: [linux]
+      - task: awesome-macos
+        platforms: [darwin]
