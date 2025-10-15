@@ -71,7 +71,7 @@ tasks:
           UNATTENDED: "true"
 
       - for: RUN
-        task: {{ .ITEM }}
+        task: "{{ .ITEM }}"
         vars:
           UNATTENDED: "true"
 
