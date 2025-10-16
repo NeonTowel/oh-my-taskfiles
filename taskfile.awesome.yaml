@@ -27,3 +27,89 @@ tasks:
         platforms: [linux]
       - task: awesome-macos
         platforms: [darwin]
+
+  awesome-header:
+    internal: true
+    requires:
+      vars: [ TITLE, NAME, POS, MAX ]
+    cmds:
+      - |
+        {{- $percent := div (mul .POS 100) .MAX -}}
+        {{- $steps := int (div $percent 10) -}}
+        gum style \
+          --foreground 212 --border-foreground 212 --border double \
+          --align center --width 50 --margin "1 2" --padding "2 4" \
+          '{{ .TITLE }}' '{{ .NAME }} ({{ .POS }}/{{ .MAX }})' '[{{ repeat $steps "#" }}{{ repeat (int (sub 10 $steps)) "." }}] {{ printf "%d" $percent }}%'
+
+  awesome-install:tool:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars: [ TOOL, POS, MAX ]
+    label: "awesome-install:tool:{{ .TOOL }}"
+    cmds:
+      - task: awesome-header
+        vars:
+          TITLE: "Installing and configuring:"
+          NAME: "{{ .TOOL }} 🔧"
+          POS: "{{ .POS }}"
+          MAX: "{{ .MAX }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Installation of {{ .TOOL }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
+      - task: "tools:{{ .TOOL }}:install"
+        vars:
+          UNATTENDED: "true"
+
+  awesome-install:app:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars: [ APP, POS, MAX ]
+    label: "awesome-install:app:{{ .APP }}"
+    cmds:
+      - task: awesome-header
+        vars:
+          TITLE: "Installing and configuring:"
+          NAME: "{{ .APP }} 📦"
+          POS: "{{ .POS }}"
+          MAX: "{{ .MAX }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
+      - task: "apps:{{ .APP }}:install"
+        vars:
+          UNATTENDED: "true"
+
+
+  awesome-install:run:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars: [ RUN ]
+    label: "awesome-install:run:{{ .RUN }}"
+    cmds:
+      - task: awesome-header
+        vars:
+          TITLE: "Running OMT-configuration:"
+          NAME: "{{ .RUN }} 📄"
+          POS: "{{ .POS }}"
+          MAX: "{{ .MAX }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Execution of {{ .RUN }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
+      - task: "{{ .RUN }}"
+        vars:
+          UNATTENDED: "true"

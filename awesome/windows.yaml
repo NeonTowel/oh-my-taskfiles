@@ -50,28 +50,82 @@ tasks:
         - lang:go:install
         - lang:rust:install
         - lang:node:install
+      TOOLS_COUNT: "{{ len .TOOLS }}"
+      APPS_COUNT: "{{ len .APPS }}"
+      RUN_COUNT: "{{ len .RUN }}"
     cmds:
       - |
-        echo "Welcome to the Awesome Windows Experience!"
-        echo
-        echo "Tools to install: {{ .TOOLS | join ", " }}"
-        echo "Apps to install: {{ .APPS | join ", " }}"
-        echo "Additional configurations to run: {{ .RUN | join ", " }}"
-        echo
-        gum confirm "Are you sure you want to continue?"
+        cat <<EOF | gum format --type=markdown | gum style \
+          --border double \
+          --padding "1 2" \
+          --width 70 \
+          --align left \
+          --border-foreground 212 \
+          --foreground 44
+        # ✨ Welcome to the Awesome Windows Experience! ✨
 
-      - for: TOOLS
-        task: tools:{{ .ITEM }}:install
-        vars:
-          UNATTENDED: "true"
+        ## 🔧 Tools to install
 
-      - for: APPS
-        task: apps:{{ .ITEM }}:install
-        vars:
-          UNATTENDED: "true"
+        | &nbsp;Name     | &nbsp;Name     | &nbsp;Name     |
+        |----------------|----------------|----------------|
+        {{- $cols := 3 -}}
+        {{- $tools := .TOOLS -}}
+        {{- $numRows := int (div (add (len $tools) (sub $cols 1)) $cols) -}}
+        {{- range $row := until $numRows }}
+        | {{- $idx0 := add $row (mul 0 $numRows) }}
+          {{- if lt $idx0 (len $tools) }}&nbsp;{{ index $tools $idx0 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- $idx1 := add $row (mul 1 $numRows) }}
+          {{- if lt $idx1 (len $tools) }}&nbsp;{{ index $tools $idx1 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- $idx2 := add $row (mul 2 $numRows) }}
+          {{- if lt $idx2 (len $tools) }}&nbsp;{{ index $tools $idx2 }}&nbsp;{{ else }}   {{ end }} |
+        {{- end }}
 
-      - for: RUN
-        task: "{{ .ITEM }}"
+        ## 📦 Applications to install
+
+        | &nbsp;Name     | &nbsp;Name     | &nbsp;Name     |
+        |----------------|----------------|----------------|
+        {{- $cols := 3 -}}
+        {{- $apps := .APPS -}}
+        {{- $numRows := int (div (add (len $apps) (sub $cols 1)) $cols) -}}
+        {{- range $row := until $numRows }}
+        | {{- $idx0 := add $row (mul 0 $numRows) }}
+          {{- if lt $idx0 (len $apps) }}&nbsp;{{ index $apps $idx0 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- $idx1 := add $row (mul 1 $numRows) }}
+          {{- if lt $idx1 (len $apps) }}&nbsp;{{ index $apps $idx1 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- $idx2 := add $row (mul 2 $numRows) }}
+          {{- if lt $idx2 (len $apps) }}&nbsp;{{ index $apps $idx2 }}&nbsp;{{ else }}   {{ end }} |
+        {{- end }}
+
+        ## 📄 Additional OMT-configurations to run
+
+        {{- range .RUN }}
+        - {{ . }}
+        {{- end }}
+        
+        ---
+        🚀 *Press enter to embark on your legendary install quest...* 🚀
+
+        EOF
+        gum style --foreground 208 --align center --width 70 " "
+        gum confirm --selected.background="#44d" --selected.foreground="#fff" "Are you sure you want to continue?"      
+
+      - for: { var: TOOLS }
+        task: "awesome-install:tool"
         vars:
-          UNATTENDED: "true"
+          TOOL: "{{ .ITEM }}"
+          POS: "{{$item := .ITEM}}{{range $index, $element := .TOOLS}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
+          MAX: "{{ .TOOLS_COUNT }}"
+      - for: { var: APPS }
+        task: "awesome-install:app"
+        vars:
+          APP: "{{ .ITEM }}"
+          POS: "{{$item := .ITEM}}{{range $index, $element := .APPS}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
+          MAX: "{{ .APPS_COUNT }}"
+
+      - for: { var: RUN }
+        task: "awesome-install:run"
+        vars:
+          RUN: "{{ .ITEM }}"
+          POS: "{{$item := .ITEM}}{{range $index, $element := .RUN}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
+          MAX: "{{ .RUN_COUNT }}"
 
