@@ -16,7 +16,9 @@ tasks:
       - |
         if ! scoop list | grep -q "{{ .APP }}"; then
           scoop install {{ .APP }}
-          echo "{{ .APP }} has been installed successfully."
+          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
+            {{ .gum_ok }} " ✅ {{ .APP }} has been installed successfully."
+          fi
         fi
 
   neontowel-install:

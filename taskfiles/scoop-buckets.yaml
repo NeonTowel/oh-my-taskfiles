@@ -11,7 +11,9 @@ tasks:
         # if scoop bucket does not already exist, add it
         if ! scoop bucket list | grep -q {{ .BUCKET }}; then
           scoop bucket add {{ .BUCKET }}
-          echo "Scoop bucket {{ .BUCKET }} has been added successfully."
+          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
+            {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been added successfully."
+          fi
         fi
 
   list:
@@ -26,5 +28,7 @@ tasks:
         # if scoop bucket exists, remove it
         if scoop bucket list | grep -q {{ .BUCKET }}; then
           scoop bucket rm {{ .BUCKET }}
-          echo "Scoop bucket {{ .BUCKET }} has been removed successfully."
+          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
+            {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been removed successfully."
+          fi
         fi

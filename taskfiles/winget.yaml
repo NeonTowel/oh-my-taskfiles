@@ -11,5 +11,7 @@ tasks:
       - |
         if winget list "{{ .APP }}" -e | grep -q "No installed package found matching input criteria."; then
           winget install --id "{{ .APP }}" -e --accept-package-agreements --accept-source-agreements
-          echo "{{ .APP }} has been installed successfully."
+          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
+            {{ .gum_ok }} " ✅ {{ .APP }} has been installed successfully."
+          fi
         fi
