@@ -2,16 +2,20 @@ version: '3'
 
 tasks:
   install:
-    deps: [ ":tools:coreutils:install" ]
     platforms: [windows]
     internal: true
+    silent: true
     required:
       vars: [ APP ]
     cmds:
-      - |
-        if winget list "{{ .APP }}" -e | grep -q "No installed package found matching input criteria."; then
-          winget install --id "{{ .APP }}" -e --accept-package-agreements --accept-source-agreements
-          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
-            {{ .gum_ok }} " ✅ {{ .APP }} has been installed successfully."
-          fi
-        fi
+      - defer: 
+          task: :install-error
+          vars: 
+            APP: "{{ .APP }}"
+            EXIT_CODE: "{{ .EXIT_CODE }}"
+      - winget install --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity >nul
+      - task: :install-success
+        vars: 
+          APP: "{{ .APP }}"
+    status:
+      - winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity

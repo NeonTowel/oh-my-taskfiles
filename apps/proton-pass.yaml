@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::winget:install
+        vars:
+          APP: "Proton.ProtonPass"
+
+  install:
+    desc: "[PROTONPASS] ✨ Install Proton Pass"
+    cmds:
+      - task: install:windows

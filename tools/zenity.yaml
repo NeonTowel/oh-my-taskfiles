@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: zenity
+
+  install:
+    desc: "[ZENITY] ✨ Install zenity"
+    silent: true
+    cmds:
+      - task: install:windows

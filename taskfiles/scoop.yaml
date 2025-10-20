@@ -11,15 +11,21 @@ tasks:
     internal: true
     required:
       vars: [ APP ]
-    deps: [ ":tools:coreutils:install" ]
     cmds:
+      - defer: 
+          task: :install-error
+          vars: 
+            APP: "{{ .APP }}"
+            EXIT_CODE: "{{ .EXIT_CODE }}"
       - |
-        if ! scoop list | grep -q "{{ .APP }}"; then
-          scoop install {{ .APP }}
-          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
-            {{ .gum_ok }} " ✅ {{ .APP }} has been installed successfully."
-          fi
-        fi
+        scoop install {{ .APP }}
+        echo $?
+      - echo "Exit code:{{ .EXIT_CODE }}"
+      - task: :install-success
+        vars: 
+          APP: "{{ .APP }}"
+    status:
+      - scoop list | findstr /C:"{{ .APP }}" >nul
 
   neontowel-install:
     platforms: [windows]

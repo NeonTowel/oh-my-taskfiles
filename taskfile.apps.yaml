@@ -16,6 +16,7 @@ includes:
   simplenote: apps/simplenote.yaml
   vscodium: apps/vscodium.yaml
   podman-desktop: apps/podman-desktop.yaml
+  proton-pass: apps/proton-pass.yaml
 
 tasks:
   default:

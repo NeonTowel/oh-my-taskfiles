@@ -1,6 +1,10 @@
 version: '3'
 
 includes:
+  install-common:
+    taskfile: taskfiles/install-common.yaml
+    flatten: true
+    internal: true
   scoop: 
     taskfile: taskfiles/scoop.yaml
     internal: true

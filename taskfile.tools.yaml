@@ -30,6 +30,7 @@ includes:
   rose-pine-cursor: tools/rose-pine-cursor.yaml
   gcloud: tools/gcloud.yaml
   translucenttb: tools/translucenttb.yaml
+  zenity: tools/zenity.yaml
 
 tasks:
   default:

@@ -33,7 +33,7 @@ vars:
       fi
   gum_ok:
     sh: |
-      if command -v gum >/dev/null 2>&1; then
+      if command -v gum >/dev/null 2>&1 || where.exe gum >nul 2>&1; then
         echo "gum style --foreground 46 --bold"
       else
         echo "echo"
