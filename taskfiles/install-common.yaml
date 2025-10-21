@@ -1,18 +1,6 @@
 version: '3'
 
 tasks:
-  install-error:
-    required:
-      vars: [ APP, EXIT_CODE ]
-    cmds:
-      - |
-        {{ if .EXIT_CODE }}
-        gum style \
-          --foreground 196 --border-foreground 196 --border double \
-          --align center --width 50 --margin "1 2" --padding "2 4" \
-          ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
-        {{ end }}
-
   install-success:
     required:
       vars: [ APP ]

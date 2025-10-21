@@ -8,11 +8,13 @@ tasks:
     required:
       vars: [ APP ]
     cmds:
-      - defer: 
-          task: :install-error
-          vars: 
-            APP: "{{ .APP }}"
-            EXIT_CODE: "{{ .EXIT_CODE }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
       - winget install --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity >nul
       - task: :install-success
         vars: 

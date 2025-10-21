@@ -12,17 +12,17 @@ tasks:
     required:
       vars: [ APP ]
     cmds:
-      - defer: 
-          task: :install-error
-          vars: 
-            APP: "{{ .APP }}"
-            EXIT_CODE: "{{ .EXIT_CODE }}"
-      - |
-        scoop install {{ .APP }}
-        echo $?
-      - echo "Exit code:{{ .EXIT_CODE }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
+      - scoop install {{ .APP }} || true
+      - scoop list | findstr /C:"{{ .APP }}" >nul
       - task: :install-success
-        vars: 
+        vars:
           APP: "{{ .APP }}"
     status:
       - scoop list | findstr /C:"{{ .APP }}" >nul
