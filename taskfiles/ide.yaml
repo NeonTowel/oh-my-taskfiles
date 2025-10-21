@@ -23,7 +23,22 @@ vars:
     - esbenp.prettier-vscode
     - EditorConfig.EditorConfig
     - redhat.vscode-yaml
-  IDE_EXTENSIONS_cursor: []
+  IDE_EXTENSIONS_cursor:
+    - ms-vscode-remote.remote-containers
+    - ms-vscode-remote.remote-wsl
+    - ms-vscode-remote.remote-ssh
+    - Catppuccin.catppuccin-vsc
+    - Catppuccin.catppuccin-vsc-icons
+    - svelte.svelte-vscode
+    - tamasfe.even-better-toml
+    - golang.Go
+    - rust-lang.rust-analyzer
+    - oderwat.indent-rainbow
+    - humao.rest-client
+    - esbenp.prettier-vscode
+    - EditorConfig.EditorConfig
+    - redhat.vscode-yaml
+    - CoenraadS.bracket-pair-colorizer-2
   IDE_EXTENSIONS_vscodium:
     - Catppuccin.catppuccin-vsc
     - Catppuccin.catppuccin-vsc-icons
@@ -50,17 +65,15 @@ tasks:
       vars: [ IDE, IDE_EXTENSIONS ]
     cmds:
       - |
-        echo "Configuring {{ .IDE }}..."
         install_extensions="{{range .IDE_EXTENSIONS}}--install-extension {{.}} {{end}}"
-        echo "Installing extensions: $install_extensions"
         if ! command -v "{{ .IDE }}" >/dev/null 2>&1; then
-          echo "{{ .IDE }} is not installed, trying to look up the cli binary..."
+          echo "{{ .IDE }} is not available in current shell, trying to look up the cli binary directly..."
           case "{{ .IDE }}" in
             "vscode")
               CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code.cmd"
               ;;
             "cursor")
-              CLI_BINARY="$HOME/scoop/apps/cursor/current/resources/app/bin/cursor.cmd"
+              CLI_BINARY="$HOME/AppData/Local/Programs/cursor/resources/app/bin/cursor.cmd"
               ;;
             "vscodium")
               CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium.cmd"
@@ -68,7 +81,7 @@ tasks:
           esac
           # if CLI_BINARY does not exist, exit with error
           if [ ! -f "$CLI_BINARY" ]; then
-            echo "ERROR: CLI_BINARY is not found, exiting..."
+            echo "ERROR: $CLI_BINARY is not found, exiting..."
             exit 1
           fi
         else
@@ -91,6 +104,7 @@ tasks:
     deps: [ ":tools:gum:install" ]
     cmds:
       - |
+        echo "Configuring Cursor user settings..."
         write_settings=true
         if [ -f "$HOME/AppData/Roaming/Cursor/User/settings.json" ]; then
           if [ "{{ .UNATTENDED }}" = "true" ]; then
@@ -132,9 +146,11 @@ tasks:
   configure:cursor:
     internal: true
     cmds:
-      - task: configure:vscode
+      - task: install-extensions
         vars:
-          IDE: "{{ .IDE }}"
+          IDE: 'cursor'
+          IDE_EXTENSIONS: 
+            ref: .IDE_EXTENSIONS_cursor
       - task: configure:cursor:windows
         platforms: [windows]
 

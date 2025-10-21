@@ -2,15 +2,18 @@ version: '3'
 
 tasks:
   add:
-    deps: [ "::tools:coreutils:install" ]
     aliases: [ ensure ]
     requires:
       vars: [ BUCKET ]
     cmds:
       - |
         # if scoop bucket does not already exist, add it
-        if ! scoop bucket list | grep -q {{ .BUCKET }}; then
+        if ! scoop bucket list | findstr /C:"{{ .BUCKET }}" >nul; then
+          {{ if .BUCKET_URL }}
+          scoop bucket add {{ .BUCKET }} {{ .BUCKET_URL }}
+          {{ else }}
           scoop bucket add {{ .BUCKET }}
+          {{ end }}
           if ! [ "{{ .UNATTENDED }}" = "true" ]; then
             {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been added successfully."
           fi
@@ -26,7 +29,7 @@ tasks:
     cmds:
       - |
         # if scoop bucket exists, remove it
-        if scoop bucket list | grep -q {{ .BUCKET }}; then
+        if scoop bucket list | findstr /C:"{{ .BUCKET }}"; then
           scoop bucket rm {{ .BUCKET }}
           if ! [ "{{ .UNATTENDED }}" = "true" ]; then
             {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been removed successfully."

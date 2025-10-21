@@ -8,11 +8,16 @@ tasks:
       - |
         if [ "{{ .UNATTENDED }}" = "true" ]; then
           echo "Unattended mode enabled, skipping interactive configuration."
+          echo "Using placeholders for Git Author and Email, you can change these later by running 'omt git:config-global'!"
           if [ ! -z "$(git config --global user.name)" ]; then
             user_name=$(git config --global user.name)
+          else
+            user_name="Firstname Lastname"
           fi
           if [ ! -z "$(git config --global user.email)" ]; then
             user_email=$(git config --global user.email)
+          else
+            user_email="change_me@example.com"
           fi
         else
           user_name=$(gum input --value "$(git config --global user.name)" --placeholder "Enter your name" --header "Git Author Name (global)")

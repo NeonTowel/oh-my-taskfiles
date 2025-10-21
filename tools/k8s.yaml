@@ -14,24 +14,28 @@ tasks:
     internal: true
     silent: true
     cmds:
+      - task: ::scoop:buckets:add
+        vars:
+          BUCKET: lemon
+          BUCKET_URL: https://github.com/hoilc/scoop-lemon
       - task: ::scoop:install
         vars:
-          APP_NAME: kubecm
+          APP: kubecm
       - task: ::scoop:install
         vars:
-          APP_NAME: kubectx
+          APP: kubectx
       - task: ::scoop:install
         vars:
-          APP_NAME: kubens
+          APP: kubens
       - task: ::scoop:install
         vars:
-          APP_NAME: kubectl
+          APP: kubectl
       - task: ::scoop:install
         vars:
-          APP_NAME: helm
+          APP: helm
       - task: ::scoop:install
         vars:
-          APP_NAME: fzf
+          APP: fzf
     
 
   install:linux:

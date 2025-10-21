@@ -8,7 +8,7 @@ tasks:
     cmds:
       - task: ::scoop:extras-install
         vars:
-          APP_NAME: podman-desktop
+          APP: podman-desktop
 
   install:
     desc: "[PODMAN-DESKTOP] ✨ Install Podman Desktop"
