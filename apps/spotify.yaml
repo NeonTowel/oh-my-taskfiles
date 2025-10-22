@@ -34,6 +34,7 @@ tasks:
           spicetify >/dev/null
           spicetify config spotify_path "$HOME\scoop\apps\spotify\current"
           spicetify config prefs_path "$HOME\AppData\Roaming\Spotify\prefs"
+          spicetify backup apply
           spicetify apply
           echo "spicetify has been configured successfully."
         fi
