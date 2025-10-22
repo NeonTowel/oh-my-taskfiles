@@ -17,6 +17,9 @@ includes:
   vscodium: apps/vscodium.yaml
   podman-desktop: apps/podman-desktop.yaml
   proton-pass: apps/proton-pass.yaml
+  proton-drive: apps/proton-drive.yaml
+  proton-mail: apps/proton-mail.yaml
+  proton-authenticator: apps/proton-authenticator.yaml
 
 tasks:
   default:

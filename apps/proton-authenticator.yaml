@@ -2,16 +2,14 @@ version: '3'
 
 tasks:
   install:windows:
-    platforms: [windows]
     internal: true
-    silent: true
+    platforms: [windows]
     cmds:
       - task: ::winget:install
         vars:
-          APP: "Bin-Huang.Chatbox"
+          APP: "Proton.ProtonAuthenticator"
 
   install:
-    desc: "[CHATBOX] ✨ Install Chatbox AI chat bot"
-    silent: true
+    desc: "[PROTONAUTHENTICATOR] ✨ Install Proton Authenticator"
     cmds:
       - task: install:windows

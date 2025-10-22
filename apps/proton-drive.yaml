@@ -2,16 +2,14 @@ version: '3'
 
 tasks:
   install:windows:
-    platforms: [windows]
     internal: true
-    silent: true
+    platforms: [windows]
     cmds:
       - task: ::winget:install
         vars:
-          APP: "Bin-Huang.Chatbox"
+          APP: "Proton.ProtonDrive"
 
   install:
-    desc: "[CHATBOX] ✨ Install Chatbox AI chat bot"
-    silent: true
+    desc: "[PROTONDRIVE] ✨ Install Proton Drive"
     cmds:
       - task: install:windows
