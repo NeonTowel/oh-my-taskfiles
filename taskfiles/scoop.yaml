@@ -34,7 +34,7 @@ tasks:
       vars: [ APP ]
     cmds:
       - task: buckets:ensure
-        vars: { BUCKET: "neontowel" }
+        vars: { BUCKET: "neontowel", BUCKET_URL: "https://github.com/NeonTowel/scoop-bucket"}
       - task: install
         vars: { APP: "{{ .APP }}" }
 
