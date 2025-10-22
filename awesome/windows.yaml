@@ -45,6 +45,10 @@ tasks:
         - joplin
         - simplenote
         - podman-desktop
+        - proton-pass
+        - proton-drive
+        - proton-mail
+        - proton-authenticator
       RUN:
         - git:config-global
         - lang:go:install
