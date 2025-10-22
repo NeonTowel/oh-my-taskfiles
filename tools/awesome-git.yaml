@@ -50,7 +50,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: ::scoop:install
+      - task: ::scoop:neontowel-install
         vars:
           APP: awesome-git
       
