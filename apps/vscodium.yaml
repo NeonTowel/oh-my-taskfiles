@@ -5,17 +5,9 @@ tasks:
     - task --list --taskfile apps/vscodium.yaml
 
   configure:
-    internal: true
+    desc: "[VSCODIUM] ⚙️ Configure VSCodium (extensions + settings)"
     cmds:
-      - |
-        if ! command -v codium >/dev/null 2>&1; then
-          echo "❌ ERROR: codium cli is not installed"
-          echo "Please install codium cli first."
-          exit 1
-        fi
-      - task: ::ide:configure
-        vars:
-          IDE: "vscodium"
+      - task: ::ide:configure:vscodium
 
   install:windows:
     platforms: [windows]

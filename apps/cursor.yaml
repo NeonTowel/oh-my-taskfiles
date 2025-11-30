@@ -5,12 +5,9 @@ tasks:
     - task --list --taskfile apps/cursor.yaml
 
   configure:
-    internal: true
-    ignore_error: true
+    desc: "[CURSOR] ⚙️ Configure Cursor (extensions + settings)"
     cmds:
-      - task: ::ide:configure
-        vars:
-          IDE: "cursor"
+      - task: ::ide:configure:cursor
 
   install:windows:
     platforms: [windows]

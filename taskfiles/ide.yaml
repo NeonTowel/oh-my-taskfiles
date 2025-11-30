@@ -59,120 +59,202 @@ tasks:
   default:
     - task --list --taskfile taskfiles/ide.yaml
 
-  install-extensions:
-    internal: true
+  find-cli:
+    desc: "[IDE] 🔍 Find CLI executable for an IDE (vscode, cursor, vscodium)"
+    silent: true
     requires:
-      vars: [ IDE, IDE_EXTENSIONS ]
+      vars:
+        - name: IDE
+          enum: [vscode, cursor, vscodium]
     cmds:
       - |
-        install_extensions="{{range .IDE_EXTENSIONS}}--install-extension {{.}} {{end}}"
-        if ! command -v "{{ .IDE }}" >/dev/null 2>&1; then
-          echo "{{ .IDE }} is not available in current shell, trying to look up the cli binary directly..."
-          case "{{ .IDE }}" in
-            "vscode")
-              CLI_BINARY="$HOME/scoop/apps/vscode/current/bin/code.cmd"
-              ;;
-            "cursor")
-              CLI_BINARY="$HOME/AppData/Local/Programs/cursor/resources/app/bin/cursor.cmd"
-              ;;
-            "vscodium")
-              CLI_BINARY="$HOME/scoop/apps/vscodium/current/bin/codium.cmd"
-              ;;
-          esac
-          # if CLI_BINARY does not exist, exit with error
-          if [ ! -f "$CLI_BINARY" ]; then
-            echo "ERROR: $CLI_BINARY is not found, exiting..."
-            exit 1
+        try_path() {
+          p="$1"
+          if command -v "$p" >/dev/null 2>&1; then
+            echo "$p"
+            exit 0
           fi
-        else
-          CLI_BINARY="{{ .IDE }}"
+          if [ -f "$p" ]; then
+            echo "$p"
+            exit 0
+          fi
+        }
+
+        case "{{ .IDE }}" in
+          vscode)
+            try_path "code"
+            try_path "$HOME/scoop/apps/vscode/current/bin/code.cmd"
+            try_path "$LOCALAPPDATA/Programs/Microsoft VS Code/bin/code.cmd"
+            try_path "$PROGRAMFILES/Microsoft VS Code/bin/code.cmd"
+            try_path "/usr/bin/code"
+            try_path "/usr/local/bin/code"
+            ;;
+          cursor)
+            try_path "cursor"
+            try_path "$HOME/scoop/apps/cursor/current/cursor.exe"
+            try_path "$HOME/scoop/shims/cursor.cmd"
+            try_path "$LOCALAPPDATA/Programs/cursor/resources/app/bin/cursor.cmd"
+            try_path "$LOCALAPPDATA/cursor/cursor.exe"
+            try_path "$PROGRAMFILES/Cursor/resources/app/bin/cursor.cmd"
+            try_path "/usr/bin/cursor"
+            try_path "/usr/local/bin/cursor"
+            try_path "/opt/cursor/cursor"
+            ;;
+          vscodium)
+            try_path "codium"
+            try_path "$HOME/scoop/apps/vscodium/current/bin/codium.cmd"
+            try_path "$HOME/scoop/apps/vscodium-portable/current/bin/codium.cmd"
+            try_path "$HOME/scoop/shims/codium.cmd"
+            try_path "$LOCALAPPDATA/Programs/VSCodium/bin/codium.cmd"
+            try_path "$PROGRAMFILES/VSCodium/bin/codium.cmd"
+            try_path "/usr/bin/codium"
+            try_path "/usr/local/bin/codium"
+            try_path "/opt/vscodium/bin/codium"
+            ;;
+        esac
+
+        echo "ERROR: Could not find {{ .IDE }} CLI in any known location" >&2
+        exit 1
+
+  find-settings-path:
+    desc: "[IDE] 🔍 Find settings.json path for an IDE"
+    silent: true
+    requires:
+      vars:
+        - name: IDE
+          enum: [vscode, cursor, vscodium]
+    cmds:
+      - |
+        try_settings() {
+          p="$1"
+          if [ -f "$p" ]; then
+            echo "$p"
+            exit 0
+          fi
+          dir="${p%/*}"
+          if [ -d "$dir" ]; then
+            echo "$p"
+            exit 0
+          fi
+        }
+
+        case "{{ .IDE }}" in
+          vscode)
+            try_settings "$HOME/scoop/persist/vscode/data/user-data/User/settings.json"
+            try_settings "$APPDATA/Code/User/settings.json"
+            try_settings "$HOME/.config/Code/User/settings.json"
+            FALLBACK="$APPDATA/Code/User/settings.json"
+            ;;
+          cursor)
+            try_settings "$HOME/scoop/persist/cursor/User/settings.json"
+            try_settings "$APPDATA/Cursor/User/settings.json"
+            try_settings "$HOME/.config/Cursor/User/settings.json"
+            FALLBACK="$APPDATA/Cursor/User/settings.json"
+            ;;
+          vscodium)
+            try_settings "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json"
+            try_settings "$HOME/scoop/persist/vscodium-portable/data/user-data/User/settings.json"
+            try_settings "$APPDATA/VSCodium/User/settings.json"
+            try_settings "$HOME/.config/VSCodium/User/settings.json"
+            FALLBACK="$APPDATA/VSCodium/User/settings.json"
+            ;;
+        esac
+
+        echo "$FALLBACK"
+
+  install-extensions:
+    desc: "[IDE] 📦 Install extensions for an IDE"
+    silent: true
+    requires:
+      vars: [IDE, IDE_EXTENSIONS]
+    cmds:
+      - |
+        CLI_BINARY=$(task ide:find-cli IDE={{ .IDE }} 2>/dev/null)
+        if [ $? -ne 0 ] || [ -z "$CLI_BINARY" ]; then
+          echo "❌ ERROR: Could not find {{ .IDE }} CLI"
+          task ide:find-cli IDE={{ .IDE }}
+          exit 1
         fi
-        $CLI_BINARY $install_extensions
+        echo "✅ Found {{ .IDE }} CLI: $CLI_BINARY"
+        echo "📦 Installing extensions..."
+        {{range .IDE_EXTENSIONS}}
+        echo "  → Installing {{.}}"
+        "$CLI_BINARY" --install-extension "{{.}}" --force 2>/dev/null || true
+        {{end}}
+        echo "✅ Extensions installed"
+
+  copy-settings:
+    desc: "[IDE] ⚙️ Copy settings.json to an IDE"
+    silent: true
+    deps: [":tools:gum:install"]
+    requires:
+      vars:
+        - name: IDE
+          enum: [vscode, cursor, vscodium]
+    cmds:
+      - |
+        SETTINGS_PATH=$(task ide:find-settings-path IDE={{ .IDE }})
+        echo "📁 Target settings path: $SETTINGS_PATH"
+
+        write_settings=true
+        if [ -f "$SETTINGS_PATH" ]; then
+          if [ "{{ .UNATTENDED }}" = "true" ]; then
+            echo "⚠️  Unattended mode: overwriting existing config"
+          else
+            if ! gum confirm "Settings file exists at $SETTINGS_PATH. Overwrite?"; then
+              write_settings=false
+              echo "⏭️  Skipping settings copy"
+            fi
+          fi
+        fi
+
+        if $write_settings; then
+          mkdir -p "$(dirname "$SETTINGS_PATH")"
+          cp dotfiles/vscode/settings.json "$SETTINGS_PATH"
+          echo "✅ Settings copied to $SETTINGS_PATH"
+        fi
 
   configure:vscode:
-    internal: true
+    desc: "[VSCODE] ⚙️ Configure VS Code (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
-          IDE: '{{ .IDE | default "vscode" }}'
-          IDE_EXTENSIONS: 
+          IDE: vscode
+          IDE_EXTENSIONS:
             ref: .IDE_EXTENSIONS_vscode
-
-  configure:cursor:windows:
-    internal: true
-    platforms: [windows]
-    deps: [ ":tools:gum:install" ]
-    cmds:
-      - |
-        echo "Configuring Cursor user settings..."
-        write_settings=true
-        if [ -f "$HOME/AppData/Roaming/Cursor/User/settings.json" ]; then
-          if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "!! Unattended mode enabled, overwriting cursor config."
-          else
-            if ! gum confirm "The file $HOME/AppData/Roaming/Cursor/User/settings.json already exists. Overwrite?"; then
-              write_settings=false
-              echo "Skipping cursor config"
-            fi
-          fi
-        fi
-        if $write_settings; then
-          cp dotfiles/vscode/settings.json "$HOME/AppData/Roaming/Cursor/User/settings.json"
-          echo "Cursor config has been overwritten"
-        fi
-
-  configure:vscodium:windows:
-    internal: true
-    platforms: [windows]
-    deps: [ ":tools:gum:install" ]
-    cmds:
-      - |
-        write_settings=true
-        if [ -f "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json" ]; then
-          if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "!! Unattended mode enabled, overwriting VSCodium config."
-          else
-            if ! gum confirm "The file $HOME/scoop/persist/vscodium/data/user-data/User/settings.json already exists. Overwrite?"; then
-              write_settings=false
-              echo "Skipping VSCodium config"
-            fi
-          fi
-        fi
-        if $write_settings; then
-          cp dotfiles/vscode/settings.json "$HOME/scoop/persist/vscodium/data/user-data/User/settings.json"
-          echo "VSCodium config has been overwritten"
-        fi
+      - task: copy-settings
+        vars:
+          IDE: vscode
 
   configure:cursor:
-    internal: true
+    desc: "[CURSOR] ⚙️ Configure Cursor (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
-          IDE: 'cursor'
-          IDE_EXTENSIONS: 
+          IDE: cursor
+          IDE_EXTENSIONS:
             ref: .IDE_EXTENSIONS_cursor
-      - task: configure:cursor:windows
-        platforms: [windows]
+      - task: copy-settings
+        vars:
+          IDE: cursor
 
   configure:vscodium:
-    internal: true
+    desc: "[VSCODIUM] ⚙️ Configure VSCodium (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
-          IDE: 'vscodium'
-          IDE_EXTENSIONS: 
+          IDE: vscodium
+          IDE_EXTENSIONS:
             ref: .IDE_EXTENSIONS_vscodium
-      - task: configure:vscodium:windows
-        platforms: [windows]
+      - task: copy-settings
+        vars:
+          IDE: vscodium
 
   configure:
-    internal: true
+    desc: "[IDE] ⚙️ Configure an IDE (vscode, cursor, or vscodium)"
     requires:
-      vars: 
+      vars:
         - name: IDE
-          enum: [ vscode, cursor, vscodium ]
+          enum: [vscode, cursor, vscodium]
     cmds:
       - task: configure:{{ .IDE }}
-        vars:
-          IDE: "{{ .IDE }}"
-
