@@ -20,10 +20,21 @@ function deduplicate-path() {
     $env:PATH = $finalPath
 }
 
+# Alias for where (if not already aliased)
+if (! Get-Command where -ErrorAction SilentlyContinue) {
+    function where($command) { Get-Command $command | ForEach-Object { $_.Source } }
+}
+
+# Alias for find (if not already aliased)
+function find($path, $pattern) { 
+    Get-ChildItem -Path $path -Filter $pattern -Recurse | ForEach-Object { echo $_.FullName }
+}
+
 # Aliases for lsd (if installed)
 if (Get-Command lsd -ErrorAction SilentlyContinue) {
     function l { lsd @args }
     function ll { lsd -alh @args }
+    function ls { lsd @args }
     function tree { lsd --tree @args }
 }
 
