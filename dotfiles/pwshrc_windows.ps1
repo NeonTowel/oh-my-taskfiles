@@ -1,6 +1,25 @@
 # Add custom bin directories to PATH
 $env:Path += ";$HOME\bin"
 
+# Function to deduplicate PATH, and ensure that the PATH contains User and System PATHs as well.
+function deduplicate-path() {
+    # Get user and system PATH from registry
+    $userPath = (Get-ItemProperty -Path "HKCU:\Environment" -Name Path).Path
+    $systemPath = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name Path).Path
+
+    # Split paths to arrays, filter out empty entries, combine, and deduplicate
+    $mergedPath = @($systemPath, $userPath, $env:PATH) -join ';' `
+        -split ';' | Where-Object { $_.Trim() -ne '' } | 
+        ForEach-Object { $_.Trim() } |
+        Select-Object -Unique
+
+    # Join back into a single PATH string
+    $finalPath = ($mergedPath -join ';')
+
+    # Set the new PATH
+    $env:PATH = $finalPath
+}
+
 # Aliases for lsd (if installed)
 if (Get-Command lsd -ErrorAction SilentlyContinue) {
     function l { lsd @args }
@@ -101,5 +120,5 @@ if (Test-Path "C:\Program Files\dotnet\dotnet.exe") {
     $env:Path += ";C:\Program Files\dotnet"
 }
 
-
-
+# Deduplicate PATH
+deduplicate-path
