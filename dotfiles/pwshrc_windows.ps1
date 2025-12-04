@@ -1,5 +1,5 @@
 # Add custom bin directories to PATH
-$env:Path += ";$HOME\bin"
+$env:Path += ";$HOME\bin;$HOME\.local\bin"
 
 # Function to deduplicate PATH, and ensure that the PATH contains User and System PATHs as well.
 function deduplicate-path() {
@@ -20,9 +20,9 @@ function deduplicate-path() {
     $env:PATH = $finalPath
 }
 
-# Alias for where (if not already aliased)
-if (! Get-Command where -ErrorAction SilentlyContinue) {
-    function where($command) { Get-Command $command | ForEach-Object { $_.Source } }
+# Alias for which (if not already aliased)
+if (!(Get-Command which -ErrorAction SilentlyContinue)) {
+    function which($command) { Get-Command $command | ForEach-Object { $_.Source } }
 }
 
 # Alias for find (if not already aliased)
@@ -129,6 +129,11 @@ if (Get-Command helix -ErrorAction SilentlyContinue) {
 # Dotnet configuration
 if (Test-Path "C:\Program Files\dotnet\dotnet.exe") {
     $env:Path += ";C:\Program Files\dotnet"
+}
+
+# Claude configuration
+if (Get-Command claude -ErrorAction SilentlyContinue) {
+    $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
 }
 
 # Deduplicate PATH
