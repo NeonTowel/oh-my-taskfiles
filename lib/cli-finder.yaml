@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  find-in-paths:
+    internal: true
+    silent: true
+    requires:
+      vars: [COMMAND_NAME, SEARCH_PATHS]
+    cmds:
+      - |
+        try_path() {
+          p="$1"
+          if command -v "$p" >/dev/null 2>&1; then
+            echo "$p"
+            exit 0
+          fi
+          if [ -f "$p" ]; then
+            echo "$p"
+            exit 0
+          fi
+        }
+
+        IFS=',' read -ra PATHS <<< "{{ .SEARCH_PATHS }}"
+        for path in "${PATHS[@]}"; do
+          try_path "$path"
+        done
+
+        echo "ERROR: Could not find {{ .COMMAND_NAME }}" >&2
+        exit 1

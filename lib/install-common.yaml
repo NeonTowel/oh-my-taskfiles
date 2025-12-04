@@ -1,0 +1,52 @@
+version: '3'
+
+tasks:
+  install-success:
+    internal: true
+    silent: true
+    requires:
+      vars: [APP]
+    cmds:
+      - |
+        if [ "{{ .UNATTENDED }}" != "true" ]; then
+          gum style \
+            --foreground 34 --border-foreground 34 --border normal \
+            --align left --width 50 --margin "0 0" --padding "0 1" \
+            " ✅ {{ .APP }} has been installed successfully."
+        fi
+
+  install-error:
+    internal: true
+    silent: true
+    requires:
+      vars: [APP, EXIT_CODE]
+    cmds:
+      - |
+        gum style \
+          --foreground 196 --border-foreground 196 --border double \
+          --align center --width 50 --margin "1 2" --padding "2 4" \
+          " ❌ ERROR " "Installation of {{ .APP }} failed with code {{ .EXIT_CODE }}!"
+
+  ensure-command-exists:
+    internal: true
+    silent: true
+    requires:
+      vars: [COMMAND_NAME]
+    cmds:
+      - |
+        if ! command -v {{ .COMMAND_NAME }} >/dev/null 2>&1; then
+          echo "❌ ERROR: {{ .COMMAND_NAME }} is not installed"
+          exit 1
+        fi
+
+  check-already-installed:
+    internal: true
+    silent: true
+    requires:
+      vars: [COMMAND_NAME, TOOL_NAME]
+    cmds:
+      - |
+        if command -v {{ .COMMAND_NAME }} >/dev/null 2>&1; then
+          echo "✅ {{ .TOOL_NAME }} is already installed"
+          exit 0
+        fi

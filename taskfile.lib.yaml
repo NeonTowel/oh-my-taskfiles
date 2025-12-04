@@ -1,13 +1,37 @@
 version: '3'
 
 includes:
-  install-common:
-    taskfile: taskfiles/install-common.yaml
+  paths:
+    taskfile: lib/paths.yaml
     flatten: true
     internal: true
-  scoop: 
+  dir-utils:
+    taskfile: lib/dir-utils.yaml
+    flatten: true
+    internal: true
+  config-copy:
+    taskfile: lib/config-copy.yaml
+    flatten: true
+    internal: true
+  install-common:
+    taskfile: lib/install-common.yaml
+    flatten: true
+    internal: true
+  install-binary:
+    taskfile: lib/install-binary.yaml
+    flatten: true
+    internal: true
+  cli-finder:
+    taskfile: lib/cli-finder.yaml
+    flatten: true
+    internal: true
+  platform:
+    taskfile: lib/platform.yaml
+    flatten: true
+    internal: true
+  scoop:
     taskfile: taskfiles/scoop.yaml
     internal: true
-  winget: 
+  winget:
     taskfile: taskfiles/winget.yaml
     internal: true

@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    - task --list --taskfile apps/chatbox.yaml
+
   install:windows:
     platforms: [windows]
     internal: true

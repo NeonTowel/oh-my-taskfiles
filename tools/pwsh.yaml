@@ -40,12 +40,13 @@ tasks:
         echo "pwsh profile has been installed successfully to $HOME\.pwshrc.ps1"
         echo "Ensure you source the profile to your current shell."
 
-  install:linux: # TODO: add Linux support
+  install:linux:
     internal: true
     platforms: [linux]
     cmds:
       - |
-        echo "Not implemented yet."
+        echo "PowerShell installation on Linux not yet implemented"
+        exit 1
 
   install:
     silent: true

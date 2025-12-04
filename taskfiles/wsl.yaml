@@ -30,7 +30,6 @@ tasks:
     internal: true
     cmds:
       - |
-        # if OS is set and is linux, use sudo to create the symlink
         if [ -z "{{ .OS }}" ] || [ "{{ .OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, using sudo to create the symlink..."
           if [ ! -f /mnt/c/npiperelay/npiperelay.exe ]; then
@@ -71,24 +70,20 @@ tasks:
     desc: "[WSL] Configure Git to use 1Password for SSH Agent and sign commits"
     cmds:
       - |
-        # if OS is linux get the username using cmd.exe
         if [ "{{ .OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, getting username..."
-          # if cmd.exe is not found, throw an error
           if [ ! -f /mnt/c/Windows/System32/cmd.exe ]; then
             echo "ERROR: cmd.exe not found, please install cmd.exe first."
             exit 1
           fi
           username=$(/mnt/c/Windows/System32/cmd.exe /c "echo %USERNAME%" | tr -d '\r\n')
           echo "Username: $username"
-          # if git is not found, throw an error
           if ! command -v git &> /dev/null; then
             echo "ERROR: git command not found, please install git first."
             exit 1
           fi
         elif [ "{{ .OS }}" = "Windows_NT" ]; then
           echo "OS environment variable set to windows, getting username..."
-          # if wsl command is not found, throw an error
           if ! command -v wsl &> /dev/null; then
             echo "ERROR: wsl command not found, please install WSL first."
             exit 1
@@ -99,7 +94,6 @@ tasks:
             username=$(powershell -c '[Console]::WriteLine($env:USERNAME)' | tr -d '\r\n')
           fi
 
-          # if git is not found, throw an error
           if ! wsl zsh -lic 'command -v git >/dev/null 2>&1'; then
             echo "ERROR: git command not found, please install git first."
             exit 1
@@ -109,13 +103,11 @@ tasks:
           exit 1
         fi
 
-        # if username is not set, throw an error
         if [ -z "$username" ]; then
           echo "ERROR: Username not found"
           exit 1
         fi
 
-        # see if ssh.exe and op-ssh-sign.exe are available on the system, check windows and wsl paths, if not throw an error
         ssh_exe_path=""
         if [ -f /mnt/c/Windows/System32/OpenSSH/ssh.exe ]; then
           ssh_exe_path="/mnt/c/Windows/System32/OpenSSH/ssh.exe"
@@ -135,7 +127,6 @@ tasks:
           exit 1
         fi
 
-        # if OS is linux configure git directly, if OS is Windows_NT configure git using wsl
         if [ "{{ .OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, configuring git directly..."
           git config --global core.sshcommand $ssh_exe_path

@@ -8,15 +8,11 @@ tasks:
     platforms: [windows]
     internal: true
     silent: true
-    vars:
-      NVIM_CONFIG_DIR: "$HOME/AppData/Local/nvim"
     cmds:
       - |
-        if [ ! -d "{{ .NVIM_CONFIG_DIR }}" ]; then
-          mkdir -p "{{ .NVIM_CONFIG_DIR }}"
-        fi
-        cp "dotfiles/nvim/init.lua" "{{ .NVIM_CONFIG_DIR }}/init.lua"
-        echo "nvim config has been configured successfully."
+        mkdir -p "{{ .CONFIG_DIR_NVIM_WINDOWS }}"
+        cp "{{ .DOTFILES_SOURCE }}/nvim/init.lua" "{{ .CONFIG_DIR_NVIM_WINDOWS }}/init.lua"
+        echo "✅ nvim config copied successfully"
 
   install:windows:
     platforms: [windows]

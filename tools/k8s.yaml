@@ -61,90 +61,108 @@ tasks:
   ############################################################
 
   install-kubecm:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v kubecm >/dev/null 2>&1; then
-          echo "kubecm is already installed."
-        else
-          curl -LO "https://github.com/sunny0826/kubecm/releases/download/{{ .KUBECM_VERSION }}/kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz"
-          tar -xzf kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
-          chmod +x kubecm
-          mv kubecm ~/bin/kubecm
-          rm kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
-          echo "kubecm has been installed successfully."
+          echo "✅ kubecm is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install kubecm"
+        echo "Downloading kubecm..."
+        curl -LO "https://github.com/sunny0826/kubecm/releases/download/{{ .KUBECM_VERSION }}/kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz"
+        tar -xzf kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
+        chmod +x kubecm
+        mv kubecm ~/bin/kubecm
+        rm kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz
+        echo "✅ kubecm installed successfully"
 
   install-kubectx:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v kubectx >/dev/null 2>&1; then
-          echo "kubectx is already installed."
-        else
-          curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBECTX_VERSION }}/kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz"
-          tar -xzf kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
-          chmod +x kubectx
-          mv kubectx ~/bin/kubectx
-          rm kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
-          echo "kubectx has been installed successfully."
+          echo "✅ kubectx is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install kubectx"
+        echo "Downloading kubectx..."
+        curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBECTX_VERSION }}/kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz"
+        tar -xzf kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
+        chmod +x kubectx
+        mv kubectx ~/bin/kubectx
+        rm kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz
+        echo "✅ kubectx installed successfully"
 
   install-kubens:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v kubens >/dev/null 2>&1; then
-          echo "kubens is already installed."
-        else
-          curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBENS_VERSION }}/kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz"
-          tar -xzf kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
-          chmod +x kubens
-          mv kubens ~/bin/kubens
-          rm kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
-          echo "kubens has been installed successfully."
+          echo "✅ kubens is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install kubens"
+        echo "Downloading kubens..."
+        curl -LO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBENS_VERSION }}/kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz"
+        tar -xzf kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
+        chmod +x kubens
+        mv kubens ~/bin/kubens
+        rm kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz
+        echo "✅ kubens installed successfully"
 
   install-kubectl:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v kubectl >/dev/null 2>&1; then
-          echo "kubectl is already installed."
-        else
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          mv kubectl ~/bin/kubectl
-          echo "kubectl has been installed successfully."
+          echo "✅ kubectl is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install kubectl"
+        echo "Downloading kubectl..."
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        mv kubectl ~/bin/kubectl
+        echo "✅ kubectl installed successfully"
 
   install-fzf:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v fzf >/dev/null 2>&1; then
-          echo "fzf is already installed."
-        else
-          curl -LO "https://github.com/junegunn/fzf/releases/download/v{{ .FZF_VERSION }}/fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz"
-          tar -xzf fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
-          chmod +x fzf
-          mv fzf ~/bin/fzf
-          rm -f fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
-          echo "fzf has been installed successfully."
+          echo "✅ fzf is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install fzf"
+        echo "Downloading fzf..."
+        curl -LO "https://github.com/junegunn/fzf/releases/download/v{{ .FZF_VERSION }}/fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz"
+        tar -xzf fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
+        chmod +x fzf
+        mv fzf ~/bin/fzf
+        rm -f fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz
+        echo "✅ fzf installed successfully"
 
   install-helm:
+    internal: true
+    silent: true
+    platforms: [linux]
     cmds:
       - |
         if command -v helm >/dev/null 2>&1; then
-          echo "helm is already installed."
-        else
-          curl -LO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
-          tar -xzf helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
-          chmod +x linux-amd64/helm
-          mv linux-amd64/helm ~/bin/helm
-          rm helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
-          rm -rf linux-amd64
-          echo "helm has been installed successfully."
+          echo "✅ helm is already installed"
+          exit 0
         fi
-    desc: "[K8S] Install helm"
+        echo "Downloading helm..."
+        curl -LO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz"
+        tar -xzf helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+        chmod +x linux-amd64/helm
+        mv linux-amd64/helm ~/bin/helm
+        rm helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz
+        rm -rf linux-amd64
+        echo "✅ helm installed successfully"

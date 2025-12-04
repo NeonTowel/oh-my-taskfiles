@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    - task --list --taskfile tools/gpg.yaml
+
   install:windows:
     platforms: [windows]
     internal: true

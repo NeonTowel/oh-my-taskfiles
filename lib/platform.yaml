@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+  ensure-windows:
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if [ "{{ OS }}" != "windows" ] && [ "{{ OS }}" != "Windows_NT" ]; then
+          echo "❌ ERROR: This task requires Windows"
+          exit 1
+        fi
+
+  ensure-linux:
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if [ "{{ OS }}" != "linux" ]; then
+          echo "❌ ERROR: This task requires Linux"
+          exit 1
+        fi
+
+  detect-wsl:
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
+          echo "true"
+        else
+          echo "false"
+        fi

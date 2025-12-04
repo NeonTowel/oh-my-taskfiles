@@ -1,0 +1,44 @@
+version: '3'
+
+tasks:
+  download-extract-tarball:
+    internal: true
+    silent: true
+    requires:
+      vars: [BINARY_NAME, DOWNLOAD_URL, INSTALL_DIR]
+    cmds:
+      - |
+        if command -v {{ .BINARY_NAME }} >/dev/null 2>&1; then
+          echo "✅ {{ .BINARY_NAME }} is already installed"
+          exit 0
+        fi
+        echo "Downloading {{ .BINARY_NAME }}..."
+        curl -fsSL "{{ .DOWNLOAD_URL }}" | tar -xz -C {{ .INSTALL_DIR }}
+        if command -v {{ .BINARY_NAME }} >/dev/null 2>&1; then
+          echo "✅ {{ .BINARY_NAME }} installed successfully"
+        else
+          echo "❌ ERROR: {{ .BINARY_NAME }} installation failed"
+          exit 1
+        fi
+
+  download-extract-zip:
+    internal: true
+    silent: true
+    requires:
+      vars: [BINARY_NAME, DOWNLOAD_URL, INSTALL_DIR]
+    cmds:
+      - |
+        if command -v {{ .BINARY_NAME }} >/dev/null 2>&1; then
+          echo "✅ {{ .BINARY_NAME }} is already installed"
+          exit 0
+        fi
+        echo "Downloading {{ .BINARY_NAME }}..."
+        curl -fsSL "{{ .DOWNLOAD_URL }}" -o /tmp/{{ .BINARY_NAME }}.zip
+        unzip -q -o /tmp/{{ .BINARY_NAME }}.zip -d {{ .INSTALL_DIR }}
+        rm /tmp/{{ .BINARY_NAME }}.zip
+        if command -v {{ .BINARY_NAME }} >/dev/null 2>&1; then
+          echo "✅ {{ .BINARY_NAME }} installed successfully"
+        else
+          echo "❌ ERROR: {{ .BINARY_NAME }} installation failed"
+          exit 1
+        fi

@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  copy-file:
+    internal: true
+    silent: true
+    requires:
+      vars: [SOURCE_FILE, DEST_DIR, DEST_FILE]
+    cmds:
+      - task: ::lib:ensure-dir
+        vars:
+          DIR_PATH: "{{ .DEST_DIR }}"
+      - cp "{{ .SOURCE_FILE }}" "{{ .DEST_DIR }}/{{ .DEST_FILE }}"
+
+  copy-with-prompt:
+    internal: true
+    silent: true
+    deps: [":tools:gum:install"]
+    requires:
+      vars: [SOURCE_FILE, DEST_PATH, TOOL_NAME]
+    cmds:
+      - |
+        write_config=true
+        if [ -f "{{ .DEST_PATH }}" ]; then
+          if [ "{{ .UNATTENDED }}" = "true" ]; then
+            echo "⚠️  Unattended mode: overwriting existing {{ .TOOL_NAME }} config"
+          else
+            if ! gum confirm "Config exists at {{ .DEST_PATH }}. Overwrite?"; then
+              write_config=false
+              echo "⏭️  Skipping {{ .TOOL_NAME }} config copy"
+            fi
+          fi
+        fi
+        if $write_config; then
+          mkdir -p "$(dirname "{{ .DEST_PATH }}")"
+          cp "{{ .SOURCE_FILE }}" "{{ .DEST_PATH }}"
+          echo "✅ {{ .TOOL_NAME }} config copied to {{ .DEST_PATH }}"
+        fi

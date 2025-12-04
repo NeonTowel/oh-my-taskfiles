@@ -1,0 +1,17 @@
+version: '3'
+
+vars:
+  DOTFILES_SOURCE: "$HOME/.omt/dotfiles"
+  CONFIG_BASE_WINDOWS: "$HOME/AppData"
+  CONFIG_BASE_LINUX: "$HOME/.config"
+
+  CONFIG_DIR_NVIM_WINDOWS: "$HOME/AppData/Local/nvim"
+  CONFIG_DIR_NVIM_LINUX: "$HOME/.config/nvim"
+  CONFIG_DIR_HELIX_WINDOWS: "$HOME/AppData/Roaming/helix"
+  CONFIG_DIR_HELIX_LINUX: "$HOME/.config/helix"
+  CONFIG_DIR_ALACRITTY_WINDOWS: "$HOME/AppData/Roaming/alacritty"
+  CONFIG_DIR_ALACRITTY_LINUX: "$HOME/.config/alacritty"
+  CONFIG_DIR_STARSHIP: "$HOME/.config"
+  CONFIG_DIR_YASB: "$HOME/.config/yasb"
+  CONFIG_DIR_GLAZEWM_WINDOWS: "$HOME/.glzr/glazewm"
+  CONFIG_DIR_FLOW_LAUNCHER: "$HOME/AppData/Roaming/FlowLauncher"

@@ -1,0 +1,34 @@
+version: '3'
+
+tasks:
+  ensure-dir:
+    internal: true
+    silent: true
+    requires:
+      vars: [DIR_PATH]
+    cmds:
+      - mkdir -p "{{ .DIR_PATH }}"
+
+  validate-dir-exists:
+    internal: true
+    silent: true
+    requires:
+      vars: [DIR_PATH, ERROR_MESSAGE]
+    cmds:
+      - |
+        if [ ! -d "{{ .DIR_PATH }}" ]; then
+          echo "{{ .ERROR_MESSAGE }}"
+          exit 1
+        fi
+
+  validate-file-exists:
+    internal: true
+    silent: true
+    requires:
+      vars: [FILE_PATH, ERROR_MESSAGE]
+    cmds:
+      - |
+        if [ ! -f "{{ .FILE_PATH }}" ]; then
+          echo "{{ .ERROR_MESSAGE }}"
+          exit 1
+        fi
