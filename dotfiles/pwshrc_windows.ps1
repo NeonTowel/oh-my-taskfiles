@@ -207,8 +207,15 @@ if ($global:__PATHS['dotnet']) {
     $pathsToAdd += "C:\Program Files\dotnet"
 }
 
+# Claude configuration
 if ($global:__COMMANDS['claude']) {
-    $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
+    if(Test-Path "C:\Program Files\Git\bin\bash.exe") {
+        $env:CLAUDE_CODE_GIT_BASH_PATH = "C:\Program Files\Git\bin\bash.exe"
+    } else {
+        if(Test-Path "$HOME\scoop\shims\bash.exe") {
+            $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
+        }
+    }
 }
 
 if ($pathsToAdd.Count -gt 0) {
