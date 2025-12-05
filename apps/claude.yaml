@@ -4,6 +4,16 @@ tasks:
   default:
     - task --list --taskfile apps/claude.yaml
 
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if [ ! command -v claude >/dev/null 2>&1 ]; then
+          echo "Installing Claude..."
+          curl -fsSL https://claude.ai/install.sh | bash
+        fi
+
   install:windows:
     internal: true
     platforms: [windows]
@@ -15,9 +25,10 @@ tasks:
         vars:
           APP: "Anthropic.ClaudeCode"
   
-  configure:
+  configure:windows:
     internal: true
     platforms: [windows]
+    deps: [ "::tools:gomplate:install" ]
     cmds:
       - |
         if [ ! -d "$HOME/.claude" ]; then
@@ -68,11 +79,68 @@ tasks:
         {{ .gum_ok }} "Claude settings have been configured successfully."
         {{ end }}
 
+  configure:linux:
+    internal: true
+    platforms: [linux]
+    deps: [ "::tools:gomplate:install" ]
+    cmds:
+      - |
+        if [ ! -d "$HOME/.claude" ]; then
+          mkdir -p "$HOME/.claude"
+        fi
+        {{ if .UNATTENDED }}
+        {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
+        if [ ! -f "$HOME/.claude/settings.json" ]; then
+          #cp "dotfiles/claude/settings.default.json" "$HOME/.claude/settings.json"
+          {{ .gum_ok }} "Claude settings have been configured successfully."
+        else
+          {{ .gum_warn }} "Claude settings already exist, skipping configuration."
+        fi
+        {{ else }}
+        if [ -f "$HOME/.claude/settings.json" ]; then
+          if ! gum confirm "Claude settings already exist, overwrite?"; then
+            {{ .gum_warn }} "Claude settings already exist, skipping configuration."
+            exit 0
+          fi
+        fi
+
+        if gum confirm "Do you want to configure claude to use Microsoft Foundry?"; then
+          ANTHROPIC_FOUNDRY_RESOURCE=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+          ANTHROPIC_FOUNDRY_API_KEY=$(gum input --placeholder "Enter your Microsoft Foundry Claude Model API Key" --header "Microsoft Foundry Claude Model API Key")
+          CLAUDE_CODE_USE_FOUNDRY="1"
+        fi
+
+        # try to find git bash path
+        if [ ! -z "$CLAUDE_CODE_GIT_BASH_PATH" ] && [ -x "$CLAUDE_CODE_GIT_BASH_PATH" ]; then
+          CLAUDE_CODE_GIT_BASH_PATH="$CLAUDE_CODE_GIT_BASH_PATH"
+        fi
+
+        # if not found, try to find in filesystem
+        if [ -z "$CLAUDE_CODE_GIT_BASH_PATH" ]; then
+          if [ -x $(which bash) ]; then
+            CLAUDE_CODE_GIT_BASH_PATH="$(which bash)"
+          else
+            {{ .gum_warn }} "Warning: Git Bash path not found, Claude might not work properly."
+          fi
+        fi
+        export ANTHROPIC_FOUNDRY_RESOURCE="$ANTHROPIC_FOUNDRY_RESOURCE"
+        export ANTHROPIC_FOUNDRY_API_KEY="$ANTHROPIC_FOUNDRY_API_KEY"
+        export CLAUDE_CODE_GIT_BASH_PATH="$CLAUDE_CODE_GIT_BASH_PATH"
+        export CLAUDE_CODE_USE_FOUNDRY="$CLAUDE_CODE_USE_FOUNDRY"
+        gomplate -f "dotfiles/claude/settings.json.tmpl" -o "$HOME/.claude/settings.json"
+        {{ .gum_ok }} "Claude settings have been configured successfully."
+        {{ end }}
+
   install:
     desc: "[CLAUDE] ✨ Install Claude"
     silent: true
     cmds:
       - task: install:windows
         platforms: [windows]
-      - task: configure
+      - task: configure:windows
         platforms: [windows]
+
+      - task: install:linux
+        platforms: [linux]
+      - task: configure:linux
+        platforms: [linux]
