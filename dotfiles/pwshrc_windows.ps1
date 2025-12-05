@@ -133,7 +133,13 @@ if (Test-Path "C:\Program Files\dotnet\dotnet.exe") {
 
 # Claude configuration
 if (Get-Command claude -ErrorAction SilentlyContinue) {
-    $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
+    if(Test-Path "C:\Program Files\Git\bin\bash.exe") {
+        $env:CLAUDE_CODE_GIT_BASH_PATH = "C:\Program Files\Git\bin\bash.exe"
+    } else {
+        if(Test-Path "$HOME\scoop\shims\bash.exe") {
+            $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
+        }
+    }
 }
 
 # Deduplicate PATH
