@@ -1,0 +1,25 @@
+{
+  "env": {
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-5",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-5",
+    "ANTHROPIC_MODEL": "claude-opus-4-5",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(curl :*)",
+      "Bash(task :*)",
+      "Bash(npm :*)",
+      "Bash(bun :*)",
+      "Bash(bunx :*)",
+      "Bash(cargo :*)",
+      "Bash(go :*)"
+    ],
+    "deny": [],
+    "defaultMode": "acceptEdits"
+  },
+  "model": "claude-opus-4-5",
+  "outputStyle": "Default",
+  "alwaysThinkingEnabled": true
+}
