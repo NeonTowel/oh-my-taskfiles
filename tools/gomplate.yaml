@@ -12,6 +12,20 @@ tasks:
         vars:
           APP: gomplate
 
+  install:linux:
+    platforms: [linux]
+    internal: true
+    vars:
+      APP_VERSION: "v4.3.3"
+      APP_ARCH: "amd64"
+    cmds:
+      - |
+        if [ ! -d "$HOME/bin" ]; then
+          mkdir $HOME/bin
+        fi
+        curl -o $HOME/bin/gomplate -sSL "https://github.com/hairyhenderson/gomplate/releases/download/{{ .APP_VERSION }}/gomplate_linux-{{ .APP_ARCH }}"
+        chmod 755 $HOME/bin/gomplate 
+
   install:
     vars:
       APP_NAME: gomplate
@@ -20,3 +34,5 @@ tasks:
     cmds:
       - task: install:windows
         platforms: [windows]
+      - task: install:linux
+        platforms: [linux]

@@ -95,9 +95,11 @@ fi
 # 1Password SSH Agent bridge for WSL
 if [ -f "$HOME/.agent-bridge.sh" ]; then
   source "$HOME/.agent-bridge.sh"
-  if [ -f "$HOME/.1password/agent.sock" ]; then
-    export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
-  fi
+fi
+
+# 1Password SSH Agent for linux
+if [ -S "$HOME/.1password/agent.sock" ]; then
+  export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
 fi
 
 # Podman socket configuration
