@@ -1,8 +1,12 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/starship.yaml
+    - task: TOOL:default
 
   install:linux:
     platforms: [linux]
@@ -14,7 +18,7 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: starship
 
@@ -48,7 +52,7 @@ tasks:
     cmds:
       - |
         if ! command -v starship >/dev/null 2>&1; then
-          task :messaging:error MESSAGE="starship not found in PATH"
+          task -t lib.yaml messaging:error MESSAGE="starship not found in PATH"
           exit 1
         fi
         {{ .gum_ok }} "✅ starship found: $(command -v starship)"
@@ -60,7 +64,7 @@ tasks:
           {{ .gum_info }} "ℹ️  Configuration file not found"
         fi
         if ! starship init bash >/dev/null 2>&1; then
-          task :messaging:warning MESSAGE="starship init failed - may not be functional"
+          task -t lib.yaml messaging:warning MESSAGE="starship init failed - may not be functional"
         else
           {{ .gum_ok }} "✅ starship is functional"
         fi
@@ -68,7 +72,7 @@ tasks:
   configure:
     internal: true
     cmds:
-      - task: ::config-copy:copy-with-prompt
+      - task: LIB:config-copy:copy-with-prompt
         vars:
           SOURCE_FILE: "$HOME/.omt/dotfiles/starship.toml"
           DEST_PATH: "$HOME/.config/starship.toml"
@@ -80,7 +84,7 @@ tasks:
     cmds:
       - rm -f $HOME/bin/starship
       - rm -f $HOME/.config/starship.toml
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "starship uninstalled successfully"
 
@@ -88,7 +92,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:uninstall
+      - task: LIB:scoop:uninstall
         vars:
           APP: starship
 
@@ -102,6 +106,6 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:update
+      - task: LIB:scoop:update
         vars:
           APP: starship

@@ -1,0 +1,46 @@
+version: '3'
+
+tasks:
+  check-updates:
+    internal: true
+    cmds:
+      - |
+        if [ -d "$HOME/.omt" ]; then
+          cd $HOME/.omt
+          git fetch --quiet
+          if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
+            echo ""
+            echo "Updates available, use 'omt update' to update!"
+            echo ""
+          fi
+        fi
+
+  update:
+    desc: 'Update Oh-My-Taskfiles!'
+    cmds:
+      - echo "Updating Oh-My-Taskfiles..."
+      - |
+        CUR_PWD=$PWD
+        cd $HOME/.omt
+        git fetch --quiet
+        if [ $(git rev-list --count HEAD..origin/main) -gt 0 ]; then
+          echo "Changes since last update:"
+          git --no-pager log -5 origin/main --pretty=format:' * %s (%ad)' --no-merges --date=relative HEAD..origin/main
+          echo -e "\n"
+          git pull
+        else
+          echo "Already up to date. No changes to pull."
+        fi
+        cd $CUR_PWD
+ 
+  changelog:
+    desc: Show recent updates
+    cmds:
+      - |
+        echo -e "\n\033[1;93mfeatures:\033[0m"
+        git --no-pager log -5 origin/main --grep '^feat' --pretty=format:' ✨ %s (%ad)' --no-merges --date=relative
+        echo -e "\n\n\033[1;92mfixes:\033[0m"
+        git --no-pager log -5 origin/main --grep '^fix' --pretty=format:' 🐛 %s (%ad)' --no-merges --date=relative
+        echo -e "\n\n\033[1;97mmisc:\033[0m"
+        git --no-pager log -5 origin/main --grep '^feat' --grep '^fix' --invert-grep --pretty=format:' 🔨 %s (%ad)' --no-merges --date=relative
+        echo -e "\n"

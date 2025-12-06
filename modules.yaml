@@ -1,0 +1,16 @@
+version: '3'
+
+includes:
+  apps: 
+    taskfile: modules/apps.yaml
+    flatten: false
+  tools: 
+    taskfile: modules/tools.yaml
+    flatten: false
+
+tasks:
+  '*:help':
+    vars:
+      MODULE: '{{ index .MATCH 0 }}'
+    cmds:
+      - task: "{{ .MODULE }}:_help"

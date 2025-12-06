@@ -1,8 +1,12 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/yasb.yaml
+    - task: app:default
 
   configure:
     internal: true
@@ -21,7 +25,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: yasb
 

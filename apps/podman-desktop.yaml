@@ -1,12 +1,19 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
+  default:
+    - task: app:default
+
   install:windows:
     platforms: [windows]
     internal: true
     silent: true
     cmds:
-      - task: ::scoop:extras-install
+      - task: lib:scoop:extras-install
         vars:
           APP: podman-desktop
 

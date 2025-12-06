@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  find-files:
+    vars:
+      PATH: '{{ .PATH | default "./" }}'
+      NAME: '{{ .NAME | default "*.*" }}'
+    cmds:
+      - |
+        find "{{ .PATH }}" -type f -name "{{ .NAME }}" | sort
+
+  pretty-print-files:
+    vars:
+      FILES: '{{ .FILES | default "" }}'
+    cmds:
+      - |
+        {{ $files := splitList "\n" .FILES }}
+        {{ $tools := list }}
+        {{ range ($files) }}
+          {{ $tool := osBase . | replace ".yaml" "" | replace "\n" "" | replace "\r" ""}}
+          {{ $tools = append $tools $tool}}
+        {{ end }}
+        task -t "{{ .ROOT_DIR }}/lib.yaml" formatting:pretty-print-list LIST='{{ join " " $tools }}' --silent

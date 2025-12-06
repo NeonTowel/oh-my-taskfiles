@@ -1,11 +1,18 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
+  default:
+    - task: TOOL:default
+
   install:
     platforms: [linux]
     desc: "[DIRENV] ✨ Install direnv"
     cmds:
-      - task: ::github-release:install:binary
+      - task: LIB:github-release:install:binary
         vars:
           TOOL_NAME: direnv
           REPO: direnv/direnv
@@ -17,7 +24,7 @@ tasks:
     desc: "[DIRENV] 🗑️  Uninstall direnv"
     cmds:
       - rm -f $HOME/bin/direnv
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "direnv uninstalled successfully"
 
@@ -33,14 +40,14 @@ tasks:
     cmds:
       - |
         if ! command -v direnv >/dev/null 2>&1; then
-          task :messaging:error MESSAGE="direnv not found in PATH"
+          task -t lib.yaml messaging:error MESSAGE="direnv not found in PATH"
           exit 1
         fi
         {{ .gum_ok }} "✅ direnv found: $(command -v direnv)"
         version=$(direnv version 2>&1 || echo "unknown")
         {{ .gum_info }} "📋 Version: $version"
         if ! direnv --help >/dev/null 2>&1; then
-          task :messaging:warning MESSAGE="direnv --help failed - may not be functional"
+          task -t lib.yaml messaging:warning MESSAGE="direnv --help failed - may not be functional"
         else
           {{ .gum_ok }} "✅ direnv is functional"
         fi

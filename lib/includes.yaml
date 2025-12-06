@@ -1,0 +1,19 @@
+version: '3'
+
+includes:
+  versions: versions.yaml
+  paths: paths.yaml
+  dir-utils: dir-utils.yaml
+  config-copy: config-copy.yaml
+  install-common: install-common.yaml
+  install-binary: install-binary.yaml
+  cli-finder: cli-finder.yaml
+  messaging: messaging.yaml
+  linux-pkg: linux-pkg.yaml
+  platform: platform.yaml
+  scoop: scoop.yaml  
+  winget: winget.yaml
+  github-release: ./github-release.yaml
+  ide: ide.yaml
+  modules: modules.yaml
+  formatting: formatting.yaml

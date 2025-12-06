@@ -1,8 +1,12 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/heroic.yaml
+    - task: app:default
 
   themes:
     internal: true
@@ -28,13 +32,13 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:neontowel-install
+      - task: lib:scoop:neontowel-install
         vars:
           APP: "{{ .APP_NAME }}"
 
   configure:windows:
     platforms: [windows]
-    deps: [ "::tools:gomplate:install" ]
+    deps: [ "lib:tools:gomplate:install" ]
     internal: true
     vars:
       APP_NAME: heroic

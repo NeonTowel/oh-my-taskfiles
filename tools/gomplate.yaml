@@ -1,14 +1,18 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/gomplate.yaml
+    - task: TOOL:default
 
   install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: gomplate
 

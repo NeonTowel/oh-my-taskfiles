@@ -1,0 +1,10 @@
+version: '3'
+
+tasks:
+  default:
+    aliases: [help]
+    silent: true
+    cmds:
+      - |
+        echo "<app>:default <app>:app:help @ {{ .TASKFILE_DIR }}"
+      - task --list --taskfile "{{ .ROOT_TASKFILE }}"

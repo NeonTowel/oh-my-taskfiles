@@ -2,8 +2,7 @@ version: '3'
 
 includes:
   cursor-rules: 
-    dir: ..
-    taskfile: ../taskfiles/cursor-rules.yaml
+    taskfile: ide/cursor-rules.yaml
     flatten: true
 
 vars:
@@ -24,19 +23,15 @@ vars:
     - ms-vscode-remote.remote-wsl
     - ms-vscode-remote.remote-ssh
   IDE_EXTENSIONS_vscode:
-    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} {{.IDE_EXTENSIONS_remote | join \" \"}} tejasvi.rainbow-brackets-2"
+    - tejasvi.rainbow-brackets-2
   IDE_EXTENSIONS_cursor:
-    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} {{.IDE_EXTENSIONS_remote | join \" \"}} CoenraadS.bracket-pair-colorizer-2"
+    - CoenraadS.bracket-pair-colorizer-2
   IDE_EXTENSIONS_vscodium:
-    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} sourcegraph.amp vizzletf.geminicommit"
+    - sourcegraph.amp
 
 
 tasks:
-  default:
-    - task --list --taskfile taskfiles/ide.yaml
-
   find-cli:
-    desc: "[IDE] 🔍 Find CLI executable for an IDE (vscode, cursor, vscodium)"
     silent: true
     requires:
       vars:
@@ -58,31 +53,31 @@ tasks:
 
         case "{{ .IDE }}" in
           vscode)
-            try_path "code"
             try_path "$HOME/scoop/apps/vscode/current/bin/code.cmd"
             try_path "$LOCALAPPDATA/Programs/Microsoft VS Code/bin/code.cmd"
             try_path "$PROGRAMFILES/Microsoft VS Code/bin/code.cmd"
+            try_path "code"
             try_path "/usr/bin/code"
             try_path "/usr/local/bin/code"
             ;;
           cursor)
-            try_path "cursor"
+            try_path "$LOCALAPPDATA/Programs/cursor/resources/app/bin/cursor.cmd"
+            try_path "$PROGRAMFILES/Cursor/resources/app/bin/cursor.cmd"
+            try_path "$LOCALAPPDATA/cursor/cursor.exe"
             try_path "$HOME/scoop/apps/cursor/current/cursor.exe"
             try_path "$HOME/scoop/shims/cursor.cmd"
-            try_path "$LOCALAPPDATA/Programs/cursor/resources/app/bin/cursor.cmd"
-            try_path "$LOCALAPPDATA/cursor/cursor.exe"
-            try_path "$PROGRAMFILES/Cursor/resources/app/bin/cursor.cmd"
+            try_path "cursor"
             try_path "/usr/bin/cursor"
             try_path "/usr/local/bin/cursor"
             try_path "/opt/cursor/cursor"
             ;;
           vscodium)
-            try_path "codium"
             try_path "$HOME/scoop/apps/vscodium/current/bin/codium.cmd"
             try_path "$HOME/scoop/apps/vscodium-portable/current/bin/codium.cmd"
             try_path "$HOME/scoop/shims/codium.cmd"
             try_path "$LOCALAPPDATA/Programs/VSCodium/bin/codium.cmd"
             try_path "$PROGRAMFILES/VSCodium/bin/codium.cmd"
+            try_path "codium"
             try_path "/usr/bin/codium"
             try_path "/usr/local/bin/codium"
             try_path "/opt/vscodium/bin/codium"
@@ -93,7 +88,6 @@ tasks:
         exit 1
 
   find-settings-path:
-    desc: "[IDE] 🔍 Find settings.json path for an IDE"
     silent: true
     requires:
       vars:
@@ -139,28 +133,33 @@ tasks:
         echo "$FALLBACK"
 
   install-extensions:
-    desc: "[IDE] 📦 Install extensions for an IDE"
     silent: true
     requires:
       vars: [IDE, IDE_EXTENSIONS]
+    env:
+      CLI_BINARY:
+        sh: task ide:find-cli IDE={{ .IDE }}
     cmds:
       - |
-        CLI_BINARY=$(task ide:find-cli IDE={{ .IDE }} 2>/dev/null)
-        if [ $? -ne 0 ] || [ -z "$CLI_BINARY" ]; then
+        if [ -z "$CLI_BINARY" ]; then
           echo "❌ ERROR: Could not find {{ .IDE }} CLI"
-          task ide:find-cli IDE={{ .IDE }}
           exit 1
         fi
         echo "✅ Found {{ .IDE }} CLI: $CLI_BINARY"
         echo "📦 Installing extensions..."
-        {{range .IDE_EXTENSIONS}}
-        echo "  → Installing {{.}}"
-        "$CLI_BINARY" --install-extension "{{.}}" --force 2>/dev/null || true
+        install_extensions=()
+        {{range .IDE_EXTENSIONS | join "\n" | split "\n"}}
+          {{ $extensions := split " " . }}
+          {{range $extensions}}
+          install_extensions+=("--install-extension {{.}}")
+          echo "  → Installing {{.}}"
+          {{end}}
         {{end}}
+
+        "$CLI_BINARY" ${install_extensions[@]} 2>/dev/null || true
         echo "✅ Extensions installed"
 
   copy-settings:
-    desc: "[IDE] ⚙️ Copy settings.json to an IDE"
     silent: true
     deps: [":tools:gum:install"]
     requires:
@@ -191,43 +190,44 @@ tasks:
         fi
 
   configure:vscode:
-    desc: "[VSCODE] ⚙️ Configure VS Code (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
           IDE: vscode
           IDE_EXTENSIONS:
-            ref: .IDE_EXTENSIONS_vscode
+            - '{{ .IDE_EXTENSIONS_base | join " "}}'
+            - '{{ .IDE_EXTENSIONS_remote | join " "}}'
+            - '{{ .IDE_EXTENSIONS_vscode | join " "}}'
       - task: copy-settings
         vars:
           IDE: vscode
 
   configure:cursor:
-    desc: "[CURSOR] ⚙️ Configure Cursor (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
           IDE: cursor
           IDE_EXTENSIONS:
-            ref: .IDE_EXTENSIONS_cursor
+            - '{{ .IDE_EXTENSIONS_base | join " "}}'
+            - '{{ .IDE_EXTENSIONS_remote | join " "}}'
+            - '{{ .IDE_EXTENSIONS_cursor | join " "}}'
       - task: copy-settings
         vars:
           IDE: cursor
 
   configure:vscodium:
-    desc: "[VSCODIUM] ⚙️ Configure VSCodium (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
           IDE: vscodium
           IDE_EXTENSIONS:
-            ref: .IDE_EXTENSIONS_vscodium
+            - '{{ .IDE_EXTENSIONS_base | join " "}}'
+            - '{{ .IDE_EXTENSIONS_vscodium | join " "}}'
       - task: copy-settings
         vars:
           IDE: vscodium
 
   configure:
-    desc: "[IDE] ⚙️ Configure an IDE (vscode, cursor, or vscodium)"
     requires:
       vars:
         - name: IDE

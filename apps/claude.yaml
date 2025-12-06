@@ -1,8 +1,12 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/claude.yaml
+    - task: app:default
 
   install:linux:
     internal: true
@@ -18,17 +22,17 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::winget:install
+      - task: lib:winget:install
         vars:
           APP: "Anthropic.Claude"
-      - task: ::winget:install
+      - task: lib:winget:install
         vars:
           APP: "Anthropic.ClaudeCode"
   
   configure:windows:
     internal: true
     platforms: [windows]
-    deps: [ "::tools:gomplate:install" ]
+    deps: [ "lib:tools:gomplate:install" ]
     cmds:
       - |
         if [ ! -d "$HOME/.claude" ]; then
@@ -80,7 +84,7 @@ tasks:
   configure:linux:
     internal: true
     platforms: [linux]
-    deps: [ "::tools:gomplate:install" ]
+    deps: [ "lib:tools:gomplate:install" ]
     cmds:
       - |
         if [ ! -d "$HOME/.claude" ]; then

@@ -2,66 +2,38 @@ version: '3'
 
 silent: true
 
-vars:
-  OS:
-    sh: echo '{{ .OS | default "linux" }}'
-  LOG_PREFIX: "[{{ .TASK | lower }}]"
-
-  gum_ok:
-    sh: |
-      if command -v gum >/dev/null 2>&1 || where.exe gum >nul 2>&1; then
-        echo "gum style --foreground 46 --bold"
-      else
-        echo "echo"
-      fi
-  gum_warn:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 208 --bold"
-      else
-        echo "echo"
-      fi
-  gum_error:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 196 --bold"
-      else
-        echo "echo"
-      fi
-  gum_info:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 240"
-      else
-        echo "echo"
-      fi
-
 includes:
+  # tools: taskfile.tools.yaml
+  # apps: taskfile.apps.yaml
+  # lang: taskfile.languages.yaml
+  # git: taskfile.git.yaml
+  # sudo: taskfiles/sudo.yaml
+  # wsl: taskfiles/wsl.yaml
+  # awesome:
+  #   taskfile: taskfile.awesome.yaml
+  #   flatten: true
+  # maintenance:
+  #   taskfile: taskfile.maintenance.yaml
+  #   flatten: true
+  lib: lib.yaml
   omt: 
-    taskfile: taskfile.omt.yaml
+    taskfile: omt.yaml
     flatten: true
-  tools: taskfile.tools.yaml
-  apps: taskfile.apps.yaml
-  lang: taskfile.languages.yaml
-  git: taskfile.git.yaml
-  sudo: taskfiles/sudo.yaml
-  wsl: taskfiles/wsl.yaml
-  ide: taskfiles/ide.yaml
-  awesome:
-    taskfile: taskfile.awesome.yaml
-    flatten: true
-  maintenance:
-    taskfile: taskfile.maintenance.yaml
-    flatten: true
-  lib:
-    taskfile: taskfile.lib.yaml
+  modules: 
+    taskfile: modules.yaml
     flatten: true
 
 tasks:
   default:
-    - task --list
+    - task: help
     - task: check-updates
-
-  os:
+  
+  help:
     - |
-      echo "Detected OS is {{ .OS }}"
+      echo "Usage: omt <command>:<actions> -- [options]"
+      echo ""
+      echo "Commands:"
+      echo -e "  tools \t Commands for managing tools"
+      echo -e "  apps \t\t Commands for managing apps"
+      echo ""
+      echo "See 'omt <command>:help' for more information (eg. omt tools:help or omt apps:help)."

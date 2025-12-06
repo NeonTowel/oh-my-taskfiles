@@ -1,14 +1,15 @@
 version: '3'
 
-tasks:
-  default:
-    - task --list --taskfile apps/postman.yaml
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
 
+tasks:
   install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: postman
 

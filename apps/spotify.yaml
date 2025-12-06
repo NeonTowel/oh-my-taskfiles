@@ -1,14 +1,18 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/spotify.yaml
+    - task: app:default
 
   install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: spotify
       - task: spicetify:install:windows
@@ -17,7 +21,7 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: spicetify-cli
 

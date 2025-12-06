@@ -1,8 +1,12 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/fonts.yaml
+    - task: TOOL:default
 
   install-font:
     internal: true
@@ -10,7 +14,7 @@ tasks:
     requires:
       vars: [ font ]
     cmds:
-      - task: ::scoop:nerd-fonts-install
+      - task: LIB:scoop:nerd-fonts-install
         vars:
           APP: "{{ .font }}"
 

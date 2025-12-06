@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  OS:
+    sh: echo '{{ .OS | default "linux" }}'
+  LOG_PREFIX: "[{{ .TASK | lower }}]"
+
+  gum_ok:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 46 --bold"
+      else
+        echo "echo"
+      fi
+  gum_warn:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 208 --bold"
+      else
+        echo "echo"
+      fi
+  gum_error:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 196 --bold"
+      else
+        echo "echo"
+      fi
+  gum_info:
+    sh: |
+      if command -v gum >/dev/null 2>&1; then
+        echo "gum style --foreground 240"
+      else
+        echo "echo"
+      fi
+
+includes:
+  lib: 
+    taskfile: lib/includes.yaml
+    flatten: true
+  

@@ -1,0 +1,7 @@
+version: '3'
+
+includes:
+  updates: 
+    taskfile: omt/updates.yaml
+    flatten: true
+    internal: true

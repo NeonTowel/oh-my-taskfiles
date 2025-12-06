@@ -1,11 +1,18 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
+  default:
+    - task: TOOL:default
+
   install:windows:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: charm-gum
 
@@ -13,7 +20,7 @@ tasks:
     internal: true
     platforms: [linux]
     cmds:
-      - task: ::github-release:install:tarball
+      - task: LIB:github-release:install:tarball
         vars:
           TOOL_NAME: gum
           REPO: charmbracelet/gum
@@ -50,14 +57,14 @@ tasks:
     cmds:
       - |
         if ! command -v gum >/dev/null 2>&1; then
-          task :messaging:error MESSAGE="gum not found in PATH"
+          task -t lib.yaml messaging:error MESSAGE="gum not found in PATH"
           exit 1
         fi
         {{ .gum_ok }} "✅ gum found: $(command -v gum)"
         version=$(gum --version 2>&1 || echo "unknown")
         {{ .gum_info }} "📋 Version: $version"
         if ! gum --help >/dev/null 2>&1; then
-          task :messaging:warning MESSAGE="gum --help failed - may not be functional"
+          task -t lib.yaml messaging:warning MESSAGE="gum --help failed - may not be functional"
         else
           {{ .gum_ok }} "✅ gum is functional"
         fi
@@ -67,7 +74,7 @@ tasks:
     platforms: [linux]
     cmds:
       - rm -f $HOME/bin/gum
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "gum uninstalled successfully"
 
@@ -75,7 +82,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:uninstall
+      - task: LIB:scoop:uninstall
         vars:
           APP: charm-gum
 
@@ -89,6 +96,6 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:update
+      - task: LIB:scoop:update
         vars:
           APP: charm-gum

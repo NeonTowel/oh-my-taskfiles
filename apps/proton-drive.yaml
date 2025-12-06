@@ -1,11 +1,18 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
+  default:
+    - task: app:default
+
   install:windows:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::winget:install
+      - task: lib:winget:install
         vars:
           APP: "Proton.ProtonDrive"
 

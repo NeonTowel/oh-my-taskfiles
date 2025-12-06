@@ -1,0 +1,8 @@
+version: '3'
+
+flatten: true
+
+includes:
+  common: 
+    taskfile: common.yaml
+    flatten: true

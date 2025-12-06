@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  pretty-print-list:
+    vars:
+      LIST: '{{ .LIST | default "" }}'
+    cmds:
+      - |
+        {{ $list := splitList " " .LIST | sortAlpha }}
+        cols=3
+        list=({{ range ($list) }}"{{ . }}" {{ end }})
+        num_list=${#list[@]}
+        rows=$(( (num_list + cols - 1) / cols ))
+
+        for ((i=0; i<rows; i++)); do
+          row=""
+          for ((j=0; j<cols; j++)); do
+            idx=$((j * rows + i))
+            if [[ $idx -lt $num_list ]]; then
+              # Pad spacing for columns, adjust %-20s as needed
+              row="${row}$(printf '%-30s' "${list[$idx]}")"
+            fi
+          done
+          echo "$row"
+        done

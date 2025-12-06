@@ -1,32 +1,38 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
+  default:
+    - task: TOOL:default
 
   install:windows:
     platforms: [windows]
     internal: true
     silent: true
     cmds:
-      - task: ::scoop:buckets:add
+      - task: LIB:scoop:buckets:add
         vars:
           BUCKET: lemon
           BUCKET_URL: https://github.com/hoilc/scoop-lemon
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: kubecm
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: kubectx
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: kubens
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: kubectl
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: helm
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: fzf
     

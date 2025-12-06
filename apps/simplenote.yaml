@@ -1,14 +1,18 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/simplenote.yaml
+    - task: app:default
 
   install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: simplenote
 

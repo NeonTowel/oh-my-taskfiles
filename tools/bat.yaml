@@ -1,14 +1,18 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/bat.yaml
+    - task: TOOL:default
 
   install:linux:
     internal: true
     platforms: [linux]
     cmds:
-      - task: ::github-release:install:tarball
+      - task: LIB:github-release:install:tarball
         vars:
           TOOL_NAME: bat
           REPO: sharkdp/bat
@@ -20,7 +24,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:install
+      - task: LIB:scoop:install
         vars:
           APP: bat
 
@@ -53,14 +57,14 @@ tasks:
     cmds:
       - |
         if ! command -v bat >/dev/null 2>&1; then
-          task :messaging:error MESSAGE="bat not found in PATH"
+          task -t lib.yaml messaging:error MESSAGE="bat not found in PATH"
           exit 1
         fi
         {{ .gum_ok }} "✅ bat found: $(command -v bat)"
         version=$(bat --version 2>&1 || echo "unknown")
         {{ .gum_info }} "📋 Version: $version"
         if ! bat --help >/dev/null 2>&1; then
-          task :messaging:warning MESSAGE="bat --help failed - may not be functional"
+          task -t lib.yaml messaging:warning MESSAGE="bat --help failed - may not be functional"
         else
           {{ .gum_ok }} "✅ bat is functional"
         fi
@@ -70,7 +74,7 @@ tasks:
     platforms: [linux]
     cmds:
       - rm -f $HOME/bin/bat
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "bat uninstalled successfully"
 
@@ -78,7 +82,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:uninstall
+      - task: LIB:scoop:uninstall
         vars:
           APP: bat
 
@@ -92,6 +96,6 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::scoop:update
+      - task: LIB:scoop:update
         vars:
           APP: bat

@@ -1,21 +1,24 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile tools/translucenttb.yaml
+    - task: app:default
 
   install:windows:
     platforms: [windows]
     internal: true
     silent: true
     cmds:
-      - task: ::scoop:install
+      - task: lib:scoop:install
         vars:
           APP: translucenttb
 
   install:
     desc: "[TRANSLUCENTTB] ✨ Install TranslucentTB"
-    silent: true
     cmds:
       - task: install:windows
         platforms: [windows]

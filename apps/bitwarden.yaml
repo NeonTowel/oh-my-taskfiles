@@ -1,14 +1,18 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/bitwarden.yaml
+    - task: app:default
 
   install:windows:
     internal: true
     platforms: [windows]
     cmds:
-      - task: ::winget:install
+      - task: lib:winget:install
         vars:
           APP: "Bitwarden.Bitwarden"
 

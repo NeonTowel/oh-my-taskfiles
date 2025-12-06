@@ -1,20 +1,29 @@
 version: '3'
 
+includes: 
+  lib: ../lib.yaml
+  app: ../models/app.yaml
+
 tasks:
   default:
-    - task --list --taskfile apps/cursor.yaml
+    - task: app:default
+
+  kissa:
+    desc: "KISSA"
+    cmds:
+      - echo "KISSA"
 
   configure:
     desc: "[CURSOR] ⚙️ Configure Cursor (extensions + settings)"
     cmds:
-      - task: ::ide:configure:cursor
+      - task: lib:ide:configure:cursor
 
   install:windows:
     platforms: [windows]
     internal: true
     silent: true
     cmds:
-      - task: ::winget:install
+      - task: lib:winget:install
         vars:
           APP: "Anysphere.Cursor"
 

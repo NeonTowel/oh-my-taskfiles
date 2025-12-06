@@ -1,6 +1,13 @@
 version: '3'
 
+includes:
+  LIB: ../lib.yaml
+  TOOL: ../models/tool.yaml
+
 tasks:
+  default:
+    - task: TOOL:default
+
   install:
     desc: "[ZSH] ✨ Install zsh shell"
     cmds:
@@ -12,7 +19,7 @@ tasks:
   install:linux:
     internal: true
     cmds:
-      - task: ::linux-pkg:install
+      - task: LIB:linux-pkg:install
         vars:
           PACKAGE: zsh
 
@@ -100,7 +107,7 @@ tasks:
     cmds:
       - |
         if ! command -v zsh >/dev/null 2>&1; then
-          task :messaging:error MESSAGE="zsh not found in PATH"
+          task -t lib.yaml messaging:error MESSAGE="zsh not found in PATH"
           exit 1
         fi
         {{ .gum_ok }} "✅ zsh found: $(command -v zsh)"
@@ -135,7 +142,7 @@ tasks:
           echo "❌ Unsupported package manager"
           exit 1
         fi
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "zsh uninstalled successfully"
 
@@ -150,7 +157,7 @@ tasks:
           echo "❌ Homebrew not found"
           exit 1
         fi
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "zsh uninstalled successfully"
 
@@ -171,7 +178,7 @@ tasks:
           echo "❌ Unsupported package manager"
           exit 1
         fi
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "zsh updated successfully"
 
@@ -186,6 +193,6 @@ tasks:
           echo "❌ Homebrew not found"
           exit 1
         fi
-      - task: :messaging:success
+      - task: LIB:messaging:success
         vars:
           MESSAGE: "zsh updated successfully"

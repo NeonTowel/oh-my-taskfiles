@@ -59,7 +59,6 @@ tasks:
   cursor:rules:
     silent: true
     deps: [ ":tools:gum:install" ]
-    desc: "[CURSOR] Install Cursor rules to current repository"
     dir: '{{ .USER_WORKING_DIR }}'
     vars:
       HOME_DIR: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
