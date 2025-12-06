@@ -25,6 +25,6 @@ tasks:
     desc: "[VSCODIUM] ✨ Install VS Codium libre code editor"
     silent: true
     cmds:
-      - task: lib:install:windows
+      - task: install:windows
         platforms: [windows]
       - task: configure

@@ -8,11 +8,6 @@ tasks:
   default:
     - task: app:default
 
-  kissa:
-    desc: "KISSA"
-    cmds:
-      - echo "KISSA"
-
   configure:
     desc: "[CURSOR] ⚙️ Configure Cursor (extensions + settings)"
     cmds:
