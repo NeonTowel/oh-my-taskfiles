@@ -15,7 +15,6 @@ tasks:
         cp dotfiles/alacritty/catppuccin-frappe.toml "$HOME\.config\alacritty\catppuccin-frappe.toml"
         echo "catppuccin-frappe.toml has been copied to $HOME\.config\alacritty\catppuccin-frappe.toml"
       - |
-        # on windows the alacritty.toml config is under $HOME\AppData\Roaming\alacritty\alacritty.toml
         if [ ! -d "$HOME\AppData\Roaming\alacritty" ]; then
           echo "Creating config directory in: $HOME\AppData\Roaming\alacritty"
           mkdir -p "$HOME\AppData\Roaming\alacritty"
@@ -25,6 +24,7 @@ tasks:
         echo "alacritty.toml has been copied to $HOME\AppData\Roaming\alacritty\alacritty.toml"
 
   configure:linux:
+    internal: true
     platforms: [linux]
     cmds:
       - |

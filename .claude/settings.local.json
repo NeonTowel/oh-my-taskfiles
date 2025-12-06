@@ -5,7 +5,11 @@
       "Bash(task --list:*)",
       "Bash(task tools:nvim:install:*)",
       "Bash(task --list-all:*)",
-      "Bash(task tools:k8s:install:*)"
+      "Bash(task tools:k8s:install:*)",
+      "Bash(grep:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

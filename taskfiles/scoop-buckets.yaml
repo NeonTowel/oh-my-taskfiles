@@ -7,7 +7,6 @@ tasks:
       vars: [ BUCKET ]
     cmds:
       - |
-        # if scoop bucket does not already exist, add it
         if ! scoop bucket list | findstr /C:"{{ .BUCKET }}" >nul; then
           {{ if .BUCKET_URL }}
           scoop bucket add {{ .BUCKET }} {{ .BUCKET_URL }}
@@ -28,7 +27,6 @@ tasks:
       vars: [ BUCKET ]
     cmds:
       - |
-        # if scoop bucket exists, remove it
         if scoop bucket list | findstr /C:"{{ .BUCKET }}"; then
           scoop bucket rm {{ .BUCKET }}
           if ! [ "{{ .UNATTENDED }}" = "true" ]; then

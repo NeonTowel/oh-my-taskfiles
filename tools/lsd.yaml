@@ -8,13 +8,13 @@ tasks:
     internal: true
     platforms: [linux]
     cmds:
-      - |
-        if command -v lsd >/dev/null 2>&1; then
-          echo "lsd is already installed."
-        else
-          curl -fsSL https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xz -C $HOME/bin --strip-components=1 lsd-v1.1.5-x86_64-unknown-linux-gnu/lsd
-          echo "lsd has been installed successfully."
-        fi
+      - task: ::github-release:install:tarball
+        vars:
+          TOOL_NAME: lsd
+          REPO: lsd-rs/lsd
+          VERSION: "v{{ .LSD_VERSION }}"
+          ARCHIVE_NAME: "lsd-v{{ .LSD_VERSION }}-x86_64-unknown-linux-gnu.tar.gz"
+          BINARY_PATH: "lsd-v{{ .LSD_VERSION }}-x86_64-unknown-linux-gnu/lsd"
 
   install:windows:
     internal: true
@@ -31,3 +31,67 @@ tasks:
         platforms: [linux]
       - task: install:windows
         platforms: [windows]
+
+  uninstall:
+    desc: "[LSD] 🗑️  Uninstall lsd"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[LSD] 🔄 Update lsd to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[LSD] ✅ Verify lsd installation"
+    cmds:
+      - |
+        if ! command -v lsd >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="lsd not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ lsd found: $(command -v lsd)"
+        version=$(lsd --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if ! lsd --help >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="lsd --help failed - may not be functional"
+        else
+          {{ .gum_ok }} "✅ lsd is functional"
+        fi
+
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - rm -f $HOME/bin/lsd
+      - task: :messaging:success
+        vars:
+          MESSAGE: "lsd uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: lsd
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - task: install:linux
+
+  update:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: lsd

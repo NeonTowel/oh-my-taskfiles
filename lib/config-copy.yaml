@@ -21,18 +21,24 @@ tasks:
     cmds:
       - |
         write_config=true
+
         if [ -f "{{ .DEST_PATH }}" ]; then
+          backup="{{ .DEST_PATH }}.backup.$(date +%Y%m%d_%H%M%S)"
+          cp "{{ .DEST_PATH }}" "$backup"
+          {{ .gum_info }} "📦 Backed up existing config to $backup"
+
           if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "⚠️  Unattended mode: overwriting existing {{ .TOOL_NAME }} config"
+            {{ .gum_warn }} "⚠️  Unattended mode: overwriting existing {{ .TOOL_NAME }} config"
           else
             if ! gum confirm "Config exists at {{ .DEST_PATH }}. Overwrite?"; then
               write_config=false
-              echo "⏭️  Skipping {{ .TOOL_NAME }} config copy"
+              {{ .gum_info }} "⏭️  Skipping {{ .TOOL_NAME }} config copy"
             fi
           fi
         fi
+
         if $write_config; then
           mkdir -p "$(dirname "{{ .DEST_PATH }}")"
           cp "{{ .SOURCE_FILE }}" "{{ .DEST_PATH }}"
-          echo "✅ {{ .TOOL_NAME }} config copied to {{ .DEST_PATH }}"
+          {{ .gum_ok }} "✅ {{ .TOOL_NAME }} config copied to {{ .DEST_PATH }}"
         fi

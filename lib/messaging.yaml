@@ -1,0 +1,77 @@
+version: '3'
+
+tasks:
+  success:
+    internal: true
+    requires:
+      vars: [MESSAGE]
+    cmds:
+      - |
+        if command -v gum >/dev/null 2>&1; then
+          gum style \
+            --foreground 46 --border-foreground 46 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            " ✅ SUCCESS " "{{ .MESSAGE }}"
+        else
+          echo "✅ {{ .MESSAGE }}"
+        fi
+
+  error:
+    internal: true
+    requires:
+      vars: [MESSAGE]
+    cmds:
+      - |
+        if command -v gum >/dev/null 2>&1; then
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            " ❌ ERROR " "{{ .MESSAGE }}"
+        else
+          echo "❌ ERROR: {{ .MESSAGE }}" >&2
+        fi
+
+  warning:
+    internal: true
+    requires:
+      vars: [MESSAGE]
+    cmds:
+      - |
+        if command -v gum >/dev/null 2>&1; then
+          gum style \
+            --foreground 208 --border-foreground 208 --border normal \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            " ⚠️  WARNING " "{{ .MESSAGE }}"
+        else
+          echo "⚠️  {{ .MESSAGE }}"
+        fi
+
+  info:
+    internal: true
+    requires:
+      vars: [MESSAGE]
+    cmds:
+      - |
+        if command -v gum >/dev/null 2>&1; then
+          gum style --foreground 240 "{{ .MESSAGE }}"
+        else
+          echo "{{ .MESSAGE }}"
+        fi
+
+  install-success:
+    internal: true
+    requires:
+      vars: [APP]
+    cmds:
+      - task: success
+        vars:
+          MESSAGE: "{{ .APP }} has been installed successfully!"
+
+  install-error:
+    internal: true
+    requires:
+      vars: [APP, EXIT_CODE]
+    cmds:
+      - task: error
+        vars:
+          MESSAGE: "Installation of {{ .APP }} failed with code {{ .EXIT_CODE }}"

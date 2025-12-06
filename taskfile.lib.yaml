@@ -1,6 +1,10 @@
 version: '3'
 
 includes:
+  versions:
+    taskfile: lib/versions.yaml
+    flatten: true
+    internal: true
   paths:
     taskfile: lib/paths.yaml
     flatten: true
@@ -24,6 +28,16 @@ includes:
   cli-finder:
     taskfile: lib/cli-finder.yaml
     flatten: true
+    internal: true
+  messaging:
+    taskfile: lib/messaging.yaml
+    flatten: true
+    internal: true
+  github-release:
+    taskfile: lib/github-release.yaml
+    internal: true
+  linux-pkg:
+    taskfile: lib/linux-pkg.yaml
     internal: true
   platform:
     taskfile: lib/platform.yaml

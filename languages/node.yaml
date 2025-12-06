@@ -1,8 +1,5 @@
 version: '3'
 
-vars:
-  NVM_VERSION: "0.40.3"
-
 tasks:
   default:
     - task --list --taskfile languages/node.yaml

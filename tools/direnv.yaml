@@ -1,18 +1,46 @@
 version: '3'
 
-vars:
-  DIRENV_VERSION: "2.36.0"
-
 tasks:
   install:
     platforms: [linux]
     desc: "[DIRENV] ✨ Install direnv"
     cmds:
+      - task: ::github-release:install:binary
+        vars:
+          TOOL_NAME: direnv
+          REPO: direnv/direnv
+          VERSION: "v{{ .DIRENV_VERSION }}"
+          BINARY_NAME: "direnv.linux-amd64"
+
+  uninstall:
+    platforms: [linux]
+    desc: "[DIRENV] 🗑️  Uninstall direnv"
+    cmds:
+      - rm -f $HOME/bin/direnv
+      - task: :messaging:success
+        vars:
+          MESSAGE: "direnv uninstalled successfully"
+
+  update:
+    platforms: [linux]
+    desc: "[DIRENV] 🔄 Update direnv to latest version"
+    cmds:
+      - task: install
+
+  verify:
+    platforms: [linux]
+    desc: "[DIRENV] ✅ Verify direnv installation"
+    cmds:
       - |
-        if command -v direnv >/dev/null 2>&1; then
-          echo "direnv is already installed."
+        if ! command -v direnv >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="direnv not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ direnv found: $(command -v direnv)"
+        version=$(direnv version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if ! direnv --help >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="direnv --help failed - may not be functional"
         else
-          curl -fsSL "https://github.com/direnv/direnv/releases/download/v{{ .DIRENV_VERSION }}/direnv.linux-amd64" -o $HOME/bin/direnv
-          chmod +x $HOME/bin/direnv
-          echo "direnv has been installed successfully."
+          {{ .gum_ok }} "✅ direnv is functional"
         fi

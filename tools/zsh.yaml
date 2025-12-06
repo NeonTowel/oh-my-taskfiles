@@ -2,30 +2,19 @@ version: '3'
 
 tasks:
   install:
-    desc: "[ZSH] Install zsh shell"
+    desc: "[ZSH] ✨ Install zsh shell"
     cmds:
-      - task: install:{{OS}}
+      - task: install:linux
+        platforms: [linux]
+      - task: install:darwin
+        platforms: [darwin]
 
   install:linux:
     internal: true
     cmds:
-      - |
-        if ! command -v zsh >/dev/null 2>&1; then
-          if command -v apt-get >/dev/null 2>&1; then
-            sudo apt-get update && sudo apt-get install -y zsh
-          elif command -v dnf >/dev/null 2>&1; then
-            sudo dnf install -y zsh
-          elif command -v yum >/dev/null 2>&1; then
-            sudo yum install -y zsh
-          elif command -v pacman >/dev/null 2>&1; then
-            sudo pacman -S --noconfirm zsh
-          else
-            echo "Unsupported package manager. Please install zsh manually."
-            exit 1
-          fi
-        else
-          echo "Zsh is already installed."
-        fi
+      - task: ::linux-pkg:install
+        vars:
+          PACKAGE: zsh
 
   install:darwin:
     internal: true
@@ -39,7 +28,7 @@ tasks:
         fi
 
   omz:install:
-    desc: "[ZSH] Install Oh My Zsh"
+    desc: "[ZSH] ✨ Install Oh My Zsh"
     cmds:
       - |
         if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -50,12 +39,13 @@ tasks:
         fi
 
   set-default:
-    desc: "[ZSH] Set zsh as default shell"
+    desc: "[ZSH] ⚙️ Set zsh as default shell"
     cmds:
       - |
-        if [ "$SHELL" != "$(which zsh)" ]; then
+        zsh_path=$(command -v zsh)
+        if [ "$SHELL" != "$zsh_path" ]; then
           echo "Setting zsh as default shell..."
-          sudo chsh -s $(which zsh) $(whoami)
+          sudo chsh -s "$zsh_path" $(whoami)
           echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
         else
           echo "Zsh is already your default shell."
@@ -76,9 +66,10 @@ tasks:
         fi
   
   install-zshrc:
-    desc: "[ZSH] Install .zshrc"
+    desc: "[ZSH] ⚙️ Install .zshrc"
     cmds:
-      - task: install-zshrc:{{OS}}
+      - task: install-zshrc:linux
+        platforms: [linux]
 
   setup:
     desc: "[ZSH] ✨ Install zsh, Oh My Zsh and set as default shell"
@@ -87,3 +78,114 @@ tasks:
       - task: omz:install
       - task: set-default
       - task: install-zshrc:{{OS}}
+
+  uninstall:
+    desc: "[ZSH] 🗑️  Uninstall zsh (shell only, not Oh My Zsh)"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:darwin
+        platforms: [darwin]
+
+  update:
+    desc: "[ZSH] 🔄 Update zsh to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:darwin
+        platforms: [darwin]
+
+  verify:
+    desc: "[ZSH] ✅ Verify zsh installation"
+    cmds:
+      - |
+        if ! command -v zsh >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="zsh not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ zsh found: $(command -v zsh)"
+        version=$(zsh --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if [ -d "$HOME/.oh-my-zsh" ]; then
+          {{ .gum_ok }} "✅ Oh My Zsh is installed"
+        else
+          {{ .gum_info }} "ℹ️  Oh My Zsh is not installed"
+        fi
+        zsh_path=$(command -v zsh)
+        if [ "$SHELL" = "$zsh_path" ]; then
+          {{ .gum_ok }} "✅ zsh is the default shell"
+        else
+          {{ .gum_info }} "ℹ️  zsh is not the default shell (current: $SHELL)"
+        fi
+
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if command -v apt-get >/dev/null 2>&1; then
+          sudo apt-get remove -y zsh
+        elif command -v dnf >/dev/null 2>&1; then
+          sudo dnf remove -y zsh
+        elif command -v yum >/dev/null 2>&1; then
+          sudo yum remove -y zsh
+        elif command -v pacman >/dev/null 2>&1; then
+          sudo pacman -R --noconfirm zsh
+        else
+          echo "❌ Unsupported package manager"
+          exit 1
+        fi
+      - task: :messaging:success
+        vars:
+          MESSAGE: "zsh uninstalled successfully"
+
+  uninstall:darwin:
+    internal: true
+    platforms: [darwin]
+    cmds:
+      - |
+        if command -v brew >/dev/null 2>&1; then
+          brew uninstall zsh
+        else
+          echo "❌ Homebrew not found"
+          exit 1
+        fi
+      - task: :messaging:success
+        vars:
+          MESSAGE: "zsh uninstalled successfully"
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if command -v apt-get >/dev/null 2>&1; then
+          sudo apt-get update && sudo apt-get upgrade -y zsh
+        elif command -v dnf >/dev/null 2>&1; then
+          sudo dnf upgrade -y zsh
+        elif command -v yum >/dev/null 2>&1; then
+          sudo yum update -y zsh
+        elif command -v pacman >/dev/null 2>&1; then
+          sudo pacman -Syu --noconfirm zsh
+        else
+          echo "❌ Unsupported package manager"
+          exit 1
+        fi
+      - task: :messaging:success
+        vars:
+          MESSAGE: "zsh updated successfully"
+
+  update:darwin:
+    internal: true
+    platforms: [darwin]
+    cmds:
+      - |
+        if command -v brew >/dev/null 2>&1; then
+          brew upgrade zsh
+        else
+          echo "❌ Homebrew not found"
+          exit 1
+        fi
+      - task: :messaging:success
+        vars:
+          MESSAGE: "zsh updated successfully"

@@ -1,8 +1,5 @@
 version: '3'
 
-vars:
-  GO_VERSION: "1.24.2"
-
 tasks:
   install:linux:
     platforms: [linux]

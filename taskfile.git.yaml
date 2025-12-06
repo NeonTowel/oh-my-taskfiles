@@ -79,7 +79,7 @@ tasks:
 
   create-config:
     deps: [ ":tools:fzf:install", ":tools:coreutils:install" ]
-    desc: "[GIT] Create a ssh config and key for a specific organization/account"
+    desc: "[GIT] ⚙️ Create a ssh config and key for a specific organization/account"
     vars:
       HOME: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
       GIT_ROOT: '{{ joinPath .HOME "git" | replace "\\" "/" }}'

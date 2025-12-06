@@ -1,36 +1,5 @@
 version: '3'
 
-vars:
-  GUM_VERSION: "0.16.0"
-
-  gum_info:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 240"
-      else
-        echo "echo"
-      fi
-  gum_warn:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 208 --bold"
-      else
-        echo "echo"
-      fi
-  gum_error:
-    sh: |
-      if command -v gum >/dev/null 2>&1; then
-        echo "gum style --foreground 196 --bold"
-      else
-        echo "echo"
-      fi
-  gum_ok:
-    sh: |
-      if command -v gum >/dev/null 2>&1 || where.exe gum >nul 2>&1; then
-        echo "gum style --foreground 46 --bold"
-      else
-        echo "echo"
-      fi
 tasks:
   install:windows:
     internal: true
@@ -44,11 +13,13 @@ tasks:
     internal: true
     platforms: [linux]
     cmds:
-      - |
-        if ! command -v gum >/dev/null 2>&1; then
-          curl -fsSL "https://github.com/charmbracelet/gum/releases/download/v{{ .GUM_VERSION }}/gum_{{ .GUM_VERSION }}_Linux_x86_64.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "gum_{{ .GUM_VERSION }}_Linux_x86_64/gum"
-          echo "gum has been installed successfully."
-        fi
+      - task: ::github-release:install:tarball
+        vars:
+          TOOL_NAME: gum
+          REPO: charmbracelet/gum
+          VERSION: "v{{ .GUM_VERSION }}"
+          ARCHIVE_NAME: "gum_{{ .GUM_VERSION }}_Linux_x86_64.tar.gz"
+          BINARY_PATH: "gum_{{ .GUM_VERSION }}_Linux_x86_64/gum"
 
   install:
     desc: "[GUM] ✨ Install gum"
@@ -57,3 +28,67 @@ tasks:
         platforms: [windows]
       - task: install:linux
         platforms: [linux]
+
+  uninstall:
+    desc: "[GUM] 🗑️  Uninstall gum"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[GUM] 🔄 Update gum to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[GUM] ✅ Verify gum installation"
+    cmds:
+      - |
+        if ! command -v gum >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="gum not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ gum found: $(command -v gum)"
+        version=$(gum --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if ! gum --help >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="gum --help failed - may not be functional"
+        else
+          {{ .gum_ok }} "✅ gum is functional"
+        fi
+
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - rm -f $HOME/bin/gum
+      - task: :messaging:success
+        vars:
+          MESSAGE: "gum uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: charm-gum
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - task: install:linux
+
+  update:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: charm-gum

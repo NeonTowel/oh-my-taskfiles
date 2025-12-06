@@ -1,0 +1,44 @@
+version: '3'
+
+tasks:
+  install:tarball:
+    internal: true
+    requires:
+      vars: [TOOL_NAME, REPO, VERSION, ARCHIVE_NAME, BINARY_PATH]
+    status:
+      - command -v {{ .TOOL_NAME }} >/dev/null 2>&1
+    cmds:
+      - mkdir -p $HOME/bin
+      - curl -fsSL "https://github.com/{{ .REPO }}/releases/download/{{ .VERSION }}/{{ .ARCHIVE_NAME }}" | tar -xz -C $HOME/bin --strip-components={{ .STRIP_COMPONENTS | default 1 }} "{{ .BINARY_PATH }}"
+      - chmod +x "$HOME/bin/{{ .TOOL_NAME }}"
+      - task: :messaging:install-success
+        vars: { APP: "{{ .TOOL_NAME }}" }
+
+  install:zip:
+    internal: true
+    requires:
+      vars: [TOOL_NAME, REPO, VERSION, ARCHIVE_NAME, BINARY_PATH]
+    status:
+      - command -v {{ .TOOL_NAME }} >/dev/null 2>&1
+    cmds:
+      - mkdir -p $HOME/bin /tmp/{{ .TOOL_NAME }}_install
+      - curl -fsSL "https://github.com/{{ .REPO }}/releases/download/{{ .VERSION }}/{{ .ARCHIVE_NAME }}" -o /tmp/{{ .TOOL_NAME }}_install/archive.zip
+      - unzip -q /tmp/{{ .TOOL_NAME }}_install/archive.zip -d /tmp/{{ .TOOL_NAME }}_install
+      - mv "/tmp/{{ .TOOL_NAME }}_install/{{ .BINARY_PATH }}" "$HOME/bin/{{ .TOOL_NAME }}"
+      - chmod +x "$HOME/bin/{{ .TOOL_NAME }}"
+      - rm -rf /tmp/{{ .TOOL_NAME }}_install
+      - task: :messaging:install-success
+        vars: { APP: "{{ .TOOL_NAME }}" }
+
+  install:binary:
+    internal: true
+    requires:
+      vars: [TOOL_NAME, REPO, VERSION, BINARY_NAME]
+    status:
+      - command -v {{ .TOOL_NAME }} >/dev/null 2>&1
+    cmds:
+      - mkdir -p $HOME/bin
+      - curl -fsSL "https://github.com/{{ .REPO }}/releases/download/{{ .VERSION }}/{{ .BINARY_NAME }}" -o "$HOME/bin/{{ .TOOL_NAME }}"
+      - chmod +x "$HOME/bin/{{ .TOOL_NAME }}"
+      - task: :messaging:install-success
+        vars: { APP: "{{ .TOOL_NAME }}" }

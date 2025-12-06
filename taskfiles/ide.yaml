@@ -7,52 +7,28 @@ includes:
     flatten: true
 
 vars:
+  IDE_EXTENSIONS_base:
+    - Catppuccin.catppuccin-vsc
+    - Catppuccin.catppuccin-vsc-icons
+    - svelte.svelte-vscode
+    - tamasfe.even-better-toml
+    - golang.Go
+    - rust-lang.rust-analyzer
+    - oderwat.indent-rainbow
+    - humao.rest-client
+    - esbenp.prettier-vscode
+    - EditorConfig.EditorConfig
+    - redhat.vscode-yaml
+  IDE_EXTENSIONS_remote:
+    - ms-vscode-remote.remote-containers
+    - ms-vscode-remote.remote-wsl
+    - ms-vscode-remote.remote-ssh
   IDE_EXTENSIONS_vscode:
-    - ms-vscode-remote.remote-containers
-    - ms-vscode-remote.remote-wsl
-    - ms-vscode-remote.remote-ssh
-    - Catppuccin.catppuccin-vsc
-    - Catppuccin.catppuccin-vsc-icons
-    - svelte.svelte-vscode
-    - tamasfe.even-better-toml
-    - golang.Go
-    - rust-lang.rust-analyzer
-    - oderwat.indent-rainbow
-    - tejasvi.rainbow-brackets-2
-    - humao.rest-client
-    - esbenp.prettier-vscode
-    - EditorConfig.EditorConfig
-    - redhat.vscode-yaml
+    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} {{.IDE_EXTENSIONS_remote | join \" \"}} tejasvi.rainbow-brackets-2"
   IDE_EXTENSIONS_cursor:
-    - ms-vscode-remote.remote-containers
-    - ms-vscode-remote.remote-wsl
-    - ms-vscode-remote.remote-ssh
-    - Catppuccin.catppuccin-vsc
-    - Catppuccin.catppuccin-vsc-icons
-    - svelte.svelte-vscode
-    - tamasfe.even-better-toml
-    - golang.Go
-    - rust-lang.rust-analyzer
-    - oderwat.indent-rainbow
-    - humao.rest-client
-    - esbenp.prettier-vscode
-    - EditorConfig.EditorConfig
-    - redhat.vscode-yaml
-    - CoenraadS.bracket-pair-colorizer-2
+    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} {{.IDE_EXTENSIONS_remote | join \" \"}} CoenraadS.bracket-pair-colorizer-2"
   IDE_EXTENSIONS_vscodium:
-    - Catppuccin.catppuccin-vsc
-    - Catppuccin.catppuccin-vsc-icons
-    - svelte.svelte-vscode
-    - tamasfe.even-better-toml
-    - golang.Go
-    - rust-lang.rust-analyzer
-    - oderwat.indent-rainbow
-    - humao.rest-client
-    - esbenp.prettier-vscode
-    - EditorConfig.EditorConfig
-    - redhat.vscode-yaml
-    - sourcegraph.amp
-    - vizzletf.geminicommit
+    sh: echo "{{.IDE_EXTENSIONS_base | join \" \"}} sourcegraph.amp vizzletf.geminicommit"
 
 
 tasks:

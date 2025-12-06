@@ -1,49 +1,63 @@
 version: '3'
 
-vars:
-  AWESOME_GIT_VERSION: "0.0.2"
-
 tasks:
+  install:
+    desc: "[AWESOME-GIT] ✨ Install awesome-git"
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
+
+  uninstall:
+    desc: "[AWESOME-GIT] 🗑️  Uninstall awesome-git"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[AWESOME-GIT] 🔄 Update awesome-git to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[AWESOME-GIT] ✅ Verify awesome-git installation"
+    cmds:
+      - |
+        if ! command -v awesome-git >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="awesome-git not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ awesome-git found: $(command -v awesome-git)"
+        version=$(awesome-git --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        {{ .gum_ok }} "✅ awesome-git is functional"
+
   install:linux:unzip:
     platforms: [linux]
     internal: true
-    status:
-      - command -v unzip >/dev/null 2>&1
     cmds:
-      - |
-        if command -v apt-get >/dev/null 2>&1; then
-          sudo apt-get update && sudo apt-get install -y unzip
-        elif command -v dnf >/dev/null 2>&1; then
-          sudo dnf install -y unzip
-        elif command -v yum >/dev/null 2>&1; then
-          sudo yum install -y unzip
-        elif command -v pacman >/dev/null 2>&1; then
-          sudo pacman -S --noconfirm unzip
-        else
-          echo "Unsupported package manager. Please install unzip manually."
-          exit 1
-        fi
+      - task: ::linux-pkg:install
+        vars:
+          PACKAGE: unzip
 
   install:linux:
     platforms: [linux]
-    desc: "[AWESOME-GIT] ✨ Install awesome-git"
-    vars:
-      APP_NAME: awesome-git
+    internal: true
+    deps: [install:linux:unzip]
     cmds:
-      - |
-        if command -v {{ .APP_NAME }} >/dev/null 2>&1; then
-          echo "{{ .APP_NAME }} is already installed."
-          exit 0
-        fi
-      - task: install:linux:unzip
-      - |
-        curl -fsSL "https://github.com/NeonTowel/awesome-git/releases/download/{{ .AWESOME_GIT_VERSION }}/{{ .APP_NAME }}-linux.zip" -o /tmp/{{ .APP_NAME }}.zip
-        unzip /tmp/{{ .APP_NAME }}.zip -d /tmp/{{ .APP_NAME }}
-        chmod +x /tmp/{{ .APP_NAME }}/{{ .APP_NAME }}
-        mv /tmp/{{ .APP_NAME }}/{{ .APP_NAME }} $HOME/bin/
-        rm -rf /tmp/{{ .APP_NAME }}
-        rm /tmp/{{ .APP_NAME }}.zip
-        echo "{{ .APP_NAME }} has been installed successfully."
+      - task: ::github-release:install:zip
+        vars:
+          TOOL_NAME: awesome-git
+          REPO: NeonTowel/awesome-git
+          VERSION: "{{ .AWESOME_GIT_VERSION }}"
+          ARCHIVE_NAME: "awesome-git-linux.zip"
+          BINARY_PATH: "awesome-git/awesome-git"
 
   install:windows:
     platforms: [windows]
@@ -53,12 +67,34 @@ tasks:
       - task: ::scoop:neontowel-install
         vars:
           APP: awesome-git
-      
 
-  install:
-    desc: "[AWESOME-GIT] ✨ Install awesome-git"
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
     cmds:
-      - task: install:windows
-        platforms: [windows]
+      - rm -f $HOME/bin/awesome-git
+      - task: :messaging:success
+        vars:
+          MESSAGE: "awesome-git uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: awesome-git
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
       - task: install:linux
-        platforms: [linux]
+
+  update:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: awesome-git

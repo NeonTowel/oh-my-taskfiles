@@ -1,8 +1,5 @@
 version: '3'
 
-vars:
-  BAT_VERSION: "0.25.0"
-
 tasks:
   default:
     - task --list --taskfile tools/bat.yaml
@@ -11,13 +8,13 @@ tasks:
     internal: true
     platforms: [linux]
     cmds:
-      - |
-        if command -v bat >/dev/null 2>&1; then
-          echo "bat is already installed."
-        else
-          curl -fsSL "https://github.com/sharkdp/bat/releases/download/v{{ .BAT_VERSION }}/bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu.tar.gz" | sudo tar -xz -C $HOME/bin --strip-components=1 "bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu/bat"
-          echo "bat has been installed successfully."
-        fi
+      - task: ::github-release:install:tarball
+        vars:
+          TOOL_NAME: bat
+          REPO: sharkdp/bat
+          VERSION: "v{{ .BAT_VERSION }}"
+          ARCHIVE_NAME: "bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu.tar.gz"
+          BINARY_PATH: "bat-v{{ .BAT_VERSION }}-x86_64-unknown-linux-gnu/bat"
   
   install:windows:
     internal: true
@@ -34,3 +31,67 @@ tasks:
         platforms: [linux]
       - task: install:windows
         platforms: [windows]
+
+  uninstall:
+    desc: "[BAT] 🗑️  Uninstall bat"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[BAT] 🔄 Update bat to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[BAT] ✅ Verify bat installation"
+    cmds:
+      - |
+        if ! command -v bat >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="bat not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ bat found: $(command -v bat)"
+        version=$(bat --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if ! bat --help >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="bat --help failed - may not be functional"
+        else
+          {{ .gum_ok }} "✅ bat is functional"
+        fi
+
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - rm -f $HOME/bin/bat
+      - task: :messaging:success
+        vars:
+          MESSAGE: "bat uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: bat
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - task: install:linux
+
+  update:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: bat

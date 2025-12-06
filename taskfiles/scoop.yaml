@@ -9,29 +9,49 @@ tasks:
   install:
     platforms: [windows]
     internal: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
+    status:
+      - scoop list | findstr /C:"{{ .APP }}" >nul
     cmds:
       - defer: |
           {{if .EXIT_CODE}}
-          gum style \
-            --foreground 196 --border-foreground 196 --border double \
-            --align center --width 50 --margin "1 2" --padding "2 4" \
-            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
+          task :messaging:install-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
           {{end}}
       - scoop install {{ .APP }} || true
       - scoop list | findstr /C:"{{ .APP }}" >nul
-      - task: :install-success
-        vars:
-          APP: "{{ .APP }}"
+      - task: :messaging:install-success
+        vars: { APP: "{{ .APP }}" }
+
+  uninstall:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars: [APP]
     status:
-      - scoop list | findstr /C:"{{ .APP }}" >nul
+      - '! scoop list | findstr /C:"{{ .APP }}" >nul'
+    cmds:
+      - scoop uninstall {{ .APP }}
+      - task: :messaging:success
+        vars:
+          MESSAGE: "{{ .APP }} uninstalled successfully"
+
+  update:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars: [APP]
+    cmds:
+      - scoop update {{ .APP }}
+      - task: :messaging:success
+        vars:
+          MESSAGE: "{{ .APP }} updated successfully"
 
   neontowel-install:
     platforms: [windows]
     internal: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
     cmds:
       - task: buckets:ensure
         vars: { BUCKET: "neontowel", BUCKET_URL: "https://github.com/NeonTowel/scoop-bucket"}
@@ -41,8 +61,8 @@ tasks:
   extras-install:
     platforms: [windows]
     internal: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
     cmds:
       - task: buckets:ensure
         vars: { BUCKET: "extras" }
@@ -52,8 +72,8 @@ tasks:
   nonportable-install:
     platforms: [windows]
     internal: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
     cmds:
       - task: buckets:ensure
         vars: { BUCKET: "nonportable" }
@@ -63,8 +83,8 @@ tasks:
   nerd-fonts-install:
     platforms: [windows]
     internal: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
     cmds:
       - task: buckets:ensure
         vars: { BUCKET: "nerd-fonts" }

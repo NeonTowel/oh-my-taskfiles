@@ -18,16 +18,6 @@ tasks:
         vars:
           APP: starship
 
-  configure:
-    internal: true
-    cmds:
-      - |
-        if [ ! -d "$HOME/.config" ]; then
-          mkdir -p "$HOME/.config"
-        fi
-        cp "$HOME/.omt/dotfiles/starship.toml" "$HOME/.config/starship.toml"
-        echo "starship has been configured successfully."
-  
   install:
     desc: "[STARSHIP] ✨ Install and configure starship prompt"
     cmds:
@@ -36,3 +26,82 @@ tasks:
       - task: install:windows
         platforms: [windows]
       - task: configure
+
+  uninstall:
+    desc: "[STARSHIP] 🗑️  Uninstall starship"
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[STARSHIP] 🔄 Update starship to latest version"
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[STARSHIP] ✅ Verify starship installation"
+    cmds:
+      - |
+        if ! command -v starship >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="starship not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ starship found: $(command -v starship)"
+        version=$(starship --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if [ -f "$HOME/.config/starship.toml" ]; then
+          {{ .gum_ok }} "✅ Configuration file exists"
+        else
+          {{ .gum_info }} "ℹ️  Configuration file not found"
+        fi
+        if ! starship init bash >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="starship init failed - may not be functional"
+        else
+          {{ .gum_ok }} "✅ starship is functional"
+        fi
+
+  configure:
+    internal: true
+    cmds:
+      - task: ::config-copy:copy-with-prompt
+        vars:
+          SOURCE_FILE: "$HOME/.omt/dotfiles/starship.toml"
+          DEST_PATH: "$HOME/.config/starship.toml"
+          TOOL_NAME: starship
+
+  uninstall:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - rm -f $HOME/bin/starship
+      - rm -f $HOME/.config/starship.toml
+      - task: :messaging:success
+        vars:
+          MESSAGE: "starship uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: starship
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - task: install:linux
+
+  update:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: starship

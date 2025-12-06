@@ -5,19 +5,40 @@ tasks:
     platforms: [windows]
     internal: true
     silent: true
-    required:
-      vars: [ APP ]
+    requires:
+      vars: [APP]
+    status:
+      - winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
     cmds:
       - defer: |
           {{if .EXIT_CODE}}
-          gum style \
-            --foreground 196 --border-foreground 196 --border double \
-            --align center --width 50 --margin "1 2" --padding "2 4" \
-            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
+          task :messaging:install-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
           {{end}}
       - winget install --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity >nul
-      - task: :install-success
-        vars: 
+      - task: :messaging:install-success
+        vars:
           APP: "{{ .APP }}"
-    status:
-      - winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
+
+  uninstall:
+    platforms: [windows]
+    internal: true
+    silent: true
+    requires:
+      vars: [APP]
+    cmds:
+      - winget uninstall --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
+      - task: :messaging:success
+        vars:
+          MESSAGE: "{{ .APP }} uninstalled successfully"
+
+  update:
+    platforms: [windows]
+    internal: true
+    silent: true
+    requires:
+      vars: [APP]
+    cmds:
+      - winget upgrade --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity
+      - task: :messaging:success
+        vars:
+          MESSAGE: "{{ .APP }} updated successfully"

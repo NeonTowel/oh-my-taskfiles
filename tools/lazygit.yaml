@@ -1,10 +1,5 @@
 version: '3'
 
-#https://github.com/jesseduffield/lazygit/releases/download/v0.50.0/lazygit_0.50.0_Linux_x86_64.tar.gz
-
-vars:
-  LAZYGIT_VERSION: "0.50.0"
-
 tasks:
   install:windows:
     internal: true
@@ -20,15 +15,14 @@ tasks:
     silent: true
     platforms: [linux]
     cmds:
-      - |
-        if command -v lazygit >/dev/null 2>&1; then
-          echo "lazygit is already installed."
-        else
-          curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v{{ .LAZYGIT_VERSION }}/lazygit_{{ .LAZYGIT_VERSION }}_Linux_x86_64.tar.gz" | sudo tar -xz -C $HOME/bin lazygit
-          echo "lazygit has been installed successfully."
-          sudo chmod +x $HOME/bin/lazygit
-          rm -rf "lazygit_{{ .LAZYGIT_VERSION }}_Linux_x86_64"
-        fi
+      - task: ::github-release:install:tarball
+        vars:
+          TOOL_NAME: lazygit
+          REPO: jesseduffield/lazygit
+          VERSION: "v{{ .LAZYGIT_VERSION }}"
+          ARCHIVE_NAME: "lazygit_{{ .LAZYGIT_VERSION }}_Linux_x86_64.tar.gz"
+          BINARY_PATH: lazygit
+          STRIP_COMPONENTS: 0
 
   install:
     desc: "[LAZYGIT] ✨ Install lazygit"
@@ -38,3 +32,73 @@ tasks:
         platforms: [windows]
       - task: install:linux
         platforms: [linux]
+
+  uninstall:
+    desc: "[LAZYGIT] 🗑️  Uninstall lazygit"
+    silent: true
+    cmds:
+      - task: uninstall:linux
+        platforms: [linux]
+      - task: uninstall:windows
+        platforms: [windows]
+
+  update:
+    desc: "[LAZYGIT] 🔄 Update lazygit to latest version"
+    silent: true
+    cmds:
+      - task: update:linux
+        platforms: [linux]
+      - task: update:windows
+        platforms: [windows]
+
+  verify:
+    desc: "[LAZYGIT] ✅ Verify lazygit installation"
+    cmds:
+      - |
+        if ! command -v lazygit >/dev/null 2>&1; then
+          task :messaging:error MESSAGE="lazygit not found in PATH"
+          exit 1
+        fi
+        {{ .gum_ok }} "✅ lazygit found: $(command -v lazygit)"
+        version=$(lazygit --version 2>&1 || echo "unknown")
+        {{ .gum_info }} "📋 Version: $version"
+        if ! lazygit --help >/dev/null 2>&1; then
+          task :messaging:warning MESSAGE="lazygit --help failed - may not be functional"
+        else
+          {{ .gum_ok }} "✅ lazygit is functional"
+        fi
+
+  uninstall:linux:
+    internal: true
+    silent: true
+    platforms: [linux]
+    cmds:
+      - rm -f $HOME/bin/lazygit
+      - task: :messaging:success
+        vars:
+          MESSAGE: "lazygit uninstalled successfully"
+
+  uninstall:windows:
+    internal: true
+    silent: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:uninstall
+        vars:
+          APP: lazygit
+
+  update:linux:
+    internal: true
+    silent: true
+    platforms: [linux]
+    cmds:
+      - task: install:linux
+
+  update:windows:
+    internal: true
+    silent: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: lazygit

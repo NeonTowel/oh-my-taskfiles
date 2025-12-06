@@ -1,8 +1,5 @@
 version: '3'
 
-vars:
-  7ZIP_LINUX_VERSION: "24.09"
-
 tasks:
   install:windows:
     platforms: [windows]

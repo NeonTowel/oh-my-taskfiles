@@ -37,7 +37,7 @@ tasks:
         {{ if .UNATTENDED }}
         {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
         if [ ! -f "$HOME/.claude/settings.json" ]; then
-          #cp "dotfiles/claude/settings.default.json" "$HOME/.claude/settings.json"
+          cp "dotfiles/claude/settings.default.json" "$HOME/.claude/settings.json"
           {{ .gum_ok }} "Claude settings have been configured successfully."
         else
           {{ .gum_warn }} "Claude settings already exist, skipping configuration."
@@ -56,12 +56,10 @@ tasks:
           CLAUDE_CODE_USE_FOUNDRY="1"
         fi
 
-        # try to find git bash path
         if [ ! -z "$CLAUDE_CODE_GIT_BASH_PATH" ] && [ -f "$CLAUDE_CODE_GIT_BASH_PATH" ]; then
           CLAUDE_CODE_GIT_BASH_PATH="$CLAUDE_CODE_GIT_BASH_PATH"
         fi
 
-        # if not found, try to find in filesystem
         if [ -z "$CLAUDE_CODE_GIT_BASH_PATH" ]; then
           if [ -f "C:\\Program Files\\Git\\bin\\bash.exe" ]; then
             CLAUDE_CODE_GIT_BASH_PATH="C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe"
@@ -91,7 +89,6 @@ tasks:
         {{ if .UNATTENDED }}
         {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
         if [ ! -f "$HOME/.claude/settings.json" ]; then
-          #cp "dotfiles/claude/settings.default.json" "$HOME/.claude/settings.json"
           {{ .gum_ok }} "Claude settings have been configured successfully."
         else
           {{ .gum_warn }} "Claude settings already exist, skipping configuration."
@@ -115,10 +112,9 @@ tasks:
           CLAUDE_CODE_GIT_BASH_PATH="$CLAUDE_CODE_GIT_BASH_PATH"
         fi
 
-        # if not found, try to find in filesystem
         if [ -z "$CLAUDE_CODE_GIT_BASH_PATH" ]; then
-          if [ -x $(which bash) ]; then
-            CLAUDE_CODE_GIT_BASH_PATH="$(which bash)"
+          if bash_path=$(command -v bash 2>/dev/null) && [ -x "$bash_path" ]; then
+            CLAUDE_CODE_GIT_BASH_PATH="$bash_path"
           else
             {{ .gum_warn }} "Warning: Git Bash path not found, Claude might not work properly."
           fi

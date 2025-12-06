@@ -4,9 +4,8 @@ tasks:
 
   check-updates:
     internal: true
-    cmds: 
+    cmds:
       - |
-        # use git to check if there are any changes to the omt repo that is cloned locally to $HOME/.omt
         if [ -d "$HOME/.omt" ]; then
           cd $HOME/.omt
           git fetch --quiet

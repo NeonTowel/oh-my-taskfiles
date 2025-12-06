@@ -1,0 +1,80 @@
+version: '3'
+
+tasks:
+  update-all:
+    desc: "[MAINTENANCE] 🔄 Update all installed tools"
+    cmds:
+      - task: :messaging:info
+        vars:
+          MESSAGE: "Starting bulk update of all tools..."
+      - task: :tools:lsd:update
+        ignore_error: true
+      - task: :tools:bat:update
+        ignore_error: true
+      - task: :tools:gum:update
+        ignore_error: true
+      - task: :tools:zsh:update
+        ignore_error: true
+      - task: :tools:lazygit:update
+        ignore_error: true
+      - task: :tools:direnv:update
+        ignore_error: true
+      - task: :tools:awesome-git:update
+        ignore_error: true
+      - task: :tools:starship:update
+        ignore_error: true
+      - task: :messaging:success
+        vars:
+          MESSAGE: "Bulk update completed"
+
+  verify-all:
+    desc: "[MAINTENANCE] ✅ Verify all tool installations"
+    cmds:
+      - task: :messaging:info
+        vars:
+          MESSAGE: "Starting verification of all tools..."
+      - task: :tools:lsd:verify
+        ignore_error: true
+      - task: :tools:bat:verify
+        ignore_error: true
+      - task: :tools:gum:verify
+        ignore_error: true
+      - task: :tools:zsh:verify
+        ignore_error: true
+      - task: :tools:lazygit:verify
+        ignore_error: true
+      - task: :tools:direnv:verify
+        ignore_error: true
+      - task: :tools:awesome-git:verify
+        ignore_error: true
+      - task: :tools:starship:verify
+        ignore_error: true
+      - task: :messaging:success
+        vars:
+          MESSAGE: "Verification completed"
+
+  status:
+    desc: "[MAINTENANCE] 📊 Show installation status of all tools"
+    cmds:
+      - |
+        echo "=== Tool Installation Status ==="
+        echo ""
+        for tool in lsd bat gum zsh lazygit direnv awesome-git starship; do
+          if command -v $tool >/dev/null 2>&1; then
+            {{ .gum_ok }} "✅ $tool: installed ($(command -v $tool))"
+          else
+            {{ .gum_error }} "❌ $tool: not installed"
+          fi
+        done
+        echo ""
+        echo "=== Configuration Status ==="
+        if [ -d "$HOME/.oh-my-zsh" ]; then
+          {{ .gum_ok }} "✅ Oh My Zsh: installed"
+        else
+          {{ .gum_info }} "ℹ️  Oh My Zsh: not installed"
+        fi
+        if [ -f "$HOME/.config/starship.toml" ]; then
+          {{ .gum_ok }} "✅ Starship: configured"
+        else
+          {{ .gum_info }} "ℹ️  Starship: not configured"
+        fi

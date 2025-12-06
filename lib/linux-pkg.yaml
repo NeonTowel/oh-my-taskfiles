@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  install:
+    internal: true
+    platforms: [linux]
+    requires:
+      vars: [PACKAGE]
+    status:
+      - command -v {{ .PACKAGE }} >/dev/null 2>&1
+    cmds:
+      - task: detect-and-install
+        vars:
+          PACKAGE: "{{ .PACKAGE }}"
+          APT_NAME: "{{ .APT_NAME | default .PACKAGE }}"
+          DNF_NAME: "{{ .DNF_NAME | default .PACKAGE }}"
+          YUM_NAME: "{{ .YUM_NAME | default .PACKAGE }}"
+          PACMAN_NAME: "{{ .PACMAN_NAME | default .PACKAGE }}"
+
+  detect-and-install:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if command -v apt-get >/dev/null 2>&1; then
+          sudo apt-get update -qq && sudo apt-get install -y {{ .APT_NAME }}
+        elif command -v dnf >/dev/null 2>&1; then
+          sudo dnf install -y {{ .DNF_NAME }}
+        elif command -v yum >/dev/null 2>&1; then
+          sudo yum install -y {{ .YUM_NAME }}
+        elif command -v pacman >/dev/null 2>&1; then
+          sudo pacman -S --noconfirm {{ .PACMAN_NAME }}
+        else
+          echo "❌ Unsupported package manager. Please install {{ .PACKAGE }} manually."
+          exit 1
+        fi
+      - task: :messaging:install-success
+        vars: { APP: "{{ .PACKAGE }}" }
