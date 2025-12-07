@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   copy-file:
-    internal: true
     silent: true
     requires:
       vars: [SOURCE_FILE, DEST_DIR, DEST_FILE]
@@ -13,7 +12,6 @@ tasks:
       - cp "{{ .SOURCE_FILE }}" "{{ .DEST_DIR }}/{{ .DEST_FILE }}"
 
   copy-with-prompt:
-    internal: true
     silent: true
     deps: [":tools:gum:install"]
     requires:

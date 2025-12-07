@@ -3,7 +3,6 @@ version: '3'
 tasks:
   install:
     platforms: [windows]
-    internal: true
     silent: true
     requires:
       vars: [APP]
@@ -21,7 +20,6 @@ tasks:
 
   uninstall:
     platforms: [windows]
-    internal: true
     silent: true
     requires:
       vars: [APP]
@@ -33,7 +31,6 @@ tasks:
 
   update:
     platforms: [windows]
-    internal: true
     silent: true
     requires:
       vars: [APP]

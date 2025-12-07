@@ -2,8 +2,7 @@ version: '3'
 
 includes:
   buckets: 
-    internal: true
-    taskfile: scoop-buckets.yaml
+    taskfile: scoop/buckets.yaml
 
 tasks:
   install:

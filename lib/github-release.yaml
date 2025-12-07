@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   install:tarball:
-    internal: true
     requires:
       vars: [TOOL_NAME, REPO, VERSION, ARCHIVE_NAME, BINARY_PATH]
     status:
@@ -15,7 +14,6 @@ tasks:
         vars: { APP: "{{ .TOOL_NAME }}" }
 
   install:zip:
-    internal: true
     requires:
       vars: [TOOL_NAME, REPO, VERSION, ARCHIVE_NAME, BINARY_PATH]
     status:
@@ -31,7 +29,6 @@ tasks:
         vars: { APP: "{{ .TOOL_NAME }}" }
 
   install:binary:
-    internal: true
     requires:
       vars: [TOOL_NAME, REPO, VERSION, BINARY_NAME]
     status:

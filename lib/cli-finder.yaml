@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   find-in-paths:
-    internal: true
     silent: true
     requires:
       vars: [COMMAND_NAME, SEARCH_PATHS]

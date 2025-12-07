@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   download-extract-tarball:
-    internal: true
     silent: true
     requires:
       vars: [BINARY_NAME, DOWNLOAD_URL, INSTALL_DIR]
@@ -22,7 +21,6 @@ tasks:
         fi
 
   download-extract-zip:
-    internal: true
     silent: true
     requires:
       vars: [BINARY_NAME, DOWNLOAD_URL, INSTALL_DIR]

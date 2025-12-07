@@ -7,7 +7,6 @@ includes:
 
 tasks:
   default:
-    desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
     cmds:
       - task: windows
         platforms: [windows]

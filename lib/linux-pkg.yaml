@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   install:
-    internal: true
     platforms: [linux]
     requires:
       vars: [PACKAGE]
@@ -18,7 +17,6 @@ tasks:
           PACMAN_NAME: "{{ .PACMAN_NAME | default .PACKAGE }}"
 
   detect-and-install:
-    internal: true
     platforms: [linux]
     cmds:
       - |

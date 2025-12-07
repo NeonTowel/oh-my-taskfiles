@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   install-success:
-    internal: true
     silent: true
     requires:
       vars: [APP]
@@ -16,7 +15,6 @@ tasks:
         fi
 
   install-error:
-    internal: true
     silent: true
     requires:
       vars: [APP, EXIT_CODE]
@@ -28,7 +26,6 @@ tasks:
           " ❌ ERROR " "Installation of {{ .APP }} failed with code {{ .EXIT_CODE }}!"
 
   ensure-command-exists:
-    internal: true
     silent: true
     requires:
       vars: [COMMAND_NAME]
@@ -40,7 +37,6 @@ tasks:
         fi
 
   check-already-installed:
-    internal: true
     silent: true
     requires:
       vars: [COMMAND_NAME, TOOL_NAME]

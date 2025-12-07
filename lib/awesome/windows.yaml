@@ -29,6 +29,9 @@ tasks:
         - pwsh
         - rose-pine-cursor
         - starship
+        - go
+        - rust
+        - node
       APPS:
         - 1password
         - cursor
@@ -49,10 +52,7 @@ tasks:
         - translucenttb
         - yasb
       RUN:
-        - git:config-global
-        - lang:go:install
-        - lang:rust:install
-        - lang:node:install
+        - tools:awesome-git:config-global #FIXME
       TOOLS_COUNT: "{{ len .TOOLS }}"
       APPS_COUNT: "{{ len .APPS }}"
       RUN_COUNT: "{{ len .RUN }}"
@@ -119,14 +119,14 @@ tasks:
           POS: "{{$item := .ITEM}}{{range $index, $element := .TOOLS}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
           MAX: "{{ .TOOLS_COUNT }}"
       - for: { var: APPS }
-        task: "awesome-install:app"
+        task: "awesome:install:app"
         vars:
           APP: "{{ .ITEM }}"
           POS: "{{$item := .ITEM}}{{range $index, $element := .APPS}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
           MAX: "{{ .APPS_COUNT }}"
 
       - for: { var: RUN }
-        task: "awesome-install:run"
+        task: "awesome:install:run"
         vars:
           RUN: "{{ .ITEM }}"
           POS: "{{$item := .ITEM}}{{range $index, $element := .RUN}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"

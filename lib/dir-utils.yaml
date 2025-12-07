@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   ensure-dir:
-    internal: true
     silent: true
     requires:
       vars: [DIR_PATH]
@@ -10,7 +9,6 @@ tasks:
       - mkdir -p "{{ .DIR_PATH }}"
 
   validate-dir-exists:
-    internal: true
     silent: true
     requires:
       vars: [DIR_PATH, ERROR_MESSAGE]
@@ -22,7 +20,6 @@ tasks:
         fi
 
   validate-file-exists:
-    internal: true
     silent: true
     requires:
       vars: [FILE_PATH, ERROR_MESSAGE]
