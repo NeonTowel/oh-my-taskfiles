@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+  install:
+    platforms: [windows]
+    silent: true
+    vars:
+      PREFIX: '{{ .NAME | default "winget" | upper }}'
+    requires:
+      vars: [APP]
+    status:
+      - winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
+    desc: '[{{ .PREFIX }}] ✨ Install {{ .NAME | default "app" }}'
+    cmds:
+      - defer: |
+          {{if .EXIT_CODE}}
+          task :messaging:install-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
+          {{end}}
+      - winget install --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity >nul
+      - task: :messaging:install-success
+        vars:
+          APP: "{{ .APP }}"
+
+  uninstall:
+    platforms: [windows]
+    silent: true
+    vars:
+      PREFIX: '{{ .NAME | default "winget" | upper }}'
+    requires:
+      vars: [APP]
+    status:
+      - '! winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity'
+    desc: '[{{ .PREFIX }}] 🗑️  Uninstall {{ .NAME | default "app" }}'
+    cmds:
+      - winget uninstall --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
+
+  update:
+    platforms: [windows]
+    silent: true
+    vars:
+      PREFIX: '{{ .NAME | default "winget" | upper }}'
+    requires:
+      vars: [APP]
+    status:
+      - winget list --id "{{ .APP }}" --exact --accept-source-agreements --disable-interactivity
+    desc: '[{{ .PREFIX }}] 🔄 Update {{ .NAME | default "app" }}'
+    cmds:
+      - winget upgrade --id "{{ .APP }}" --exact --accept-package-agreements --accept-source-agreements --disable-interactivity

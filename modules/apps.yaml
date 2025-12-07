@@ -44,4 +44,4 @@ tasks:
       ACTION: '{{ index .MATCH 1 }}'
     cmds:
     - |
-      task -t "{{ .APPS_ROOT_DIR }}/{{ .NAME }}.yaml" {{ .ACTION }} --silent
+      task -t "{{ .APPS_ROOT_DIR }}/{{ .NAME }}.yaml" {{ .ACTION }} --silent{{ if .CLI_VERBOSE }} --verbose{{ end }}

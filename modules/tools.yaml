@@ -1,10 +1,5 @@
 version: '3'
 
-# includes:
-#   common: 
-#     taskfile: common.yaml
-#     flatten: true
-
 vars:
   TOOLS_ROOT_DIR: '{{ .ROOT_DIR }}/tools'
 
@@ -49,4 +44,4 @@ tasks:
       ACTION: '{{ index .MATCH 1 }}'
     cmds:
     - |
-      task -t "{{ .TOOLS_ROOT_DIR }}/{{ .NAME }}.yaml" {{ .ACTION }} --silent
+      task -t "{{ .TOOLS_ROOT_DIR }}/{{ .NAME }}.yaml" {{ .ACTION }} --silent{{ if .CLI_VERBOSE }} --verbose{{ end }}

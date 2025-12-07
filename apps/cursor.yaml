@@ -1,31 +1,21 @@
 version: '3'
 
+vars:
+  APP: "Anysphere.Cursor"
+  NAME: "Cursor"
+
 includes: 
   lib: ../lib.yaml
   app: ../models/app.yaml
+  winget:
+    taskfile: ../models/winget.yaml
+    flatten: true
 
 tasks:
   default:
     - task: app:default
 
   configure:
-    desc: "[CURSOR] ⚙️ Configure Cursor (extensions + settings)"
+    desc: "[CURSOR] ⚙️  Configure Cursor (extensions + settings)"
     cmds:
       - task: lib:ide:configure:cursor
-
-  install:windows:
-    platforms: [windows]
-    internal: true
-    silent: true
-    cmds:
-      - task: lib:winget:install
-        vars:
-          APP: "Anysphere.Cursor"
-
-  install:
-    desc: "[CURSOR] ✨ Install Cursor AI code editor"
-    silent: true
-    cmds:
-      - task: install:windows
-        platforms: [windows]
-      - task: configure

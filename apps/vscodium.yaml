@@ -1,8 +1,15 @@
 version: '3'
 
+vars:
+  APP: vscodium
+  NAME: VSCodium
+
 includes:
   lib: ../lib.yaml
   app: ../models/app.yaml
+  scoop:
+    taskfile: ../models/scoop.yaml
+    flatten: true
 
 tasks:
   default:
@@ -13,18 +20,18 @@ tasks:
     cmds:
       - task: lib:ide:configure:vscodium
 
-  install:windows:
-    platforms: [windows]
-    internal: true
-    cmds:
-      - task: lib:scoop:install
-        vars:
-          APP: vscodium
+  # install:windows:
+  #   platforms: [windows]
+  #   internal: true
+  #   cmds:
+  #     - task: lib:scoop:install
+  #       vars:
+  #         APP: vscodium
 
-  install:
-    desc: "[VSCODIUM] ✨ Install VS Codium libre code editor"
-    silent: true
-    cmds:
-      - task: install:windows
-        platforms: [windows]
-      - task: configure
+  # install:
+  #   desc: "[VSCODIUM] ✨ Install VS Codium libre code editor"
+  #   silent: true
+  #   cmds:
+  #     - task: install:windows
+  #       platforms: [windows]
+  #     - task: configure

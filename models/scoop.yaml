@@ -1,0 +1,53 @@
+version: '3'
+
+vars:
+  PREFIX: '{{ .NAME | default "scoop" | upper }}'
+
+tasks:
+  install:
+    platforms: [windows]
+    silent: true
+    requires:
+      vars: [APP]
+    status:
+      - scoop prefix "{{ .APP }}"
+    desc: '[{{ .PREFIX }}] ✨ Install {{ .NAME | default "app" }}'
+    cmds:
+      - defer: |
+          {{if .EXIT_CODE}}
+          task :messaging:install-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
+          {{end}}
+      - scoop install "{{ .APP }}" || true
+      - task: :messaging:install-success
+        vars:
+          APP: "{{ .APP }}"
+
+  uninstall:
+    platforms: [windows]
+    silent: true
+    requires:
+      vars: [APP]
+    status:
+      - '! scoop prefix "{{ .APP }}"'
+    desc: '[{{ .PREFIX }}] 🗑️  Uninstall {{ .NAME | default "app" }}'
+    cmds:
+      - defer: |
+          {{if .EXIT_CODE}}
+          task :messaging:uninstall-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
+          {{end}}
+      - scoop uninstall "{{ .APP }}" || true
+
+  update:
+    platforms: [windows]
+    silent: true
+    requires:
+      vars: [APP]
+    status:
+      - '! scoop prefix "{{ .APP }}"'
+    desc: '[{{ .PREFIX }}] 🔄 Update {{ .NAME | default "app" }}'
+    cmds:
+      - defer: |
+          {{if .EXIT_CODE}}
+          task :messaging:update-error APP="{{ .APP }}" EXIT_CODE="{{.EXIT_CODE}}"
+          {{end}}
+      - scoop update "{{ .APP }}" || true
