@@ -1,12 +1,12 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:
     desc: "[AWESOME-GIT] ✨ Install awesome-git"
@@ -49,7 +49,7 @@ tasks:
     platforms: [linux]
     internal: true
     cmds:
-      - task: LIB:linux-pkg:install
+      - task: lib:linux-pkg:install
         vars:
           PACKAGE: unzip
 
@@ -58,7 +58,7 @@ tasks:
     internal: true
     deps: [install:linux:unzip]
     cmds:
-      - task: LIB:github-release:install:zip
+      - task: lib:github-release:install:zip
         vars:
           TOOL_NAME: awesome-git
           REPO: NeonTowel/awesome-git
@@ -71,7 +71,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: LIB:scoop:neontowel-install
+      - task: lib:scoop:neontowel-install
         vars:
           APP: awesome-git
 
@@ -80,7 +80,7 @@ tasks:
     platforms: [linux]
     cmds:
       - rm -f $HOME/bin/awesome-git
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "awesome-git uninstalled successfully"
 
@@ -88,7 +88,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:uninstall
+      - task: lib:scoop:uninstall
         vars:
           APP: awesome-git
 
@@ -102,6 +102,6 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:update
+      - task: lib:scoop:update
         vars:
           APP: awesome-git

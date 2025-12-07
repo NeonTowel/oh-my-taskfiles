@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  awesome-windows:
+  default:
     deps: [ "tools:gum:install" ]
     internal: true
     platforms: [windows]
@@ -113,7 +113,7 @@ tasks:
         gum confirm --selected.background="#44d" --selected.foreground="#fff" "Are you sure you want to continue?"      
 
       - for: { var: TOOLS }
-        task: "awesome-install:tool"
+        task: "awesome:install:tool"
         vars:
           TOOL: "{{ .ITEM }}"
           POS: "{{$item := .ITEM}}{{range $index, $element := .TOOLS}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"

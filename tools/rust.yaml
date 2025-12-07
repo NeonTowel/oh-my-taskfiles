@@ -1,8 +1,12 @@
 version: '3'
 
+includes:
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile languages/rust.yaml
+    - task: tool:default
 
   install:
     desc: "[RUST] ✨ Install Rust"

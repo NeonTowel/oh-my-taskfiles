@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  header:
+    internal: true
+    requires:
+      vars: [ TITLE, NAME, POS, MAX ]
+    cmds:
+      - |
+        {{- $percent := div (mul .POS 100) .MAX -}}
+        {{- $steps := int (div $percent 10) -}}
+        gum style \
+          --foreground 212 --border-foreground 212 --border double \
+          --align center --width 50 --margin "1 2" --padding "2 4" \
+          '{{ .TITLE }}' '{{ .NAME }} ({{ .POS }}/{{ .MAX }})' '[{{ repeat $steps "#" }}{{ repeat (int (sub 10 $steps)) "." }}] {{ printf "%d" $percent }}%'

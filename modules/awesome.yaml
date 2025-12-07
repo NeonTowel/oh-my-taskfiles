@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  help:
+    - |
+      echo "Usage: omt awesome -- [options]"
+      echo ""
+      echo "This command will setup the Awesome Experience for you."
+      echo "Your OS is automatically detected and the appropriate setup will be performed."
+      echo ""
+
+  default:
+    desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
+    cmds:
+      - task: :lib:awesome

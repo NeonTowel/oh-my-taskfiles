@@ -1,8 +1,12 @@
 version: '3'
 
+includes:
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
+
 tasks:
   default:
-    - task --list --taskfile languages/node.yaml
+    - task: tool:default
 
   install-nvm:linux:
     internal: true
@@ -54,11 +58,9 @@ tasks:
     vars:
       APP_NAME: nvm
     cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
+      - task: lib:scoop:install
+        vars:
+          APP: {{ .APP_NAME }}
 
   install:windows:
     internal: true

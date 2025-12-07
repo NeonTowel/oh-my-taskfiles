@@ -1,12 +1,12 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:linux:
     platforms: [linux]
@@ -18,7 +18,7 @@ tasks:
     platforms: [windows]
     internal: true
     cmds:
-      - task: LIB:scoop:install
+      - task: lib:scoop:install
         vars:
           APP: starship
 
@@ -72,7 +72,7 @@ tasks:
   configure:
     internal: true
     cmds:
-      - task: LIB:config-copy:copy-with-prompt
+      - task: lib:config-copy:copy-with-prompt
         vars:
           SOURCE_FILE: "$HOME/.omt/dotfiles/starship.toml"
           DEST_PATH: "$HOME/.config/starship.toml"
@@ -84,7 +84,7 @@ tasks:
     cmds:
       - rm -f $HOME/bin/starship
       - rm -f $HOME/.config/starship.toml
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "starship uninstalled successfully"
 
@@ -92,7 +92,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:uninstall
+      - task: lib:scoop:uninstall
         vars:
           APP: starship
 
@@ -106,6 +106,6 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:update
+      - task: lib:scoop:update
         vars:
           APP: starship

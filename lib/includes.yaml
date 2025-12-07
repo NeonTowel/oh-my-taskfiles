@@ -17,3 +17,4 @@ includes:
   ide: ide.yaml
   modules: modules.yaml
   formatting: formatting.yaml
+  awesome: awesome.yaml

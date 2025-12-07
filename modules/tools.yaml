@@ -1,16 +1,16 @@
 version: '3'
 
-includes:
-  common: 
-    taskfile: common.yaml
-    flatten: true
+# includes:
+#   common: 
+#     taskfile: common.yaml
+#     flatten: true
 
 vars:
   TOOLS_ROOT_DIR: '{{ .ROOT_DIR }}/tools'
 
 tasks:
-  _help:
-    internal: true
+  help:
+    aliases: ['list', 'ls']
     vars:
       FILES:
         sh: task -t "{{ .ROOT_DIR }}/lib.yaml" modules:find-files PATH='{{ .TOOLS_ROOT_DIR }}' NAME='*.yaml' --silent
@@ -28,14 +28,14 @@ tasks:
       echo ""
       echo "See 'omt tools:<name>:help' for more information."
 
-  '*:_help':
+  '*:help':
     vars:
       NAME: '{{ index .MATCH 0 }}'
     cmds:
     - |
       task -t "{{ .TOOLS_ROOT_DIR }}/{{ .NAME }}.yaml" tool:help --silent
 
-  '*:_*':
+  '*:*':
     vars:
       NAME: '{{ index .MATCH 0 }}'
       ACTION: '{{ index .MATCH 1 }}'

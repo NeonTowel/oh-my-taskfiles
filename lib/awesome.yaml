@@ -1,0 +1,31 @@
+version: '3'
+
+includes:
+  windows: awesome/windows.yaml
+  install: awesome/install.yaml
+  utils: awesome/utils.yaml
+
+tasks:
+  default:
+    desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
+    cmds:
+      - task: windows
+        platforms: [windows]
+      - task: linux
+        platforms: [linux]
+      - task: macos
+        platforms: [darwin]
+
+  # WIP stubs for not implemented platforms
+  # Once implemented, remove the stubs and move interface implementation to awesome/<platform>.yaml
+  macos:
+    internal: true
+    platforms: [darwin]
+    cmds:
+      - echo "Awesome MacOS Not implemented yet!"
+
+  linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - echo "Awesome Linux Not implemented yet!"

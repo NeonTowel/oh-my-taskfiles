@@ -1,18 +1,18 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:windows:
     platforms: [windows]
     internal: true
     cmds:
-      - task: LIB:scoop:neontowel-install
+      - task: lib:scoop:neontowel-install
         vars:
           APP: "rose-pine-cursor"
 

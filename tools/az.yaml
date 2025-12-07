@@ -1,12 +1,12 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:linux:
     platforms: [linux]
@@ -48,7 +48,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: LIB:scoop:install
+      - task: lib:scoop:install
         vars:
           APP: azure-cli
 

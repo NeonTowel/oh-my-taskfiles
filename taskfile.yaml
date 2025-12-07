@@ -3,19 +3,9 @@ version: '3'
 silent: true
 
 includes:
-  # tools: taskfile.tools.yaml
-  # apps: taskfile.apps.yaml
-  # lang: taskfile.languages.yaml
-  # git: taskfile.git.yaml
-  # sudo: taskfiles/sudo.yaml
-  # wsl: taskfiles/wsl.yaml
-  # awesome:
-  #   taskfile: taskfile.awesome.yaml
-  #   flatten: true
-  # maintenance:
-  #   taskfile: taskfile.maintenance.yaml
-  #   flatten: true
-  lib: lib.yaml
+  lib: 
+    taskfile: lib.yaml
+    internal: true
   omt: 
     taskfile: omt.yaml
     flatten: true
@@ -35,5 +25,6 @@ tasks:
       echo "Commands:"
       echo -e "  tools \t Commands for managing tools"
       echo -e "  apps \t\t Commands for managing apps"
+      echo -e "  awesome \t Commands for managing awesome experience (windows, linux, macos)"
       echo ""
       echo "See 'omt <command>:help' for more information (eg. omt tools:help or omt apps:help)."

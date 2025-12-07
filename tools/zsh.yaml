@@ -1,12 +1,12 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:
     desc: "[ZSH] ✨ Install zsh shell"
@@ -19,7 +19,7 @@ tasks:
   install:linux:
     internal: true
     cmds:
-      - task: LIB:linux-pkg:install
+      - task: lib:linux-pkg:install
         vars:
           PACKAGE: zsh
 
@@ -157,7 +157,7 @@ tasks:
           echo "❌ Homebrew not found"
           exit 1
         fi
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "zsh uninstalled successfully"
 
@@ -178,7 +178,7 @@ tasks:
           echo "❌ Unsupported package manager"
           exit 1
         fi
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "zsh updated successfully"
 
@@ -193,6 +193,6 @@ tasks:
           echo "❌ Homebrew not found"
           exit 1
         fi
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "zsh updated successfully"

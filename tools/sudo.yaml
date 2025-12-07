@@ -1,6 +1,13 @@
 version: '3'
 
+includes:
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
+
 tasks:
+  default:
+    - task: tool:default
+
   add-user:
     desc: "Enable passwordless sudo access for a user (default to current user, change with user=<username>)"
     platforms: [linux]

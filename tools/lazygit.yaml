@@ -1,19 +1,19 @@
 version: '3'
 
 includes:
-  LIB: ../lib.yaml
-  TOOL: ../models/tool.yaml
+  lib: ../lib.yaml
+  tool: ../models/tool.yaml
 
 tasks:
   default:
-    - task: TOOL:default
+    - task: tool:default
 
   install:windows:
     internal: true
     silent: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:install
+      - task: lib:scoop:install
         vars:
           APP: lazygit
 
@@ -22,7 +22,7 @@ tasks:
     silent: true
     platforms: [linux]
     cmds:
-      - task: LIB:github-release:install:tarball
+      - task: lib:github-release:install:tarball
         vars:
           TOOL_NAME: lazygit
           REPO: jesseduffield/lazygit
@@ -81,7 +81,7 @@ tasks:
     platforms: [linux]
     cmds:
       - rm -f $HOME/bin/lazygit
-      - task: LIB:messaging:success
+      - task: lib:messaging:success
         vars:
           MESSAGE: "lazygit uninstalled successfully"
 
@@ -90,7 +90,7 @@ tasks:
     silent: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:uninstall
+      - task: lib:scoop:uninstall
         vars:
           APP: lazygit
 
@@ -106,6 +106,6 @@ tasks:
     silent: true
     platforms: [windows]
     cmds:
-      - task: LIB:scoop:update
+      - task: lib:scoop:update
         vars:
           APP: lazygit

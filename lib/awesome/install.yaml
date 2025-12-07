@@ -1,54 +1,14 @@
 version: '3'
 
-includes:
-  windows: 
-    taskfile: awesome/windows.yaml
-    flatten: true
-
 tasks:
-  awesome-macos:
-    platforms: [darwin]
-    internal: true
-    cmds:
-      - echo "Awesome MacOS Not implemented yet!"
-
-  awesome-linux:
-    platforms: [linux]
-    internal: true
-    cmds:
-      - echo "Awesome Linux Not implemented yet!"
-
-  awesome:
-    desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
-    cmds:
-      - task: awesome-windows
-        platforms: [windows]
-      - task: awesome-linux
-        platforms: [linux]
-      - task: awesome-macos
-        platforms: [darwin]
-
-  awesome-header:
-    internal: true
-    requires:
-      vars: [ TITLE, NAME, POS, MAX ]
-    cmds:
-      - |
-        {{- $percent := div (mul .POS 100) .MAX -}}
-        {{- $steps := int (div $percent 10) -}}
-        gum style \
-          --foreground 212 --border-foreground 212 --border double \
-          --align center --width 50 --margin "1 2" --padding "2 4" \
-          '{{ .TITLE }}' '{{ .NAME }} ({{ .POS }}/{{ .MAX }})' '[{{ repeat $steps "#" }}{{ repeat (int (sub 10 $steps)) "." }}] {{ printf "%d" $percent }}%'
-
-  awesome-install:tool:
+  tool:
     platforms: [windows]
     internal: true
     requires:
       vars: [ TOOL, POS, MAX ]
     label: "awesome-install:tool:{{ .TOOL }}"
     cmds:
-      - task: awesome-header
+      - task: lib:awesome:utils:header
         vars:
           TITLE: "Installing and configuring:"
           NAME: "{{ .TOOL }} 🔧"
@@ -65,14 +25,14 @@ tasks:
         vars:
           UNATTENDED: "true"
 
-  awesome-install:app:
+  app:
     platforms: [windows]
     internal: true
     requires:
       vars: [ APP, POS, MAX ]
     label: "awesome-install:app:{{ .APP }}"
     cmds:
-      - task: awesome-header
+      - task: lib:awesome:utils:header
         vars:
           TITLE: "Installing and configuring:"
           NAME: "{{ .APP }} 📦"
@@ -90,16 +50,16 @@ tasks:
           UNATTENDED: "true"
 
 
-  awesome-install:run:
+  run:
     platforms: [windows]
     internal: true
     requires:
       vars: [ RUN ]
     label: "awesome-install:run:{{ .RUN }}"
     cmds:
-      - task: awesome-header
+      - task: lib:awesome:utils:header
         vars:
-          TITLE: "Running OMT-configuration:"
+          TITLE: "Running omt-configuration:"
           NAME: "{{ .RUN }} 📄"
           POS: "{{ .POS }}"
           MAX: "{{ .MAX }}"
