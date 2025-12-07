@@ -6,25 +6,31 @@ includes:
   lib: 
     taskfile: lib.yaml
     internal: true
-  omt: 
-    taskfile: omt.yaml
-    flatten: true
   modules: 
     taskfile: modules.yaml
     flatten: true
 
 tasks:
   default:
-    - task: help
-    - task: check-updates
+    desc: "Default 'omt' action without any arguments"
+    cmds:
+      - task: help
+      - task: check-updates
   
   help:
-    - |
-      echo "Usage: omt <command>:<actions> -- [options]"
-      echo ""
-      echo "Commands:"
-      echo -e "  tools \t Commands for managing tools"
-      echo -e "  apps \t\t Commands for managing apps"
-      echo -e "  awesome \t Commands for managing awesome experience (windows, linux, macos)"
-      echo ""
-      echo "See 'omt <command>:help' for more information (eg. omt tools:help or omt apps:help)."
+    desc: "Show help"
+    cmds:
+      - |
+        echo "Usage: omt <command>[[:<actions>] -- [options]]"
+        echo ""
+        echo "Commands:"
+        echo -e "  help \t\t Show this help"
+        echo -e "  check-updates\t Check for updates"
+        echo -e "  update \t Update Oh-My-Taskfiles"
+        echo -e "  changelog \t Show recent updates and changes"
+        echo ""
+        echo -e "  tools \t Commands for managing tools"
+        echo -e "  apps \t\t Commands for managing apps"
+        echo -e "  awesome \t Commands for managing awesome experience (windows, linux, macos)"
+        echo ""
+        echo "See 'omt <command>:help' for more information (eg. omt tools:help or omt apps:help)."

@@ -10,3 +10,6 @@ includes:
   awesome:
     taskfile: modules/awesome.yaml
     flatten: false
+  omt: 
+    taskfile: modules/omt.yaml
+    flatten: true

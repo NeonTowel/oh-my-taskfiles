@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   check-updates:
-    internal: true
+    desc: "Check for updates"
     cmds:
       - |
         if [ -d "$HOME/.omt" ]; then

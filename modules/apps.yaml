@@ -4,7 +4,13 @@ vars:
   APPS_ROOT_DIR: '{{ .ROOT_DIR }}/apps'
 
 tasks:
+  default:
+    desc: "Default 'apps' action without any arguments"
+    cmds:
+      - task: help
+
   help:
+    desc: "Show help for 'apps' sub-command"
     aliases: ['list', 'ls']
     vars:
       FILES:
@@ -24,6 +30,7 @@ tasks:
       echo "See 'omt apps:<name>:help' for more information."
 
   '*:help':
+    desc: "Show help for app '*'"
     vars:
       NAME: '{{ index .MATCH 0 }}'
     cmds:
@@ -31,6 +38,7 @@ tasks:
       task -t "{{ .APPS_ROOT_DIR }}/{{ .NAME }}.yaml" app:help --silent
 
   '*:*':
+    desc: "Run action for app"
     vars:
       NAME: '{{ index .MATCH 0 }}'
       ACTION: '{{ index .MATCH 1 }}'

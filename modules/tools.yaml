@@ -9,7 +9,13 @@ vars:
   TOOLS_ROOT_DIR: '{{ .ROOT_DIR }}/tools'
 
 tasks:
+  default:
+    desc: "Default 'tools' action without any arguments"
+    cmds:
+      - task: help
+
   help:
+    desc: "Show help for 'tools' sub-command"
     aliases: ['list', 'ls']
     vars:
       FILES:
@@ -29,6 +35,7 @@ tasks:
       echo "See 'omt tools:<name>:help' for more information."
 
   '*:help':
+    desc: "Show help for tool '*'"
     vars:
       NAME: '{{ index .MATCH 0 }}'
     cmds:
@@ -36,6 +43,7 @@ tasks:
       task -t "{{ .TOOLS_ROOT_DIR }}/{{ .NAME }}.yaml" tool:help --silent
 
   '*:*':
+    desc: "Run action for tool"
     vars:
       NAME: '{{ index .MATCH 0 }}'
       ACTION: '{{ index .MATCH 1 }}'
