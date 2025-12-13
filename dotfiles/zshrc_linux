@@ -95,14 +95,29 @@ fi
 # 1Password SSH Agent bridge for WSL
 if [ -f "$HOME/.agent-bridge.sh" ]; then
   source "$HOME/.agent-bridge.sh"
-fi
-
-# 1Password SSH Agent for linux
-if [ -S "$HOME/.1password/agent.sock" ]; then
-  export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
+  if [ -f "$HOME/.1password/agent.sock" ]; then
+    export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
+  fi
 fi
 
 # Podman socket configuration
 if [ -S "$XDG_RUNTIME_DIR/podman/podman.sock" ]; then
   export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+fi
+
+# Kubectl configuration
+if [ command -v kubectl >/dev/null 2>&1 ]; then
+  alias k=kubectl
+fi
+
+# Python virtual environments configuration
+if [ command -v pyenv >/dev/null 2>&1 ]; then
+  export PATH="$HOME/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi
+
+# Load environment variables safely from ~/.env, if it exists
+if [ -f "$HOME/.env" ]; then
+  export $(cat "$HOME/.env" | xargs)
 fi
