@@ -1,0 +1,95 @@
+version: '3'
+
+vars:
+  CODEX_VERSION_LINUX: 0.72.0
+  CODEX_URL_LINUX: "https://github.com/openai/codex/releases/download/rust-v{{ .CODEX_VERSION_LINUX }}/codex-x86_64-unknown-linux-gnu.tar.gz"
+
+tasks:
+  default:
+    - task --list --taskfile apps/codex.yaml
+
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if ! command -v codex >/dev/null 2>&1; then
+          echo "Installing Codex..."
+          curl -L -o /tmp/codex.tar.gz "{{ .CODEX_URL_LINUX }}" && tar -xzf /tmp/codex.tar.gz -C ~/bin codex-x86_64-unknown-linux-gnu && rm /tmp/codex.tar.gz
+          mv ~/bin/codex-x86_64-unknown-linux-gnu ~/bin/codex
+        fi
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: "codex"
+  
+  configure:
+    internal: true
+    deps: [ "::tools:gomplate:install" ]
+    cmds:
+      - |
+        if [ ! -d "$HOME/.codex" ]; then
+          mkdir -p "$HOME/.codex"
+        fi
+        {{ if .UNATTENDED }}
+        {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
+        if [ ! -f "$HOME/.codex/config.toml" ]; then
+          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/settings.toml"
+          {{ .gum_ok }} "Codex settings have been configured successfully."
+        else
+          {{ .gum_warn }} "Codex settings already exist, skipping configuration."
+        fi
+        {{ else }}
+        if [ -f "$HOME/.codex/settings.toml" ]; then
+          if ! gum confirm "Codex settings already exist, overwrite?"; then
+            {{ .gum_warn }} "Codex settings already exist, skipping configuration."
+            exit 0
+          fi
+        fi
+
+        if gum confirm "Do you want to configure Codex (skipping this uses defaults)?"; then
+          CODEX_FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+          CODEX_MODEL=$(gum input --placeholder "Enter your Foundry OpenAI Model" --header "Foundry OpenAI Model" --value "gpt-5.1-codex-mini")
+
+          export CODEX_FOUNDRY_RESOURCE_NAME="$CODEX_FOUNDRY_RESOURCE_NAME"
+          export CODEX_MODEL="$CODEX_MODEL"
+          gomplate -f "dotfiles/codex/config.toml.tmpl" -o "$HOME/.codex/config.toml"
+          {{ .gum_warn }} "Codex with Foundry requires API key: remember to set AZURE_OPENAI_API_KEY environment variable!"
+        else
+          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/settings.toml"
+        fi
+        {{ .gum_ok }} "Codex settings have been configured successfully."
+        {{ end }}
+
+  install:
+    desc: "[CODEX] ✨ Install OpenAI Codex cli"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
+      - task: configure
+      - task: slash-commands
+
+  slash-commands:
+    internal: true
+    vars:
+      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/codex/prompts"
+      SLASH_COMMANDS_DEST_DIR: "$HOME/.codex/prompts"
+    dir: '{{ .SLASH_COMMANDS_SOURCE_DIR }}'
+    sources:
+      - '*.md'
+    method: none
+    cmds:
+      - |
+        if [ ! -d "$HOME/.codex/prompts" ]; then
+          mkdir -p "$HOME/.codex/prompts"
+        fi
+      - for: sources
+        cmd: |
+          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"

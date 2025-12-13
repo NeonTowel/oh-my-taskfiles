@@ -1,0 +1,38 @@
+model = '{{ .Env.CODEX_MODEL | default "gpt-5.1-codex-mini" }}'
+model_provider = "azure"
+sandbox_mode = "workspace-write"
+#model_reasoning_effort = "medium"
+model_reasoning_summary = "none"
+model_verbosity = "low"
+approval_policy = "on-request"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+[model_providers.azure]
+name = "Azure"
+base_url = 'https://{{ .Env.CODEX_FOUNDRY_RESOURCE_NAME}}.cognitiveservices.azure.com/openai'
+env_key = "AZURE_OPENAI_API_KEY"
+query_params = { api-version = "2025-04-01-preview" }
+wire_api = "responses"
+hide_agent_reasoning = true
+
+[features]
+web_search_request = true
+
+[shell_environment_policy]
+# inherit can be "all" (default), "core", or "none"
+#inherit = "all"
+# set to true to *skip* the filter for `"*KEY*"` and `"*TOKEN*"`
+#ignore_default_excludes = false
+# exclude patterns (case-insensitive globs)
+#exclude = ["AWS_*", "AZURE_*"]
+# force-set / override values
+#set = { CI = "1" }
+# if provided, *only* vars matching these patterns are kept
+#include_only = ["PATH", "HOME"]
+
+[history]
+persistence = "none"
+
+[tui]
+notifications = false
+animations = false

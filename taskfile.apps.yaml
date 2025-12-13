@@ -21,6 +21,7 @@ includes:
   proton-mail: apps/proton-mail.yaml
   proton-authenticator: apps/proton-authenticator.yaml
   claude: apps/claude.yaml
+  codex: apps/codex.yaml
 
 tasks:
   default:
