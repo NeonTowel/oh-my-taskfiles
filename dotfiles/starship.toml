@@ -87,57 +87,68 @@ format = '[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)'
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [c]
 symbol = " "
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [rust]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [golang]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [php]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [java]
 symbol = " "
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [kotlin]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [haskell]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [python]
 symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:green)]($style)'
+disabled = true
 
 [docker_context]
 symbol = ""
 style = "bg:sapphire"
 format = '[[ $symbol( $context) ](fg:crust bg:sapphire)]($style)'
+disabled = true
 
 [conda]
 symbol = "  "
 style = "fg:crust bg:sapphire"
 format = '[$symbol$environment ]($style)'
 ignore_base = false
+disabled = true
 
 [time]
 disabled = false
@@ -276,3 +287,71 @@ surface0 = "#363a4f"
 base = "#24273a"
 mantle = "#1e2030"
 crust = "#181926"
+
+# disable modules prompt is not currently using
+[aws]
+disabled = true
+[azure]
+disabled = true
+[buf]
+disabled = true
+[bun]
+disabled = true
+[cobol]
+disabled = true
+[container]
+disabled = true
+[crystal]
+disabled = true
+[daml]
+disabled = true
+[dart]
+disabled = true
+[deno]
+disabled = true
+[dotnet]
+disabled = true
+[elixir]
+disabled = true
+[elm]
+disabled = true
+[erlang]
+disabled = true
+[fennel]
+disabled = true
+[fortran]
+disabled = true
+[gcloud]
+disabled = true
+[haxe]
+disabled = true
+[helm]
+disabled = true
+[julia]
+disabled = true
+[lua]
+disabled = true
+[memory_usage]
+disabled = true
+[nix_shell]
+disabled = true
+[ocaml]
+disabled = true
+[opa]
+disabled = true
+[package]
+disabled = true
+[perl]
+disabled = true
+[pulumi]
+disabled = true
+[ruby]
+disabled = true
+[scala]
+disabled = true
+[swift]
+disabled = true
+[terraform]
+disabled = true
+[zig]
+disabled = true
