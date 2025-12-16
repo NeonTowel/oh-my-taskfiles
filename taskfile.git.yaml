@@ -1,8 +1,8 @@
-version: '3'
+version: "3"
 
 tasks:
   config-global:
-    deps: [ ":tools:gum:install" ]
+    deps: [":tools:gum:install"]
     desc: "[GIT] ✨ Configure git globally"
     cmds:
       - |
@@ -23,7 +23,7 @@ tasks:
           user_name=$(gum input --value "$(git config --global user.name)" --placeholder "Enter your name" --header "Git Author Name (global)")
           user_email=$(gum input --value "$(git config --global user.email)" --placeholder "Enter your email" --header "Git Author Email (global)")
         fi
-        
+
         if [ -z "$user_name" ]; then
           echo "Error: User name is not set"
           exit 1
@@ -32,7 +32,7 @@ tasks:
           echo "Error: User email is not set"
           exit 1
         fi
-        
+
         if [ "{{ .UNATTENDED }}" = "false" ]; then
           gum format -- "
           # Global Git Configuration Defaults
@@ -41,7 +41,7 @@ tasks:
           |-----------------------|----------------------------------------|
           | User Name             | \`$user_name\`                         |
           | User Email            | \`$user_email\`                        |
-          | Core Pager            | \`gum pager\`                          |
+          | Core Pager            | \`bat\`                                |
           | GPG Format            | \`ssh\`                               |
           | Commit GPG Sign       | \`true\`                              |
           | Pull Rebase           | \`true\`                              |
@@ -66,7 +66,7 @@ tasks:
         if [ ! -z "$user_email" ]; then
           git config --global user.email "$user_email"
         fi
-        git config --global core.pager "gum pager"
+        git config --global core.pager "bat --style=-grid,-numbers,-header --paging=never"
         git config --global gpg.format "ssh"
         git config --global commit.gpgsign true
         git config --global pull.rebase true
@@ -78,7 +78,7 @@ tasks:
         echo
 
   create-config:
-    deps: [ ":tools:fzf:install", ":tools:coreutils:install" ]
+    deps: [":tools:fzf:install", ":tools:coreutils:install"]
     desc: "[GIT] Create a ssh config and key for a specific organization/account"
     vars:
       HOME: '{{ .HOME | default .USERPROFILE | replace "\\" "/" }}'
