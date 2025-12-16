@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 includes:
   chatbox: apps/chatbox.yaml
@@ -22,6 +22,7 @@ includes:
   proton-authenticator: apps/proton-authenticator.yaml
   claude: apps/claude.yaml
   codex: apps/codex.yaml
+  gemini: apps/gemini.yaml
 
 tasks:
   default:

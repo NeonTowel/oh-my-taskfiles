@@ -1,0 +1,57 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile apps/gemini.yaml
+
+  install:npm:
+    internal: true
+    silent: true
+    preconditions:
+      - sh: command -v npm
+        msg: "node/npm not found"
+    cmds:
+      - npm install -g @google/gemini-cli
+
+  configure:
+    #deps: ["::tools:gum:install"]
+    desc: "[GEMINI] ✨ Configure Gemini CLI"
+    platforms: [windows]
+    silent: false
+    vars:
+      DEFAULT_CREDENTIALS_PATH: '{{.USERPROFILE | replace "\\" "/" }}'
+    preconditions:
+      - sh: command -v gum
+        msg: "gum not found"
+      - sh: test -d {{ .DEFAULT_CREDENTIALS_PATH }}
+        msg: "DEFAULT_CREDENTIALS_PATH variable is not set"
+    cmds:
+      - |
+        if gum confirm "Do you want to configure Gemini for Vertex AI?"; then
+          CREDENTIALS_PATH=$(gum input --placeholder "Enter path to application credentials file" --header "Google Application Credentials" --value "{{ .DEFAULT_CREDENTIALS_PATH }}/.config/gcp/gemini-cli-sa.json")
+          CLOUD_LOCATION=$(gum input --placeholder "Enter location/region (eg. europe-north1)" --header "Google Cloud Location" --value="europe-north1")
+          CLOUD_PROJECT=$(gum input --placeholder "Enter Google Cloud Project ID" --header "Google Cloud Project")
+          USE_VERTEXAI=$(gum input --placeholder "Enable Vertex AI for Gemini (true/false)?" --header "Google Vertex AI" --value="true")
+          if [[ $USE_VERTEXAI -ne "true" ]] && [[ $USE_VERTEXAI -ne "false" ]]; then
+            {{ .gum_error }} "Vertex AI must be set to either 'true' or 'false'."
+            exit 1
+          fi
+          export CREDENTIALS_PATH="$CREDENTIALS_PATH"
+          export CLOUD_LOCATION="$CLOUD_LOCATION"
+          export CLOUD_PROJECT="$CLOUD_PROJECT"
+          export USE_VERTEXAI="$USE_VERTEXAI"
+          pwsh -NoLogo -NoProfile -c "
+          [Environment]::SetEnvironmentVariable('GOOGLE_APPLICATION_CREDENTIALS', '$CREDENTIALS_PATH', 'User')
+          [Environment]::SetEnvironmentVariable('GOOGLE_CLOUD_LOCATION', '$CLOUD_LOCATION', 'User')
+          [Environment]::SetEnvironmentVariable('GOOGLE_CLOUD_PROJECT', '$CLOUD_PROJECT', 'User')
+          [Environment]::SetEnvironmentVariable('GOOGLE_GENAI_USE_VERTEXAI', '$USE_VERTEXAI', 'User')
+          "
+          {{ .gum_ok }} "Gemini environment variables have been configured successfully."
+        fi
+
+  install:
+    desc: "[GEMINI] ✨ Install Gemini CLI"
+    silent: true
+    cmds:
+      - task: install:npm
+      - task: configure
