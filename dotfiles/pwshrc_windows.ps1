@@ -156,7 +156,7 @@ if ($global:__COMMANDS['direnv']) {
     }
 }
 
-if ($global:__COMMANDS['starship'] && $env:TERM != "dumb") {
+if ($global:__COMMANDS['starship'] && $env:TERM -ne "dumb") {
     $starshipVersion = (starship --version 2>$null)
     $starshipCache = Get-CachedScript -Command 'starship' -Arguments @('init', 'powershell') -CacheName 'starship-init' -VersionCheck $starshipVersion
     . $starshipCache
