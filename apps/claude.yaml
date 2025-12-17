@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   default:
@@ -9,7 +9,7 @@ tasks:
     platforms: [linux]
     cmds:
       - |
-        if [ ! command -v claude >/dev/null 2>&1 ]; then
+        if ! command -v claude >/dev/null 2>&1; then
           echo "Installing Claude..."
           curl -fsSL https://claude.ai/install.sh | bash
         fi
@@ -24,11 +24,11 @@ tasks:
       - task: ::winget:install
         vars:
           APP: "Anthropic.ClaudeCode"
-  
+
   configure:windows:
     internal: true
     platforms: [windows]
-    deps: [ "::tools:gomplate:install" ]
+    deps: ["::tools:gomplate:install"]
     cmds:
       - |
         if [ ! -d "$HOME/.claude" ]; then
@@ -82,7 +82,7 @@ tasks:
   configure:linux:
     internal: true
     platforms: [linux]
-    deps: [ "::tools:gomplate:install" ]
+    deps: ["::tools:gomplate:install"]
     cmds:
       - |
         if [ ! -d "$HOME/.claude" ]; then
