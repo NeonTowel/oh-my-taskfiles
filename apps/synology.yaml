@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile apps/synology.yaml
+
+  drive:install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::winget:install
+        vars:
+          APP: "Synology.DriveClient"
+
+  drive:install:
+    desc: "[SYNOLOGY] ✨ Install Synology Drive Client"
+    silent: true
+    cmds:
+      - task: drive:install:windows

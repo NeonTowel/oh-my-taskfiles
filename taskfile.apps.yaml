@@ -23,6 +23,7 @@ includes:
   claude: apps/claude.yaml
   codex: apps/codex.yaml
   gemini: apps/gemini.yaml
+  synology: apps/synology.yaml
 
 tasks:
   default:
