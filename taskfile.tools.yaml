@@ -31,6 +31,7 @@ includes:
   gcloud: tools/gcloud.yaml
   translucenttb: tools/translucenttb.yaml
   zenity: tools/zenity.yaml
+  openshift: tools/openshift.yaml
 
 tasks:
   default:

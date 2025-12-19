@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/openshift.yaml
+
+  install:
+    desc: "[OPENSHIFT] ✨ Install OpenShift cli tools"
+    silent: true
+    cmds:
+      - task: cli:install
+
+  cli:install:
+    silent: true
+    cmds:
+      - task: cli:install:linux
+        platforms: [linux]    
+
+  cli:install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - |
+        curl -sL https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz | tar xz -C ~/bin kubectl oc
+        {{ .gum_ok }} "oc and kubectl installed."
+
