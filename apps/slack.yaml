@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/slack.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::winget:install
+        vars:
+          APP: "SlackTechnologies.Slack"
+
+  install:
+    desc: "[SLACK] ✨ Install Slack"
+    silent: true
+    cmds:
+      - task: install:windows
