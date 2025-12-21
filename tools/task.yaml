@@ -1,0 +1,36 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/task.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: task
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    vars:
+      VERSION: v3.46.3 # check latest from releases: https://github.com/go-task/task/releases
+      URL: https://github.com/go-task/task/releases/download/{{ .VERSION }}/task_linux_amd64.tar.gz
+    cmds:
+      - |
+        curl -sL {{ .URL }} | tar xz -C ~/bin task
+        {{ .gum_ok }} "✅ task installed!"
+
+
+  install:
+    desc: "[TASK] ✨ Install go-task"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]

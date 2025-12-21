@@ -32,6 +32,7 @@ includes:
   translucenttb: tools/translucenttb.yaml
   zenity: tools/zenity.yaml
   openshift: tools/openshift.yaml
+  task: tools/task.yaml
 
 tasks:
   default:
