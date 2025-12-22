@@ -1,29 +1,64 @@
 {
   "env": {
+    "CLAUDE_CODE_MODEL": "claude-haiku-4-5",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-haiku-4-5",
+    "ANTHROPIC_MODEL": "claude-haiku-4-5",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-5",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-5",
-    "ANTHROPIC_MODEL": "claude-opus-4-5",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "4000",
+    "MAX_THINKING_TOKENS": "4000",
+    "MAX_MCP_OUTPUT_TOKENS": "1200",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "CLAUDE_CODE_SKIP_AUTH_LOGIN": "1",
+    "BASH_MAX_OUTPUT_LENGTH": "200"
     "ANTHROPIC_FOUNDRY_RESOURCE": "{{ .Env.ANTHROPIC_FOUNDRY_RESOURCE }}",
     "ANTHROPIC_FOUNDRY_API_KEY": "{{ .Env.ANTHROPIC_FOUNDRY_API_KEY }}",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "CLAUDE_CODE_USE_FOUNDRY": "{{ .Env.CLAUDE_CODE_USE_FOUNDRY }}",
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ .Env.CLAUDE_CODE_GIT_BASH_PATH }}"
   },
   "permissions": {
     "allow": [
+      "WebFetch",
+      "Edit",
+      "Write",
       "Bash(curl :*)",
       "Bash(task :*)",
       "Bash(npm :*)",
       "Bash(bun :*)",
       "Bash(bunx :*)",
       "Bash(cargo :*)",
-      "Bash(go :*)"
+      "Bash(go :*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(tree:*)",
+      "Bash(cat:*)",
+      "Bash(awk:*)",
+      "Bash(ls:*)",
+      "Bash(sort:*)",
+      "Bash(git add:*)",
+      "Bash(git log:*)",
+      "Bash(git commit -S:*)"
     ],
-    "deny": [],
+    "deny": [
+      "Bash(python:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)"
+    ],
+    "ask": [
+      "Bash(git config:*)",
+      "Bash(git commit:*)"
+    ],
     "defaultMode": "acceptEdits"
   },
-  "model": "claude-opus-4-5",
+  "model": "claude-haiku-4-5",
   "outputStyle": "Default",
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }

@@ -1,4 +1,5 @@
 ---
+allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git commit -S:*)
 description: Smart and conventional Git commits
 ---
 You generate and create git commits following Conventional Commits, based only on staged changes.

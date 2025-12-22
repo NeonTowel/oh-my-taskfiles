@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 vars:
   CODEX_VERSION_LINUX: 0.72.0
@@ -26,10 +26,10 @@ tasks:
       - task: ::scoop:install
         vars:
           APP: "codex"
-  
+
   configure:
     internal: true
-    deps: [ "::tools:gomplate:install" ]
+    deps: ["::tools:gomplate:install"]
     cmds:
       - |
         if [ ! -d "$HOME/.codex" ]; then
@@ -77,13 +77,13 @@ tasks:
       - task: slash-commands
 
   slash-commands:
-    internal: true
+    desc: "[CODEX] Configure Codex slash commands"
     vars:
       SLASH_COMMANDS_SOURCE_DIR: "dotfiles/codex/prompts"
       SLASH_COMMANDS_DEST_DIR: "$HOME/.codex/prompts"
-    dir: '{{ .SLASH_COMMANDS_SOURCE_DIR }}'
+    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
     sources:
-      - '*.md'
+      - "*.md"
     method: none
     cmds:
       - |
