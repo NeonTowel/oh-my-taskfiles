@@ -49,6 +49,24 @@ tasks:
           {{ .gum_ok }} "Gemini environment variables have been configured successfully."
         fi
 
+  slash-commands:
+    desc: "[GEMINI] Configure Gemini slash commands"
+    vars:
+      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/gemini/commands"
+      SLASH_COMMANDS_DEST_DIR: "$HOME/.gemini/commands"
+    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
+    sources:
+      - "*.md"
+    method: none
+    cmds:
+      - |
+        if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
+          mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
+        fi
+      - for: sources
+        cmd: |
+          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"
+
   install:
     desc: "[GEMINI] ✨ Install Gemini CLI"
     silent: true
