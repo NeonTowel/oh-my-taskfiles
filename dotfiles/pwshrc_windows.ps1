@@ -109,7 +109,8 @@ if ($global:__COMMANDS['bat']) {
     function ccat { bat --style=-grid,-numbers --paging=never @args }
 }
 
-function gl { git log --graph --decorate --pretty=oneline --abbrev-commit @args }
+function gl { git log --graph --pretty=format:'%C(white)%s%Creset' --abbrev-commit }
+function gll { git log --graph --decorate --pretty=oneline --abbrev-commit @args }
 function gs { git status --renames @args }
 
 if ($global:__PATHS['omt']) {

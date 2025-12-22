@@ -32,7 +32,8 @@ if command -v bat &> /dev/null; then
 fi
 
 # Aliases: git
-alias gl='git log --graph --decorate --pretty=oneline --abbrev-commit'
+alias gl='git log --graph --pretty=format:'%C(white)%s%Creset' --abbrev-commit
+alias gll='git log --graph --decorate --pretty=oneline --abbrev-commit'
 alias gs='git status --renames'
 
 # Google Cloud SDK
