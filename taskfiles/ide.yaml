@@ -23,6 +23,8 @@ vars:
     - esbenp.prettier-vscode
     - EditorConfig.EditorConfig
     - redhat.vscode-yaml
+    - Anthropic.claude-code
+    - openai.chatgpt
   IDE_EXTENSIONS_cursor:
     - ms-vscode-remote.remote-containers
     - ms-vscode-remote.remote-wsl
@@ -51,8 +53,9 @@ vars:
     - esbenp.prettier-vscode
     - EditorConfig.EditorConfig
     - redhat.vscode-yaml
-    - sourcegraph.amp
-    - vizzletf.geminicommit
+    - Anthropic.claude-code
+    - openai.chatgpt
+    - jeanp413.open-remote-wsl
 
 
 tasks:
