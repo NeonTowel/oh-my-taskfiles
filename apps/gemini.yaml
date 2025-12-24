@@ -49,6 +49,11 @@ tasks:
           {{ .gum_ok }} "Gemini environment variables have been configured successfully."
         fi
 
+  settings:
+    desc: "[GEMINI] Configure Gemini settings"
+    cmds:
+      - cp dotfiles/gemini/settings.json $HOME/.gemini/settings.json
+
   slash-commands:
     desc: "[GEMINI] Configure Gemini slash commands"
     vars:
@@ -67,9 +72,30 @@ tasks:
         cmd: |
           cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"
 
+
+  themes:
+    desc: "[GEMINI] Install custom themes"
+    vars:
+      SOURCE_DIR: "dotfiles/gemini/themes"
+      DEST_DIR: "$HOME/.gemini/themes"
+    dir: "{{ .SOURCE_DIR }}"
+    sources:
+      - "*.json"
+    method: none
+    cmds:
+      - |
+        if [ ! -d "{{ .DEST_DIR }}" ]; then
+          mkdir -p "{{ .DEST_DIR }}"
+        fi
+      - for: sources
+        cmd: |
+          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .DEST_DIR .ITEM | osDir}}"
+
   install:
     desc: "[GEMINI] ✨ Install Gemini CLI"
     silent: true
     cmds:
       - task: install:npm
+      - task: settings
       - task: configure
+      - task: themes

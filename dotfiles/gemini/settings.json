@@ -1,0 +1,87 @@
+{
+  "general": {
+    "vimMode": true,
+    "preferredEditor": "codium",
+    "enablePromptCompletion": true,
+    "retryFetchErrors": true,
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "2d",
+      "maxCount": 100
+    }
+  },
+  "ui": {
+    "theme": "$HOME/.gemini/themes/catppuccin-frappe.json",
+    "hideBanner": true,
+    "hideTips": false,
+    "showStatusInTitle": true,
+    "hideWindowTitle": true,
+    "customWittyPhrases": [
+      "You forget a thousand things every day. This isn't one of them. Probably.",
+      "Connecting to AGI (please hold your existential dread)",
+      "Summoning silicon spirits…",
+      "Adjusting neural hamsters…",
+      "Reticulating splines (again)",
+      "Asking electrons nicely",
+      "Consulting the oracle (it runs on JavaScript)",
+      "Arranging bits into meaningful lies",
+      "Convincing math to think",
+      "Loading intelligence… no refunds",
+      "Initiating polite conversation with a machine",
+      "Teaching rocks to reason",
+      "Aligning vibes and vectors",
+      "Shaking hands with probability",
+      "Applying duct tape to reality",
+      "Spinning up artificial opinions",
+      "Coaxing thoughts from sand",
+      "Engaging speculative cognition",
+      "Crossing fingers, flipping bits",
+      "Borrowing intelligence from the future",
+      "Negotiating with entropy",
+      "Putting the 'artificial' in artificial intelligence",
+      "Loading answers, questions sold separately",
+      "Briefly confusing causality",
+      "Starting thought experiment #42",
+      "Inviting chaos, but politely",
+      "Computing… please blame math",
+      "Turning coffee into logic",
+      "Standing on the shoulders of very small transistors",
+      "Searching for meaning in a pile of floats",
+      "Preparing vaguely helpful insights"
+    ]
+  },
+  "tools": {
+    "sandbox": "podman",
+    "autoAccept": true,
+    "shell": {
+      "pager": "bat --style=-grid,-numbers --paging=never"
+    }
+  },
+  "mcpServers": {
+    "github": {
+      "command": "podman",
+      "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server" ]
+    },
+    "anotherServer": {
+      "command": "podman",
+      "args": ["mcp_server.js", "--verbose"]
+    }
+  },
+  "telemetry": {
+    "enabled": false
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "model": {
+    "name": "gemini-2.5-pro-latest",
+    "summarizeToolOutput": {
+      "run_shell_command": {
+        "tokenBudget": 2000
+      }
+    }
+  },
+  "context": {
+    "fileName": ["CONTEXT.md", "GEMINI.md", "AGENTS.md"]
+  }
+}
