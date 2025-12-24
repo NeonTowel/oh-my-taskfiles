@@ -61,7 +61,7 @@ tasks:
       SLASH_COMMANDS_DEST_DIR: "$HOME/.gemini/commands"
     dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
     sources:
-      - "*.md"
+      - "*.toml"
     method: none
     cmds:
       - |

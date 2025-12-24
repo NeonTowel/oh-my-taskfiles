@@ -1,6 +1,6 @@
 {
   "general": {
-    "vimMode": true,
+    "vimMode": false,
     "preferredEditor": "codium",
     "enablePromptCompletion": true,
     "retryFetchErrors": true,
@@ -51,7 +51,6 @@
     ]
   },
   "tools": {
-    "sandbox": "podman",
     "autoAccept": true,
     "shell": {
       "pager": "bat --style=-grid,-numbers --paging=never"
@@ -60,11 +59,17 @@
   "mcpServers": {
     "github": {
       "command": "podman",
-      "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server" ]
-    },
-    "anotherServer": {
-      "command": "podman",
-      "args": ["mcp_server.js", "--verbose"]
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     }
   },
   "telemetry": {
@@ -74,7 +79,6 @@
     "usageStatisticsEnabled": false
   },
   "model": {
-    "name": "gemini-2.5-pro-latest",
     "summarizeToolOutput": {
       "run_shell_command": {
         "tokenBudget": 2000
@@ -82,6 +86,15 @@
     }
   },
   "context": {
-    "fileName": ["CONTEXT.md", "GEMINI.md", "AGENTS.md"]
+    "fileName": [
+      "CONTEXT.md",
+      "GEMINI.md",
+      "AGENTS.md"
+    ]
+  },
+  "security": {
+    "auth": {
+      "selectedType": "vertex-ai"
+    }
   }
 }
