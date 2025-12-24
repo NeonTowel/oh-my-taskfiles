@@ -9,6 +9,7 @@ Oh-My-Taskfiles is a go-task based taskfile library for dev workflow automation.
 ## Key Commands
 
 ### Basic Usage
+
 ```bash
 # List all available tasks
 task --list
@@ -29,6 +30,7 @@ task <taskname> --dry --verbose
 ```
 
 ### Common Tasks
+
 ```bash
 # Update Oh-My-Taskfiles to latest version
 omt update
@@ -50,10 +52,13 @@ omt apps:cursor:configure
 ## Architecture
 
 ### Entry Point
+
 - [taskfile.yaml](taskfile.yaml) - Main entry point that includes all sub-taskfiles via `includes:` directive
 
 ### Category Taskfiles (in root)
+
 These aggregate related tools/apps and flatten them into single namespaces:
+
 - [taskfile.tools.yaml](taskfile.tools.yaml) - CLI tools (zsh, starship, git, k8s, etc.)
 - [taskfile.apps.yaml](taskfile.apps.yaml) - Desktop apps (cursor, vscode, 1password, etc.)
 - [taskfile.languages.yaml](taskfile.languages.yaml) - Language toolchains (go, rust, node)
@@ -63,7 +68,9 @@ These aggregate related tools/apps and flatten them into single namespaces:
 - [taskfile.awesome.yaml](taskfile.awesome.yaml) - Curated "awesome" lists
 
 ### Helper Taskfiles (taskfiles/ directory)
+
 Internal helper taskfiles referenced with `::` prefix:
+
 - [taskfiles/scoop.yaml](taskfiles/scoop.yaml) - Scoop package manager wrapper (Windows)
 - [taskfiles/winget.yaml](taskfiles/winget.yaml) - Winget package manager wrapper (Windows)
 - [taskfiles/install-common.yaml](taskfiles/install-common.yaml) - Shared installation success handlers
@@ -72,27 +79,31 @@ Internal helper taskfiles referenced with `::` prefix:
 - [taskfiles/sudo.yaml](taskfiles/sudo.yaml) - Sudo/privilege escalation helpers
 
 ### Per-Tool/App Definitions
+
 Individual YAML files in subdirectories:
+
 - `tools/` - Tool-specific taskfiles (e.g., [tools/starship.yaml](tools/starship.yaml))
 - `apps/` - App-specific taskfiles (e.g., [apps/cursor.yaml](apps/cursor.yaml))
 - `languages/` - Language-specific taskfiles (e.g., [languages/go.yaml](languages/go.yaml))
 - `awesome/` - Awesome list taskfiles
 
 ### Configuration Files
+
 - `dotfiles/` - Configuration file templates (e.g., starship.toml, glazewm.yaml)
 
 ## Task File Patterns
 
 ### Structure
+
 ```yaml
-version: '3'
-silent: true  # For clean output
+version: "3"
+silent: true # For clean output
 
 tasks:
   install:
     desc: "[CATEGORY] ✨ Description"
-    platforms: [windows]  # or [linux, darwin]
-    deps: [":tools:gum:install"]  # Dependencies
+    platforms: [windows] # or [linux, darwin]
+    deps: [":tools:gum:install"] # Dependencies
     cmds:
       - task: install:windows
         platforms: [windows]
@@ -101,13 +112,14 @@ tasks:
 
   install:windows:
     platforms: [windows]
-    internal: true  # Not shown in --list
+    internal: true # Not shown in --list
     cmds:
       - task: ::scoop:install
         vars: { APP: "app-name" }
 ```
 
 ### Key Conventions
+
 - Task descriptions use format: `desc: "[CATEGORY] ✨ Description"`
 - Use emoji prefixes in descriptions: ✨ (install), ⚙️ (configure), 🔍 (find)
 - Platform-specific tasks use `platforms: [windows]` or `[linux, darwin]`
@@ -117,7 +129,9 @@ tasks:
 - Self-documenting task/variable names - no code comments
 
 ### Package Manager Wrappers
+
 When installing via package managers, use these internal tasks:
+
 ```yaml
 # Windows - Scoop
 task: ::scoop:install
@@ -136,20 +150,17 @@ task: ::scoop:nerd-fonts-install
 vars: { APP: "font-name" }
 ```
 
-### Variables
-Common variables defined in [taskfile.yaml](taskfile.yaml):
-- `OS` - Operating system (linux, windows, darwin)
-- `LOG_PREFIX` - Formatted log prefix with task name
-
 ## Development Workflow
 
 ### Adding a New Tool
+
 1. Create `tools/newtool.yaml` with `install`, `configure`, and `default` tasks
 2. Add to `includes:` section in [taskfile.tools.yaml](taskfile.tools.yaml)
 3. Use platform-specific task splits when needed (`:linux`, `:windows`)
 4. Reference helper tasks with `::` prefix (e.g., `::scoop:install`)
 
 ### Cross-Platform Considerations
+
 - Windows uses Scoop or Winget for package management
 - Linux/macOS use curl/wget with manual installation to `$HOME/bin`
 - Use `platforms: [...]` to restrict tasks to specific OSes
@@ -158,6 +169,7 @@ Common variables defined in [taskfile.yaml](taskfile.yaml):
 ## Code Style (from .cursorrules)
 
 Key principles from [.cursorrules/cursor-usage-standards.mdc](.cursorrules/cursor-usage-standards.mdc):
+
 - Understand existing system before making changes
 - Follow existing patterns in codebase
 - Modular, testable, clean code
@@ -166,6 +178,7 @@ Key principles from [.cursorrules/cursor-usage-standards.mdc](.cursorrules/curso
 - 1600 lines per file maximum
 
 From [.cursorrules/professional-coding-assistant.mdc](.cursorrules/professional-coding-assistant.mdc):
+
 - Production-ready code with zero technical debt
 - Apply DRY and KISS principles rigorously
 - Self-documenting code with descriptive naming

@@ -31,14 +31,14 @@ tasks:
     cmds:
       - |
         # if OS is set and is linux, use sudo to create the symlink
-        if [ -z "{{ .OS }}" ] || [ "{{ .OS }}" = "linux" ]; then
+        if [ -z "{{ OS }}" ] || [ "{{ OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, using sudo to create the symlink..."
           if [ ! -f /mnt/c/npiperelay/npiperelay.exe ]; then
             echo "ERROR: npiperelay.exe not found, please run task wsl:npiperelay:download first."
             exit 1
           fi
           sudo ln -s /mnt/c/npiperelay/npiperelay.exe /usr/local/bin/npiperelay.exe
-        elif [ "{{ .OS }}" = "Windows_NT" ]; then
+        elif [ "{{ OS }}" = "Windows_NT" ]; then
           echo "OS environment variable set to windows, using wsl to create the symlink..."
           if ! command -v wsl &> /dev/null; then
             echo "ERROR: wsl command not found, please install WSL first."
@@ -72,7 +72,7 @@ tasks:
     cmds:
       - |
         # if OS is linux get the username using cmd.exe
-        if [ "{{ .OS }}" = "linux" ]; then
+        if [ "{{ OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, getting username..."
           # if cmd.exe is not found, throw an error
           if [ ! -f /mnt/c/Windows/System32/cmd.exe ]; then
@@ -86,7 +86,7 @@ tasks:
             echo "ERROR: git command not found, please install git first."
             exit 1
           fi
-        elif [ "{{ .OS }}" = "Windows_NT" ]; then
+        elif [ "{{ OS }}" = "Windows_NT" ]; then
           echo "OS environment variable set to windows, getting username..."
           # if wsl command is not found, throw an error
           if ! command -v wsl &> /dev/null; then
@@ -136,11 +136,11 @@ tasks:
         fi
 
         # if OS is linux configure git directly, if OS is Windows_NT configure git using wsl
-        if [ "{{ .OS }}" = "linux" ]; then
+        if [ "{{ OS }}" = "linux" ]; then
           echo "OS environment variable set to linux, configuring git directly..."
           git config --global core.sshcommand $ssh_exe_path
           git config --global gpg.ssh.program $op_ssh_sign_exe_path
-        elif [ "{{ .OS }}" = "Windows_NT" ]; then
+        elif [ "{{ OS }}" = "Windows_NT" ]; then
           echo "OS environment variable set to windows, configuring git using wsl..."
           wsl git config --global core.sshcommand $ssh_exe_path
           wsl git config --global gpg.ssh.program $op_ssh_sign_exe_path

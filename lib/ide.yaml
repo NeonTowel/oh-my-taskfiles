@@ -3,7 +3,7 @@ version: '3'
 includes:
   cursor-rules: 
     dir: ..
-    taskfile: ../taskfiles/cursor-rules.yaml
+    taskfile: cursor-rules.yaml
     flatten: true
 
 vars:

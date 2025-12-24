@@ -1,0 +1,21 @@
+version: '3'
+
+includes:
+  install-common:
+    taskfile: lib/install-common.yaml
+    flatten: true
+    internal: true
+  scoop: 
+    taskfile: lib/scoop.yaml
+    internal: true
+  winget: 
+    taskfile: lib/winget.yaml
+    internal: true
+  omt:
+    taskfile: lib/omt.yaml
+    flatten: true
+  git: lib/git.yaml
+  sudo: lib/sudo.yaml
+  wsl: lib/wsl.yaml
+  ide: lib/ide.yaml
+  awesome: lib/awesome.yaml

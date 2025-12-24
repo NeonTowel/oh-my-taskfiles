@@ -2,28 +2,12 @@ version: '3'
 
 silent: true
 
-vars:
-  OS: 
-    sh: echo '{{ .OS | default "linux" }}'
-  LOG_PREFIX: "[{{ .TASK | lower }}]"
-
 includes:
-  omt: 
-    taskfile: taskfile.omt.yaml
-    flatten: true
-  tools: taskfile.tools.yaml
-  apps: taskfile.apps.yaml
-  lang: taskfile.languages.yaml
-  git: taskfile.git.yaml
-  oslib: taskfile.oslib.yaml
-  sudo: taskfiles/sudo.yaml
-  wsl: taskfiles/wsl.yaml
-  ide: taskfiles/ide.yaml
-  awesome: 
-    taskfile: taskfile.awesome.yaml
-    flatten: true
-  lib:
-    taskfile: taskfile.lib.yaml
+  tools: tools.yaml
+  apps: apps.yaml
+  lang: languages.yaml
+  lib: 
+    taskfile: lib.yaml
     flatten: true
 
 tasks:

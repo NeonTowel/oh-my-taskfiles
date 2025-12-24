@@ -6,7 +6,7 @@ vars:
   LAZYGIT_VERSION: "0.50.0"
 
 tasks:
-  install:Windows_NT:
+  install:windows:
     internal: true
     cmds:
       - task: ::scoop:install
@@ -29,4 +29,4 @@ tasks:
   install:
     desc: "[LAZYGIT] ✨ Install lazygit"
     cmds:
-      - task: install:{{ .OS }}
+      - task: install:{{ OS }}
