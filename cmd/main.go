@@ -15,21 +15,22 @@ func main() {
 }
 
 var (
-	list      bool
-	listAll   bool
-	dry       bool
-	force     bool
-	silent    bool
-	parallel  bool
-	summary   bool
-	verbose   bool
-	yes       bool
+	list     bool
+	listAll  bool
+	dry      bool
+	force    bool
+	silent   bool
+	parallel bool
+	summary  bool
+	verbose  bool
+	yes      bool
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "omt [task]",
-	Short: "A wrapper for go-task to provide a project-specific task runner.",
-	Long:  `A CLI wrapper for go-task that hardcodes the taskfile directory to ~/.omt, allowing for a globally accessible, project-specific set of tasks.`,
+	Args:  cobra.MatchAll(cobra.ArbitraryArgs),
+	Short: "oh-my-taskfiles cli",
+	Long:  `A CLI for Oh-My-Taskfiles.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		currentUser, err := user.Current()
 		if err != nil {
@@ -40,6 +41,8 @@ var rootCmd = &cobra.Command{
 
 		baseCmd := "task"
 		cmdArgs := []string{"--dir", taskDir}
+
+		cmdArgs = append(cmdArgs, args...)
 
 		if list {
 			cmdArgs = append(cmdArgs, "--list")
@@ -68,8 +71,6 @@ var rootCmd = &cobra.Command{
 		if yes {
 			cmdArgs = append(cmdArgs, "--yes")
 		}
-
-		cmdArgs = append(cmdArgs, args...)
 
 		execCmd := exec.Command(baseCmd, cmdArgs...)
 		execCmd.Stdout = os.Stdout
