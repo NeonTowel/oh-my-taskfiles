@@ -1,0 +1,51 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task: build
+
+  build:
+    desc: "Build OMT CLI for current platform"
+    platforms: [windows]
+    cmds:
+      - task: build:windows
+
+  build:all:
+    desc: "Build OMT CLI for all platforms (Windows, Linux)"
+    cmds:
+      - task: build:windows
+      - task: build:linux
+
+  build:windows:
+    desc: "Build OMT CLI for Windows"
+    dir: .
+    cmds:
+      - mkdir -p ../bin
+      - go build -o ../bin/omt.exe .
+    generates:
+      - ../bin/omt.exe
+
+  build:linux:
+    desc: "Build OMT CLI for Linux"
+    dir: .
+    cmds:
+      - mkdir -p ../bin
+      - go build -o ../bin/omt .
+    env:
+      GOOS: linux
+      GOARCH: amd64
+    generates:
+      - ../bin/omt
+
+  test:
+    desc: "Run Go tests"
+    dir: .
+    cmds:
+      - go test ./...
+
+  lint:
+    desc: "Run Go linter"
+    dir: .
+    cmds:
+      - go vet ./...
