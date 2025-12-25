@@ -69,7 +69,7 @@ function deduplicate-path() {
 
 $global:__COMMANDS = @{}
 @('omt', 'which', 'lsd', 'bat', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
-    $global:__COMMANDS[$_] = [bool](Get-Command $_ -ErrorAction SilentlyContinue)
+    $global:__COMMANDS[$_] = [bool](Get-Command -Name $_ -CommandType Application -ErrorAction SilentlyContinue)
 }
 
 $global:__PATHS = @{}
@@ -116,10 +116,6 @@ function gs { git status --renames @args }
 if ($global:__COMMANDS['omt']) {
     $omtCache = Get-CachedScript -Command 'omt' -Arguments @('completion', 'powershell') -CacheName 'omt-completion'
     . $omtCache
-} elseif ($global:__PATHS['omt']) {
-    if (-not (Get-Command omt -CommandType Application -ErrorAction SilentlyContinue)) {
-        function global:omt { task -t "$HOME\.omt\taskfile.yaml" @args }
-    }
 }
 
 if ($global:__PATHS['gcloud_path']) {
