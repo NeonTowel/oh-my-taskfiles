@@ -1,4 +1,4 @@
-name: go-cross-bundles
+name: release
 
 on:
   push:
