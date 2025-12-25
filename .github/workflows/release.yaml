@@ -56,9 +56,11 @@ jobs:
           APP="omt"
           PKG="./cmd"
 
-          # Prefer tag name when building tags, otherwise use short SHA
-          VERSION="${GITHUB_REF_NAME:-}"
-          if [[ -z "$VERSION" || "$VERSION" == "main" || "$VERSION" == "master" ]]; then
+          # Tag push => VERSION=tag name
+          # Branch/PR/etc => VERSION=dev-<sha>
+          if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
             VERSION="dev-${GITHUB_SHA::5}"
           fi
 
