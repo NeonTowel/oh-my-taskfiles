@@ -117,7 +117,7 @@ if ($global:__COMMANDS['omt']) {
     $omtCache = Get-CachedScript -Command 'omt' -Arguments @('completion', 'powershell') -CacheName 'omt-completion'
     . $omtCache
 } elseif ($global:__PATHS['omt']) {
-    if (-not (Get-Command $_ -ErrorAction SilentlyContinue)) {
+    if (-not (Get-Command 'omt' -ErrorAction SilentlyContinue)) {
         function omt { task -t "$HOME\.omt\taskfile.yaml" @args }
     }
 }
