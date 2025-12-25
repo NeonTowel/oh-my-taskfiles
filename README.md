@@ -16,39 +16,27 @@ A powerful and extensible taskfile (go-task) based library to supercharge your d
 
 ## Installation
 
-Run the following command to install Oh-My-Taskfiles:
+- **Linux/MacOS**:
 
-```bash
-sh -c "$(curl --location https://raw.githubusercontent.com/NeonTowel/oh-my-taskfiles/refs/heads/main/install.sh)"
+Grab the latest cli release from GitHub: [https://github.com/NeonTowel/oh-my-taskfiles/releases](https://github.com/NeonTowel/oh-my-taskfiles/releases).
+
+- **Windows**:
+
+Install using Scoop:
+
+```sh
+scoop bucket add neontowel https://github.com/NeonTowel/scoop-bucket
+scoop install neontowel/omt
 ```
 
-For Windows PowerShell, run this one-liner:
-
-```powershell
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/NeonTowel/oh-my-taskfiles/refs/heads/main/install.ps1'))
-```
-
-This will:
-
-- Clone the Oh-My-Taskfiles repository to `~/.omt`
-- Install `go-task` CLI to `~/bin` (or via scoop on Windows)
-- Provide you with an alias `omt` to run tasks easily
+Alternatively grab the Windows build for the latest cli release from GitHub: [https://github.com/NeonTowel/oh-my-taskfiles/releases](https://github.com/NeonTowel/oh-my-taskfiles/releases).
 
 ---
 
 ## Quick Start
 
-After installation, add the following to your shell configuration (`~/.bashrc`, `~/.zshrc`, etc.):
-
 ```bash
-export PATH=$HOME/bin:$PATH
-alias omt='task -d $HOME/.omt'
-```
-
-Reload your shell configuration:
-
-```bash
-source ~/.bashrc  # or source ~/.zshrc
+omt install       # Installs dependencies (Git, scoop, etc.) and clones the taskfiles to ~/.omt
 ```
 
 Now you can run Oh-My-Taskfiles commands like:
@@ -132,4 +120,4 @@ task: "git:config-global" finished
 - **Kubernetes:** Tasks for managing Kubernetes clusters.
 - **Language Support:** Predefined tasks for Go, Rust, Node.js, and more.
 
-Explore the `taskfile.yaml` and included taskfiles under `
+Explore the `taskfile.yaml` and included taskfiles under `tools` and `apps/`.
