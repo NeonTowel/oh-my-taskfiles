@@ -90,17 +90,29 @@ jobs:
           TAR="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.tar.gz"
           ZIP="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.zip"
 
-          tar -C "$OUTDIR" -czf "$TAR" .
-          ( cd "$OUTDIR" && zip -qr "../../$(basename "$ZIP")" . )
 
-          # Checksums (for the two archives)
-          (cd dist && sha256sum "$(basename "$TAR")" "$(basename "$ZIP")" > "checksums.txt")
+          if [ "${GOOS}" == "windows" ]; then
+            ( cd "$OUTDIR" && zip -qr "../../$(basename "$ZIP")" . )
+          else
+            tar -C "$OUTDIR" -czf "$TAR" .
+          fi
+
+          # Show dist contents
+          ls dist
+
+          # Checksums
+          if [ "${GOOS}" == "windows" ]; then
+            (cd dist && sha256sum "$(basename "$ZIP")" >> "checksums.txt")
+          else
+            (cd dist && sha256sum "$(basename "$TAR")" >> "checksums.txt")
+          fi
 
       - name: Upload bundles
         uses: actions/upload-artifact@v6
         with:
           name: bundles-${{ matrix.goos }}-${{ matrix.goarch }}
           retention-days: 1
+          compression-level: 9
           path: |
             dist/*.tar.gz
             dist/*.zip
