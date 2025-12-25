@@ -151,6 +151,6 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            dist/*.tar.gz
-            dist/*.zip
-            dist/checksums.txt
+            release/*.tar.gz
+            release/*.zip
+            release/checksums.txt
