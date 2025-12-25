@@ -2,7 +2,15 @@ name: go-cross-bundles
 
 on:
   push:
+    paths:
+      - 'cmd/**/*.go'
+      - 'cmd/go.mod'
+      - 'cmd/go.sum'
   pull_request:
+    paths:
+      - 'cmd/**/*.go'
+      - 'cmd/go.mod'
+      - 'cmd/go.sum'
   workflow_dispatch:
 
 permissions:
