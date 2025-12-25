@@ -3,6 +3,7 @@ name: release
 on:
   push:
     paths:
+      - '.github/workflows/release.yaml'
       - 'cmd/**/*.go'
       - 'cmd/go.mod'
       - 'cmd/go.sum'
