@@ -7,6 +7,8 @@ on:
       - 'cmd/**/*.go'
       - 'cmd/go.mod'
       - 'cmd/go.sum'
+    tags:
+      - '*'
   pull_request:
     paths:
       - 'cmd/**/*.go'
@@ -49,7 +51,7 @@ jobs:
         with:
           go-version: "1.25.x"
 
-      - name: Build + bundle + checksum
+      - name: Build + bundle
         shell: bash
         run: |
           set -euo pipefail
@@ -57,8 +59,7 @@ jobs:
           APP="omt"
           PKG="./cmd"
 
-          # Tag push => VERSION=tag name
-          # Branch/PR/etc => VERSION=dev-<sha>
+          # Tag => VERSION=tag, else dev-<sha>
           if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
             VERSION="${GITHUB_REF_NAME}"
           else
@@ -72,7 +73,6 @@ jobs:
           OUTDIR="dist/${GOOS}_${GOARCH}"
           mkdir -p "$OUTDIR"
 
-          # Cross-compile (works best with CGO disabled)
           export CGO_ENABLED=0
           export GOOS GOARCH
 
@@ -86,11 +86,9 @@ jobs:
             chmod +x "${OUTDIR}/${BIN}"
           fi
 
-          # Optional extras to ship (ignore if missing)
           [[ -f README.md ]] && cp README.md "${OUTDIR}/" || true
           [[ -f LICENSE ]] && cp LICENSE "${OUTDIR}/" || true
 
-          # Create both archives
           TAR="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.tar.gz"
           ZIP="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.zip"
 
@@ -119,9 +117,31 @@ jobs:
           path: |
             dist/*.tar.gz
             dist/*.zip
-            dist/checksums.txt
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
 
-      - name: Create GitHub Release + upload assets
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all bundles
+        uses: actions/download-artifact@v4
+        with:
+          path: release
+          pattern: bundles-*
+          merge-multiple: true
+
+      - name: Generate checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release
+          sha256sum *.tar.gz *.zip > checksums.txt
+
+      - name: Publish GitHub Release (public)
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
@@ -131,6 +151,6 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            release/*.tar.gz
-            release/*.zip
-            release/SHA256SUMS.txt
+            dist/*.tar.gz
+            dist/*.zip
+            dist/checksums.txt
