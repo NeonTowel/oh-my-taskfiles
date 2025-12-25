@@ -1,0 +1,110 @@
+name: go-cross-bundles
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            ext: ""
+          - goos: linux
+            goarch: arm64
+            ext: ""
+          - goos: darwin
+            goarch: amd64
+            ext: ""
+          - goos: darwin
+            goarch: arm64
+            ext: ""
+          - goos: windows
+            goarch: amd64
+            ext: ".exe"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+
+      - name: Build + bundle + checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APP="omt"
+          PKG="./cmd"
+
+          # Prefer tag name when building tags, otherwise use short SHA
+          VERSION="${GITHUB_REF_NAME:-}"
+          if [[ -z "$VERSION" || "$VERSION" == "main" || "$VERSION" == "master" ]]; then
+            VERSION="dev-${GITHUB_SHA::5}"
+          fi
+
+          GOOS="${{ matrix.goos }}"
+          GOARCH="${{ matrix.goarch }}"
+          EXT="${{ matrix.ext }}"
+
+          OUTDIR="dist/${GOOS}_${GOARCH}"
+          mkdir -p "$OUTDIR"
+
+          # Cross-compile (works best with CGO disabled)
+          export CGO_ENABLED=0
+          export GOOS GOARCH
+
+          BIN="${APP}${EXT}"
+
+          cd "${PKG}"
+          go build -trimpath -ldflags="-s -w" -o "../${OUTDIR}/${BIN}" .
+          cd ..
+
+          # Optional extras to ship (ignore if missing)
+          [[ -f README.md ]] && cp README.md "${OUTDIR}/" || true
+          [[ -f LICENSE ]] && cp LICENSE "${OUTDIR}/" || true
+
+          # Create both archives
+          TAR="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.tar.gz"
+          ZIP="dist/${APP}_${VERSION}_${GOOS}_${GOARCH}.zip"
+
+          tar -C "$OUTDIR" -czf "$TAR" .
+          ( cd "$OUTDIR" && zip -qr "../../$(basename "$ZIP")" . )
+
+          # Checksums (for the two archives)
+          (cd dist && sha256sum "$(basename "$TAR")" "$(basename "$ZIP")" > "checksums.txt")
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v6
+        with:
+          name: bundles-${{ matrix.goos }}-${{ matrix.goarch }}
+          retention-days: 1
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/checksums.txt
+
+      - name: Create GitHub Release + upload assets
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          draft: false
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            release/*.tar.gz
+            release/*.zip
+            release/SHA256SUMS.txt
