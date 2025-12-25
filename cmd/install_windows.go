@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,42 +23,6 @@ func runCommand(name string, arg ...string) error {
 }
 
 func runInstall() error {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return fmt.Errorf("could not get user home directory: %w", err)
-	}
-	binDir := filepath.Join(homeDir, "bin")
-
-	if _, err := os.Stat(binDir); os.IsNotExist(err) {
-		fmt.Println("Creating directory:", binDir)
-		if err := os.MkdirAll(binDir, 0755); err != nil {
-			return fmt.Errorf("failed to create bin directory: %w", err)
-		}
-	}
-
-	exePath, err := os.Executable()
-	if err != nil {
-		return fmt.Errorf("could not find executable path: %w", err)
-	}
-	destPath := filepath.Join(binDir, filepath.Base(exePath))
-
-	fmt.Printf("Installing omt to %s...\n", destPath)
-	sourceFile, err := os.Open(exePath)
-	if err != nil {
-		return fmt.Errorf("failed to open source executable: %w", err)
-	}
-	defer sourceFile.Close()
-
-	destFile, err := os.Create(destPath)
-	if err != nil {
-		return fmt.Errorf("failed to create destination file: %w", err)
-	}
-	defer destFile.Close()
-
-	if _, err := io.Copy(destFile, sourceFile); err != nil {
-		return fmt.Errorf("failed to copy executable: %w", err)
-	}
-
 	if !commandExists("scoop") {
 		fmt.Println("Installing Scoop...")
 		psCmd := "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; irm get.scoop.sh | iex"
@@ -88,6 +51,10 @@ func runInstall() error {
 		fmt.Println("go-task is already installed.")
 	}
 
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("could not get user home directory: %w", err)
+	}
 	omtPath := filepath.Join(homeDir, ".omt")
 
 	if _, err := os.Stat(omtPath); os.IsNotExist(err) {
@@ -103,11 +70,5 @@ func runInstall() error {
 }
 
 func printFinalInstructions() {
-	fmt.Println("\nTo complete the setup, please add the OMT bin directory to your PATH.")
-	fmt.Println("You can do this by running the following command in PowerShell:")
-	fmt.Println()
-	fmt.Println(`  [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ";$HOME\bin", 'User')`)
-	fmt.Println()
-	fmt.Println("\nAfter running this, you must restart your terminal for the changes to take effect.")
-	fmt.Println("You can then run 'omt' from anywhere.")
+	fmt.Println("OMT installed successfully.")
 }
