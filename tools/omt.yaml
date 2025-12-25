@@ -26,7 +26,7 @@ tasks:
     internal: true
     platforms: [windows]
     cmds:
-      - task: neontowel-install
+      - task: ::scoop:neontowel-install
         vars:
           APP: omt
 
