@@ -1,6 +1,7 @@
 version: '3'
 
 includes:
+  omt: tools/omt.yaml
   zsh: tools/zsh.yaml
   starship: tools/starship.yaml
   lsd: tools/lsd.yaml

@@ -60,8 +60,12 @@ if command -v task &> /dev/null; then
 fi
 
 # Oh-My-Taskfiles configuration
-if [ -f "$HOME/.omt/taskfile.yaml" ]; then
-  alias omt='task -t $HOME/.omt/taskfile.yaml'
+if ! command -v omt &> /dev/null; then
+  if [ ! -x omt ] && [ ! -x $HOME/bin/omt ]; then
+    if [ -f "$HOME/.omt/taskfile.yaml" ]; then
+      alias omt='task -t $HOME/.omt/taskfile.yaml'
+    fi
+  fi
 fi
 
 # Go configuration

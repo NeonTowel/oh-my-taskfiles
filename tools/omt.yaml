@@ -1,0 +1,41 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile tools/omt.yaml
+
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        mkdir -p ~/bin
+        curl -sL https://github.com/NeonTowel/oh-my-taskfiles/releases/download/0.1.1/omt_0.1.1_linux_amd64.tar.gz | tar xz -C ~/bin omt
+        {{ .gum_ok }} "omt cli installed."
+
+  install:darwin:
+    internal: true
+    platforms: [darwin]
+    cmds:
+      - |
+        mkdir -p ~/bin
+        curl -sL https://github.com/NeonTowel/oh-my-taskfiles/releases/download/0.1.1/omt_0.1.1_linux_amd64.tar.gz | tar xz -C ~/bin omt
+        {{ .gum_ok }} "omt cli installed."
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: neontowel-install
+        vars:
+          APP: omt
+
+  install:
+    desc: "[OMT] ✨ Install Oh-My-Taskfiles CLI"
+    cmds:
+      - task: install:linux
+        platforms: [linux]
+      - task: install:windows
+        platforms: [windows]
+      - task: install:darwin
+        platforms: [darwin]
