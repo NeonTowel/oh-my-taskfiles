@@ -68,7 +68,7 @@ function deduplicate-path() {
 }
 
 $global:__COMMANDS = @{}
-@('which', 'lsd', 'bat', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
+@('omt', 'which', 'lsd', 'bat', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
     $global:__COMMANDS[$_] = [bool](Get-Command $_ -ErrorAction SilentlyContinue)
 }
 
@@ -113,8 +113,13 @@ function gl { git log --graph --pretty=format:'%C(white)%s%Creset' --abbrev-comm
 function gll { git log --graph --decorate --pretty=oneline --abbrev-commit @args }
 function gs { git status --renames @args }
 
-if ($global:__PATHS['omt']) {
-    function omt { task -t "$HOME\.omt\taskfile.yaml" @args }
+if ($global:__COMMANDS['omt']) {
+    $omtCache = Get-CachedScript -Command 'omt' -Arguments @('completion', 'powershell') -CacheName 'omt-completion'
+    . $omtCache
+} elseif ($global:__PATHS['omt']) {
+    if (-not (Get-Command $_ -ErrorAction SilentlyContinue)) {
+        function omt { task -t "$HOME\.omt\taskfile.yaml" @args }
+    }
 }
 
 if ($global:__PATHS['gcloud_path']) {
