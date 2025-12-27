@@ -1,0 +1,20 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[CRUSH] ✨  "
+      REPO: charmbracelet/crush
+      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
+      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
+      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      BINARY_LINUX: '**/crush'
+      BINARY_DARWIN: '**/crush'
+      BINARY_WINDOWS: '**/crush.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile apps/crush.yaml

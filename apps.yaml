@@ -25,6 +25,7 @@ includes:
   gemini: apps/gemini.yaml
   synology: apps/synology.yaml
   slack: apps/slack.yaml
+  crush: apps/crush.yaml
 
 tasks:
   default:
