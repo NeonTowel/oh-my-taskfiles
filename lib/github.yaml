@@ -1,0 +1,49 @@
+version: '3'
+
+tasks:
+  install:
+    desc: '{{ default "" .HELP_PREFIX}}Install from GitHub latest release'
+    requires:
+      vars:
+        - REPO
+        - SEARCH_LINUX
+        - SEARCH_DARWIN
+        - SEARCH_WINDOWS
+        - BINARY_LINUX
+        - BINARY_DARWIN
+        - BINARY_WINDOWS
+        - BINARY_PATH
+    vars:
+      RELEASES_LATEST_RAW:
+        sh: "curl -s https://api.github.com/repos/{{ .REPO }}/releases/latest"
+      RELEASE:
+        ref: 'fromJson .RELEASES_LATEST_RAW'
+      FILE_NAME: '{{ default (list (base .REPO) "latest" | join "-") .FILE_NAME }}'
+      RELEASE_PACKAGE: '{{ .FILE_NAME }}{{ if eq OS "windows" }}.zip{{ else }}.tar.gz{{ end }}'
+    cmds:
+      - |
+        {{- range $index, $element := .RELEASE.assets }}
+          {{- if eq $element.name "checksums.txt" }}checksums="{{ $element.browser_download_url }}"{{ end }}
+          {{- if (and (eq $element.content_type "application/zip") (contains (lower $.SEARCH_WINDOWS) (lower $element.name)) (eq OS "windows")) }}
+            asset_url="{{ $element.browser_download_url }}"
+          {{- end }}
+          {{- if (and (eq $element.content_type "application/gzip") (contains (lower $.SEARCH_LINUX) (lower $element.name)) (eq OS "linux")) }}
+            asset_url="{{ $element.browser_download_url }}"
+          {{- end }}
+          {{- if (and (eq $element.content_type "application/gzip") (contains (lower $.SEARCH_DARWIN) (lower $element.name)) (eq OS "darwin")) }}
+            asset_url="{{ $element.browser_download_url }}"
+          {{- end }}
+        {{- end }}
+        echo "Found release:"
+        echo " - base: '{{ base .REPO}}'"
+        echo " - name: {{ .RELEASE.name }}"
+        echo " - checksums: $checksums"
+        echo " - asset_url: $asset_url"
+        echo " - USER_WORKING_DIR: {{ .USER_WORKING_DIR }}"
+        echo "Fetching $asset_url to {{ .RELEASE_PACKAGE }}..."
+        curl -sL "$asset_url" -o "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
+        mkdir -p {{ .BINARY_PATH }}
+        7z e "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" {{ if eq OS "windows" }}{{ .BINARY_WINDOWS }}{{ else if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }} -o"{{ .BINARY_PATH }}"
+        if [ -f "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" ]; then
+          rm "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
+        fi
