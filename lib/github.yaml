@@ -28,13 +28,13 @@ tasks:
       - |
         {{- range $index, $element := .RELEASE.assets }}
           {{- if eq $element.name "checksums.txt" }}checksums="{{ $element.browser_download_url }}"{{ end }}
-          {{- if (and (eq $element.content_type "application/zip") (contains (lower $.SEARCH_WINDOWS) (lower $element.name)) (eq OS "windows")) }}
+          {{- if (and (or (eq $element.content_type "application/octet-stream") (eq $element.content_type "application/zip")) (contains (lower $.SEARCH_WINDOWS) (lower $element.name)) (eq OS "windows")) }}
             asset_url="{{ $element.browser_download_url }}"
           {{- end }}
-          {{- if (and (eq $element.content_type "application/gzip") (contains (lower $.SEARCH_LINUX) (lower $element.name)) (eq OS "linux")) }}
+          {{- if (and (or (eq $element.content_type "application/octet-stream") (eq $element.content_type "application/gzip")) (contains (lower $.SEARCH_LINUX) (lower $element.name)) (eq OS "linux")) }}
             asset_url="{{ $element.browser_download_url }}"
           {{- end }}
-          {{- if (and (eq $element.content_type "application/gzip") (contains (lower $.SEARCH_DARWIN) (lower $element.name)) (eq OS "darwin")) }}
+          {{- if (and (or (eq $element.content_type "application/octet-stream") (eq $element.content_type "application/gzip")) (contains (lower $.SEARCH_DARWIN) (lower $element.name)) (eq OS "darwin")) }}
             asset_url="{{ $element.browser_download_url }}"
           {{- end }}
         {{- end }}
