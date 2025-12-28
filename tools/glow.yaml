@@ -1,0 +1,21 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[GLOW] ✨  "
+      REPO: charmbracelet/glow
+      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
+      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
+      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      BINARY_LINUX: '**/glow'
+      BINARY_DARWIN: '**/glow'
+      BINARY_WINDOWS: '**/glow.exe'
+      BINARY_PATH: '$HOME/bin'
+      CONFIRM_OVERWRITE: false
+
+tasks:
+  default:
+    - task --list --taskfile tools/glow.yaml

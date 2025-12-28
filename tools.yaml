@@ -34,6 +34,7 @@ includes:
   zenity: tools/zenity.yaml
   openshift: tools/openshift.yaml
   task: tools/task.yaml
+  glow: tools/glow.yaml
 
 tasks:
   default:
