@@ -14,7 +14,6 @@ includes:
       BINARY_DARWIN: '**/mods'
       BINARY_WINDOWS: '**/mods.exe'
       BINARY_PATH: '$HOME/bin'
-      GUM_SPINNER_ENABLED: true
       CONFIRM_OVERWRITE: false
 
 tasks:

@@ -1,9 +1,22 @@
 version: '3'
 
-vars:
-  7ZIP_LINUX_VERSION: "24.09"
+includes:
+  linux:
+    taskfile: ../lib/github.yaml
+    flatten: false
+    internal: true
+    vars:
+      REPO: ip7z/7zip
+      SEARCH_LINUX: '-linux-x64.tar.xz'
+      SEARCH_DARWIN: '-mac.tar.xz'
+      BINARY_LINUX: '7zz'
+      BINARY_DARWIN: '7zz'
+      BINARY_PATH: '$HOME/bin'
 
 tasks:
+  default:
+    - task --list --taskfile tools/7zip.yaml
+
   install:windows:
     platforms: [windows]
     internal: true
@@ -18,14 +31,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - |
-        VERSION=$(echo "{{ .7ZIP_LINUX_VERSION }}" | tr -cd '[:alnum:]_.')
-        if [ ! -d "$HOME/bin/7z" ]; then
-          curl -L "https://github.com/ip7z/7zip/releases/download/{{ .7ZIP_LINUX_VERSION }}/7z{{ .VERSION }}-linux-x64.tar.xz" | tar -xJ -C $HOME/bin
-          echo "7zip has been installed successfully."
-        else
-          echo "7zip is already installed."
-        fi
+      - task: linux:install
 
   install:
     desc: "[7ZIP] ✨ Install 7zip"

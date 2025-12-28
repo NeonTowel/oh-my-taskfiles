@@ -47,9 +47,13 @@ tasks:
         echo " - USER_WORKING_DIR: {{ .USER_WORKING_DIR }}"
         echo "Fetching $asset_url to {{ .RELEASE_PACKAGE }}..."
         {{- end }}
-        {{ .GUM_SPIN }}curl -sL "$asset_url" -o "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
         mkdir -p {{ .BINARY_PATH }}
-        {{ .GUM_SPIN }}7z e "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" {{ if eq OS "windows" }}{{ .BINARY_WINDOWS }}{{ else if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }} -o"{{ .BINARY_PATH }}" -bd{{ .CONFIRM_OVERWRITE }}
+        {{- if eq OS "windows" }}
+        {{ .GUM_SPIN }}curl -sL "$asset_url" -o "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
+        {{ .GUM_SPIN }}7z e "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" {{ .BINARY_WINDOWS }} -o"{{ .BINARY_PATH }}" -bd{{ .CONFIRM_OVERWRITE }}
+        {{- else }}
+        {{ .GUM_SPIN }}curl -sL "$asset_url" | tar x -C {{ .BINARY_PATH }} {{ if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }}
+        {{- end }}
         if [ -f "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" ]; then
           rm "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
         fi
