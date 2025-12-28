@@ -26,6 +26,7 @@ includes:
   synology: apps/synology.yaml
   slack: apps/slack.yaml
   crush: apps/crush.yaml
+  mods: apps/mods.yaml
 
 tasks:
   default:

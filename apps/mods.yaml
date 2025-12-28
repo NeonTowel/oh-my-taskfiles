@@ -1,0 +1,22 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[MODS] ✨  "
+      REPO: charmbracelet/mods
+      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
+      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
+      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      BINARY_LINUX: '**/mods'
+      BINARY_DARWIN: '**/mods'
+      BINARY_WINDOWS: '**/mods.exe'
+      BINARY_PATH: '$HOME/bin'
+      GUM_SPINNER_ENABLED: true
+      CONFIRM_OVERWRITE: false
+
+tasks:
+  default:
+    - task --list --taskfile apps/mods.yaml
