@@ -9,8 +9,10 @@ includes:
       REPO: ip7z/7zip
       SEARCH_LINUX: '-linux-x64.tar.xz'
       SEARCH_DARWIN: '-mac.tar.xz'
+      SEARCH_WINDOWS: ''
       BINARY_LINUX: '7zz'
       BINARY_DARWIN: '7zz'
+      BINARY_WINDOWS: ''
       BINARY_PATH: '$HOME/bin'
 
 tasks:
