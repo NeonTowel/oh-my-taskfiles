@@ -14,15 +14,70 @@ tasks:
         - BINARY_WINDOWS
         - BINARY_PATH
     vars:
+      CACHE_DIR: '{{ printf "%s/.config/omt/cache" (env "HOME") }}'
+      CACHE_REPO_NAME: '{{ .REPO | replace "/" "_" | replace ":" "_" | replace " " "_" }}'
+      CACHE_FILE: '{{ printf "%s/releases_latest_%s.json" .CACHE_DIR .CACHE_REPO_NAME }}'
+      CACHE_TTL: 86400
       RELEASES_LATEST_RAW:
-        sh: "curl -s https://api.github.com/repos/{{ .REPO }}/releases/latest"
+        sh: |
+          set -euo pipefail 2>/dev/null || set -euo
+          cache_dir="{{ .CACHE_DIR }}"
+          mkdir -p "$cache_dir"
+          cache_file="{{ .CACHE_FILE }}"
+          cache_ttl="{{ .CACHE_TTL }}"
+          if [ -s "$cache_file" ]; then
+            cache_mtime="$(date --utc --reference="$cache_file" +%s)"
+            now_ts="$(date --utc +%s)"
+            if [ $((now_ts - cache_mtime)) -lt "$cache_ttl" ]; then
+              cat "$cache_file"
+              exit 0
+            fi
+          fi
+          response="$(curl -sSf "https://api.github.com/repos/{{ .REPO }}/releases/latest")"
+          printf '%s' "$response" > "$cache_file"
+          printf '%s' "$response"
       RELEASE:
         ref: 'fromJson .RELEASES_LATEST_RAW'
       FILE_NAME: '{{ default (list (base .REPO) "latest" | join "-") .FILE_NAME }}'
       RELEASE_PACKAGE: '{{ .FILE_NAME }}{{ if eq OS "windows" }}.zip{{ else }}.tar.gz{{ end }}'
       GUM:
         sh: 'command -v gum'
-      GUM_SPIN: '{{ if (and .GUM (or (eq .GUM_SPINNER_ENABLED true) (eq .GUM_SPINNER_ENABLED nil))) }}gum spin --spinner dot --title "Working..." --show-stderr --show-stdout  -- {{ end }}'
+      SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
+      SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
+      WITTY_PHRASES:
+      - "You forget a thousand things every day. This isn't one of them. Probably."
+      - "Connecting to AGI (please hold your existential dread)"
+      - "Summoning silicon spirits…"
+      - "Adjusting neural hamsters…"
+      - "Reticulating splines (again)"
+      - "Asking electrons nicely"
+      - "Consulting the oracle (it runs on JavaScript)"
+      - "Arranging bits into meaningful lies"
+      - "Convincing math to think"
+      - "Loading intelligence… no refunds"
+      - "Initiating polite conversation with a machine"
+      - "Teaching rocks to reason"
+      - "Aligning vibes and vectors"
+      - "Shaking hands with probability"
+      - "Applying duct tape to reality"
+      - "Spinning up artificial opinions"
+      - "Coaxing thoughts from sand"
+      - "Engaging speculative cognition"
+      - "Crossing fingers, flipping bits"
+      - "Borrowing intelligence from the future"
+      - "Negotiating with entropy"
+      - "Putting the 'artificial' in artificial intelligence"
+      - "Loading answers, questions sold separately"
+      - "Briefly confusing causality"
+      - "Starting thought experiment #42"
+      - "Inviting chaos, but politely"
+      - "Computing… please blame math"
+      - "Turning coffee into logic"
+      - "Standing on the shoulders of very small transistors"
+      - "Searching for meaning in a pile of floats"
+      - "Preparing vaguely helpful insights"
+      WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
+      GUM_SPIN: '{{ if (and .GUM (or (eq .GUM_SPINNER_ENABLED true) (eq .GUM_SPINNER_ENABLED nil))) }}gum spin --spinner {{ .SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr --show-stdout  -- {{ end }}'
       CONFIRM_OVERWRITE: '{{ if (and (eq .CONFIRM_OVERWRITE false) (ne .CONFIRM_OVERWRITE nil)) }} -y{{ end }}'
     cmds:
       - |
@@ -56,4 +111,7 @@ tasks:
         {{- end }}
         if [ -f "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}" ]; then
           rm "{{ .USER_WORKING_DIR }}/{{ .RELEASE_PACKAGE }}"
+        fi
+        if [ -x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+          {{ .gum_ok }} " ✅  {{ base .REPO}} {{ .RELEASE.name }} installed successfully."
         fi
