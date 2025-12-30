@@ -9,6 +9,7 @@ includes:
   lib: 
     taskfile: lib.yaml
     flatten: true
+  utils: lib/utils.yaml
 
 tasks:
   default:

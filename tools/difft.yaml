@@ -1,0 +1,32 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/difft.yaml
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - >-
+        {{- if (not .FORCE) }}command -v difft >/dev/null && exit 0{{ end }}
+        curl -sSL https://github.com/Wilfred/difftastic/releases/latest/download/difft-x86_64-unknown-linux-gnu.tar.gz | tar xz -C ~/bin difft
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: difftastic
+
+  install:
+    desc: "[DIFFT] ✨ Install difftastic"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]

@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:
+  diff-pretty:
+    desc: "[utils] Diffs the two files using 'difft' for pretty printing. (ARGS: A, B)"
+    requires:
+      vars:
+        - A
+        - B
+    preconditions:
+      - sh: test -f "{{ .A }}"
+        msg: "error in A: file '{{ .A }}' not found"
+      - sh: test -f "{{ .B }}"
+        msg: "error in B: file '{{ .B }}' not found"
+      - sh: "command -v difft || false"
+        msg: "'difft' command not found"
+    cmds:
+      - |
+        difft '{{ osClean .A }}' '{{ osClean .B }}'

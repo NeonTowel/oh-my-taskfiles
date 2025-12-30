@@ -112,10 +112,9 @@ tasks:
       GUM:
         sh: 'command -v gum || true'
     cmds:
-      - |
-        {{- if .CLI_VERBOSE }}
-        echo "Fetching '{{ .VSIX_URL }}' to {{ .DESTINATION_PATH }}/{{ .VSIX_FILE }}"
-        {{- end }}
+      - >-
+        {{ if .CLI_VERBOSE }}{{ .gum_info }} "Fetching '{{ .VSIX_URL }}' to {{ .DESTINATION_PATH }}/{{ .VSIX_FILE }}"{{ end }}
+      - >-
         {{ if .GUM }}gum spin --spinner="{{ .SPINNER }}" --show-error --show-output --title "{{ .WITTY_PHRASE }}" -- {{ end }}curl -sSL '{{ .VSIX_URL }}' -o '{{ .DESTINATION_PATH }}/{{ .VSIX_FILE }}'
 
   find-cli:
@@ -222,10 +221,13 @@ tasks:
         echo "$FALLBACK"
 
   install-extensions:
-    desc: "[IDE] 📦 Install extensions for an IDE"
+    desc: "[IDE] 📦  Install extensions for an IDE"
     silent: true
     requires:
-      vars: [IDE, IDE_EXTENSIONS]
+      vars:
+        - IDE
+        - IDE_EXTENSIONS
+    vars:
       SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
       SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
       WITTY_PHRASES:
@@ -261,43 +263,51 @@ tasks:
       - "Searching for meaning in a pile of floats"
       - "Preparing vaguely helpful insights"
       WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
-      GUM:
-        sh: 'command -v gum || true'
+      CLI_BINARY:
+        sh: task ide:find-cli IDE={{ .IDE }} 2>/dev/null
     cmds:
       - |
-        CLI_BINARY=$(task ide:find-cli IDE={{ .IDE }} 2>/dev/null)
-        if [ $? -ne 0 ] || [ -z "$CLI_BINARY" ]; then
-          echo "❌ ERROR: Could not find {{ .IDE }} CLI"
+        if [ -x "{{ .CLI_BINARY }}" ] || [ -z "{{ .CLI_BINARY }}" ]; then
+          {{ .gum_error }} "❌  ERROR: Could not find {{ .IDE }} CLI"
           task ide:find-cli IDE={{ .IDE }}
           exit 1
         fi
-        echo "✅ Found {{ .IDE }} CLI: $CLI_BINARY"
-        echo "📦 Installing extensions..."
-        {{- range .IDE_EXTENSIONS }}
-        echo "  → Installing {{.}}"
-        {{ if $.GUM }}gum spin --spinner="{{ $.SPINNER }}" --show-error --show-output --title "{{ $.WITTY_PHRASE }}" -- {{ end }}"$CLI_BINARY" --install-extension "{{.}}"{{ if $.FORCE }} --force{{ end }} 2>/dev/null || true
-        {{- end }}
-        {{- if .REMOTE_EXTENSIONS }}
-        echo "📦 Installing remote .vsix extensions..."
-        {{- range .REMOTE_EXTENSIONS }}
-        echo "  → Fetching {{ . }}"
-        task ide:fetch-vsix EXTENSION_ID='{{ . }}' DESTINATION_PATH='{{ .USER_WORKING_DIR }}'
-        echo "  → Installing {{ . }}"
-        VSIX_FILE='{{ .USER_WORKING_DIR }}/{{ . | replace "." "_" }}.vsix'
-        if [ -f "${VSIX_FILE}" ]; then
-          {{ if $.GUM }}gum spin --spinner="{{ $.SPINNER }}" --show-error --show-output --title "{{ $.WITTY_PHRASE }}" -- {{ end }}"$CLI_BINARY" --install-extension "${VSIX_FILE}"{{ if $.FORCE }} --force{{ end }} 2>/dev/null || true
-          rm "${VSIX_FILE}"
-        else
-          {{ .gum_error }} "ERROR: File '${VSIX_FILE}' not found."
-        fi
-        {{- end }}
-        {{- end }}
-        echo "✅ Extensions installed"
+        {{ .gum_ok }} "✅  Found {{ .IDE }} CLI: {{ .CLI_BINARY }}"
+        {{ .gum_info }} "📦  Installing extensions..."
+      - for: { var: REMOTE_EXTENSIONS, as: extension }
+        task: fetch-vsix
+        status: '{{ eq (len .REMOTE_EXTENSIONS) 0 }}'
+        vars:
+          EXTENSION_ID: '{{ .extension }}'
+          DESTINATION_PATH: '{{ .USER_WORKING_DIR }}'
+      - >-
+        {{- if .GUM_PRESENT -}}
+        gum spin --spinner="{{ $.SPINNER }}"
+        --show-error 
+        --show-output
+        --title "{{ $.WITTY_PHRASE }}"
+        -- {{ end -}}
+        "{{ .CLI_BINARY }}"
+        {{ range .IDE_EXTENSIONS -}}
+        --install-extension '{{.}}'
+        {{ end }}
+        {{ range .REMOTE_EXTENSIONS -}}
+        --install-extension '{{ $.USER_WORKING_DIR }}/{{ . | replace "." "_" }}.vsix'
+        {{ end }}
+        {{- if .FORCE -}}
+        --force
+        {{ end -}}
+        2>/dev/null || true
+      - for: { var: REMOTE_EXTENSIONS, as: extension }
+        cmd: >-
+          [[ -f '{{ .USER_WORKING_DIR }}/{{ .extension | replace "." "_" }}.vsix' ]] && rm '{{ .USER_WORKING_DIR }}/{{ .extension | replace "." "_" }}.vsix'
+        ignore_error: true
+      - '{{ .gum_ok }} "✅  Extensions installed"'
 
   copy-settings:
-    desc: "[IDE] ⚙️ Copy settings.json to an IDE"
+    desc: "[IDE] ⚙️  Copy settings.json to an IDE"
     silent: true
-    deps: [":tools:gum:install"]
+    deps: [":tools:gum:install", ":tools:difft:install"]
     requires:
       vars:
         - name: IDE
@@ -305,16 +315,17 @@ tasks:
     cmds:
       - |
         SETTINGS_PATH=$(task ide:find-settings-path IDE={{ .IDE }})
-        echo "📁 Target settings path: $SETTINGS_PATH"
+        {{ .gum_info }} "📁  Target settings path: $SETTINGS_PATH"
 
         write_settings=true
         if [ -f "$SETTINGS_PATH" ]; then
           if [ "{{ .UNATTENDED }}" = "true" ]; then
-            echo "⚠️  Unattended mode: overwriting existing config"
+            {{ .gum_warn }} "⚠️  Unattended mode: overwriting existing config"
           else
-            if ! gum confirm "Settings file exists at $SETTINGS_PATH. Overwrite?"; then
+            task utils:diff-pretty B="${SETTINGS_PATH}" A="dotfiles/vscode/settings.json"
+            if ! gum confirm "Settings file exists at $SETTINGS_PATH. Overwrite (see above)?"; then
               write_settings=false
-              echo "⏭️  Skipping settings copy"
+              {{ .gum_info }} "⏭️  Skipping settings copy"
             fi
           fi
         fi
@@ -322,11 +333,11 @@ tasks:
         if $write_settings; then
           mkdir -p "$(dirname "$SETTINGS_PATH")"
           cp dotfiles/vscode/settings.json "$SETTINGS_PATH"
-          echo "✅ Settings copied to $SETTINGS_PATH"
+          {{ .gum_ok }} "✅  Settings copied to $SETTINGS_PATH"
         fi
 
   configure:vscode:
-    desc: "[VSCODE] ⚙️ Configure VS Code (install extensions + copy settings)"
+    desc: "[VSCODE] ⚙️  Configure VS Code (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
@@ -338,7 +349,7 @@ tasks:
           IDE: vscode
 
   configure:cursor:
-    desc: "[CURSOR] ⚙️ Configure Cursor (install extensions + copy settings)"
+    desc: "[CURSOR] ⚙️  Configure Cursor (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
@@ -350,19 +361,21 @@ tasks:
           IDE: cursor
 
   configure:vscodium:
-    desc: "[VSCODIUM] ⚙️ Configure VSCodium (install extensions + copy settings)"
+    desc: "[VSCODIUM] ⚙️  Configure VSCodium (install extensions + copy settings)"
     cmds:
       - task: install-extensions
         vars:
           IDE: vscodium
           IDE_EXTENSIONS:
             ref: .IDE_EXTENSIONS_vscodium
+          REMOTE_EXTENSIONS:
+            ref: .IDE_EXTENSIONS_vscodium_remote
       - task: copy-settings
         vars:
           IDE: vscodium
 
   configure:
-    desc: "[IDE] ⚙️ Configure an IDE (vscode, cursor, or vscodium)"
+    desc: "[IDE] ⚙️  Configure an IDE (vscode, cursor, or vscodium)"
     requires:
       vars:
         - name: IDE

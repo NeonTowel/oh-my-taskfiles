@@ -31,4 +31,4 @@ includes:
 
 tasks:
   default:
-    - task --list --taskfile taskfile.apps.yaml
+    - task --list --taskfile apps.yaml

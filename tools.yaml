@@ -35,7 +35,8 @@ includes:
   openshift: tools/openshift.yaml
   task: tools/task.yaml
   glow: tools/glow.yaml
+  difft: tools/difft.yaml
 
 tasks:
   default:
-    - task --list --taskfile taskfile.tools.yaml
+    - task --list --taskfile tools.yaml
