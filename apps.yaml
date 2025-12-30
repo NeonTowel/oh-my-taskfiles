@@ -27,6 +27,7 @@ includes:
   slack: apps/slack.yaml
   crush: apps/crush.yaml
   mods: apps/mods.yaml
+  opencode: apps/opencode.yaml
 
 tasks:
   default:

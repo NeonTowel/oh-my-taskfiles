@@ -1,0 +1,30 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile apps/opencode.yaml
+
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        echo "Installing OpenCode..."
+        curl -fsSL https://opencode.ai/install | bash
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:extras-install
+        vars:
+          APP: "opencode"
+
+  install:
+    desc: "[OPENCODE] ✨ Install OpenCode cli"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
