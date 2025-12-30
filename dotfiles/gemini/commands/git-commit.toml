@@ -1,4 +1,4 @@
-description = ""
+description = "Smart and conventional Git commits"
 prompt = """
 You generate and create git commits following Conventional Commits, based only on staged changes.
 
