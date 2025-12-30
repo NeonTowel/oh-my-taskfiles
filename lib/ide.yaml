@@ -56,11 +56,67 @@ vars:
     - Anthropic.claude-code
     - openai.chatgpt
     - jeanp413.open-remote-wsl
-
+    - jeanp413.open-remote-ssh
+  IDE_EXTENSIONS_vscodium_remote:
+    - ms-azuretools.vscode-bicep
 
 tasks:
   default:
     - task --list --taskfile taskfiles/ide.yaml
+
+  fetch-vsix:
+    requires:
+      vars:
+        - EXTENSION_ID
+        - DESTINATION_PATH
+    vars:
+      PUBLISHER: '{{ index (splitList "." .EXTENSION_ID) 0 }}'
+      PACKAGE: '{{ index (splitList "." .EXTENSION_ID) 1 }}'
+      VSIX_URL: 'https://{{ .PUBLISHER }}.gallery.vsassets.io/_apis/public/gallery/publisher/{{ .PUBLISHER }}/extension/{{ .PACKAGE }}/latest/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+      VSIX_FILE: '{{ .EXTENSION_ID | replace "." "_" }}.vsix'
+      SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
+      SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
+      WITTY_PHRASES:
+      - "You forget a thousand things every day. This isn't one of them. Probably."
+      - "Connecting to AGI (please hold your existential dread)"
+      - "Summoning silicon spirits…"
+      - "Adjusting neural hamsters…"
+      - "Reticulating splines (again)"
+      - "Asking electrons nicely"
+      - "Consulting the oracle (it runs on JavaScript)"
+      - "Arranging bits into meaningful lies"
+      - "Convincing math to think"
+      - "Loading intelligence… no refunds"
+      - "Initiating polite conversation with a machine"
+      - "Teaching rocks to reason"
+      - "Aligning vibes and vectors"
+      - "Shaking hands with probability"
+      - "Applying duct tape to reality"
+      - "Spinning up artificial opinions"
+      - "Coaxing thoughts from sand"
+      - "Engaging speculative cognition"
+      - "Crossing fingers, flipping bits"
+      - "Borrowing intelligence from the future"
+      - "Negotiating with entropy"
+      - "Putting the 'artificial' in artificial intelligence"
+      - "Loading answers, questions sold separately"
+      - "Briefly confusing causality"
+      - "Starting thought experiment #42"
+      - "Inviting chaos, but politely"
+      - "Computing… please blame math"
+      - "Turning coffee into logic"
+      - "Standing on the shoulders of very small transistors"
+      - "Searching for meaning in a pile of floats"
+      - "Preparing vaguely helpful insights"
+      WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
+      GUM:
+        sh: 'command -v gum || true'
+    cmds:
+      - |
+        {{- if .CLI_VERBOSE }}
+        echo "Fetching '{{ .VSIX_URL }}' to {{ .DESTINATION_PATH }}/{{ .VSIX_FILE }}"
+        {{- end }}
+        {{ if .GUM }}gum spin --spinner="{{ .SPINNER }}" --show-error --show-output --title "{{ .WITTY_PHRASE }}" -- {{ end }}curl -sSL '{{ .VSIX_URL }}' -o '{{ .DESTINATION_PATH }}/{{ .VSIX_FILE }}'
 
   find-cli:
     desc: "[IDE] 🔍 Find CLI executable for an IDE (vscode, cursor, vscodium)"
@@ -170,6 +226,43 @@ tasks:
     silent: true
     requires:
       vars: [IDE, IDE_EXTENSIONS]
+      SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
+      SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
+      WITTY_PHRASES:
+      - "You forget a thousand things every day. This isn't one of them. Probably."
+      - "Connecting to AGI (please hold your existential dread)"
+      - "Summoning silicon spirits…"
+      - "Adjusting neural hamsters…"
+      - "Reticulating splines (again)"
+      - "Asking electrons nicely"
+      - "Consulting the oracle (it runs on JavaScript)"
+      - "Arranging bits into meaningful lies"
+      - "Convincing math to think"
+      - "Loading intelligence… no refunds"
+      - "Initiating polite conversation with a machine"
+      - "Teaching rocks to reason"
+      - "Aligning vibes and vectors"
+      - "Shaking hands with probability"
+      - "Applying duct tape to reality"
+      - "Spinning up artificial opinions"
+      - "Coaxing thoughts from sand"
+      - "Engaging speculative cognition"
+      - "Crossing fingers, flipping bits"
+      - "Borrowing intelligence from the future"
+      - "Negotiating with entropy"
+      - "Putting the 'artificial' in artificial intelligence"
+      - "Loading answers, questions sold separately"
+      - "Briefly confusing causality"
+      - "Starting thought experiment #42"
+      - "Inviting chaos, but politely"
+      - "Computing… please blame math"
+      - "Turning coffee into logic"
+      - "Standing on the shoulders of very small transistors"
+      - "Searching for meaning in a pile of floats"
+      - "Preparing vaguely helpful insights"
+      WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
+      GUM:
+        sh: 'command -v gum || true'
     cmds:
       - |
         CLI_BINARY=$(task ide:find-cli IDE={{ .IDE }} 2>/dev/null)
@@ -180,10 +273,25 @@ tasks:
         fi
         echo "✅ Found {{ .IDE }} CLI: $CLI_BINARY"
         echo "📦 Installing extensions..."
-        {{range .IDE_EXTENSIONS}}
+        {{- range .IDE_EXTENSIONS }}
         echo "  → Installing {{.}}"
-        "$CLI_BINARY" --install-extension "{{.}}" --force 2>/dev/null || true
-        {{end}}
+        {{ if $.GUM }}gum spin --spinner="{{ $.SPINNER }}" --show-error --show-output --title "{{ $.WITTY_PHRASE }}" -- {{ end }}"$CLI_BINARY" --install-extension "{{.}}"{{ if $.FORCE }} --force{{ end }} 2>/dev/null || true
+        {{- end }}
+        {{- if .REMOTE_EXTENSIONS }}
+        echo "📦 Installing remote .vsix extensions..."
+        {{- range .REMOTE_EXTENSIONS }}
+        echo "  → Fetching {{ . }}"
+        task ide:fetch-vsix EXTENSION_ID='{{ . }}' DESTINATION_PATH='{{ .USER_WORKING_DIR }}'
+        echo "  → Installing {{ . }}"
+        VSIX_FILE='{{ .USER_WORKING_DIR }}/{{ . | replace "." "_" }}.vsix'
+        if [ -f "${VSIX_FILE}" ]; then
+          {{ if $.GUM }}gum spin --spinner="{{ $.SPINNER }}" --show-error --show-output --title "{{ $.WITTY_PHRASE }}" -- {{ end }}"$CLI_BINARY" --install-extension "${VSIX_FILE}"{{ if $.FORCE }} --force{{ end }} 2>/dev/null || true
+          rm "${VSIX_FILE}"
+        else
+          {{ .gum_error }} "ERROR: File '${VSIX_FILE}' not found."
+        fi
+        {{- end }}
+        {{- end }}
         echo "✅ Extensions installed"
 
   copy-settings:
