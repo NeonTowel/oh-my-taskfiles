@@ -4,6 +4,61 @@ tasks:
   default:
     - task --list --taskfile apps/opencode.yaml
 
+  configure:
+    internal: true
+    vars:
+      CONFIG_FILE: 'opencode.json'
+      CONFIG_SOURCE_PATH: 'dotfiles/opencode'
+      CONFIG_DEST_PATH: '$HOME/.config/opencode'
+      CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
+      CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
+      DEFAULT_MODELS:
+        - gpt-4.1-mini
+        - gpt-5.1-chat
+        - gpt-5.1-codex-mini
+        - gpt-5.2-chat
+        - Phi-4
+        - Codestral-2501
+        - sora
+    cmds:
+      - |
+        if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+          mkdir -p "{{ .CONFIG_DEST_PATH }}"
+        fi
+        {{ if .UNATTENDED }}
+        {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
+        if [ ! -f "{{ .CONFIG_DEST_FILE }}" ]; then
+          cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+          {{ .gum_ok }} "Configuration saved successfully."
+        else
+          {{ .gum_warn }} "Configuration already exist, skipping configuration."
+        fi
+        {{ else }}
+        if [ -f "{{ .CONFIG_DEST_FILE }}" ]; then
+          if ! gum confirm "Configuration already exist, overwrite?"; then
+            {{ .gum_warn }} "Configuration already exist, skipping configuration."
+            exit 0
+          fi
+        fi
+        if gum confirm "Do you want to configure OpenCode to use Microsoft Foundry?"; then
+          FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+          echo -e "\n \t NOTE: To be able to successfully use the models, you need to have matching deployment in Foundry.
+            Otherwise, just select none and configure manually later.\n" | gum format
+          MODELS=$(gum choose --header "Select models to enable (esc to skip)" --no-limit --selected="*"{{ range .DEFAULT_MODELS }} "{{ . }}"{{ end }}) && {
+            export MODELS="$MODELS"
+          } || {
+            export MODELS=""
+          }
+          export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
+          gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
+          {{ .gum_info }} " Remember to set environment variable AZURE_OPENAI_API_KEY to your api key!"
+        else
+          cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+        fi
+        {{ .gum_ok }} "Configuration saved successfully."
+        {{ end }}
+
+
   install:linux:
     internal: true
     platforms: [linux]
@@ -28,3 +83,4 @@ tasks:
         platforms: [windows]
       - task: install:linux
         platforms: [linux]
+      - task: configure
