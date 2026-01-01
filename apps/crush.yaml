@@ -23,8 +23,8 @@ tasks:
     desc: "[CRUSH] ⚙️  Configure Crush"
     vars:
       CONFIG_FILE: 'crush.json'
-      CONFIG_SOURCE_PATH: 'dotfiles/opencode'
-      CONFIG_DEST_PATH: '$HOME/.config/opencode'
+      CONFIG_SOURCE_PATH: 'dotfiles/crush'
+      CONFIG_DEST_PATH: '$HOME/.config/crush'
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
     cmds:
