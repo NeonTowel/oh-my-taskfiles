@@ -1,0 +1,10 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "options": {
+    "disable_metrics": true,
+    "attribution": {
+      "trailer_style": "none",
+      "generated_with": false
+    }
+  }
+}

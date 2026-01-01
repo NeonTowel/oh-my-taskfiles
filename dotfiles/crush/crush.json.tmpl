@@ -1,0 +1,61 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "models": {
+    "large":{
+      "model": "gpt-5.1-codex-mini",
+      "provider": "azure",
+      "reasoning_effort": "medium"
+    },
+    "small":{
+      "model": "gpt-5.2-chat",
+      "provider": "azure",
+      "reasoning_effort": "low"
+    }
+  },
+  "providers": {
+    "azure":{
+      "type": "azure",
+      "base_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/models",
+      "api_key": "$AZURE_OPENAI_API_KEY",
+      "models": [
+        {
+          "id": "gpt-5.2-chat",
+          "name": "gpt-5.2-chat",
+          "cost_per_1m_in": 1.75,
+          "cost_per_1m_out": 14,
+          "cost_per_1m_in_cached": 0.175,
+          "cost_per_1m_out_cached": 0.175,
+          "context_window": 400000,
+          "default_max_tokens": 128000,
+          "can_reason": true,
+          "reasoning_levels": ["minimal", "low", "medium", "high"],
+          "default_reasoning_effort": "minimal",
+          "supports_attachments": true,
+          "options": {}
+        },
+        {
+          "id": "gpt-5.1-codex-mini",
+          "name": "gpt-5.1-codex-mini",
+          "cost_per_1m_in": 0.25,
+          "cost_per_1m_out": 2,
+          "cost_per_1m_in_cached": 0.025,
+          "cost_per_1m_out_cached": 0.025,
+          "context_window": 400000,
+          "default_max_tokens": 128000,
+          "can_reason": true,
+          "reasoning_levels": ["low", "medium", "high"],
+          "default_reasoning_effort": "medium",
+          "supports_attachments": true,
+          "options": {}
+        }
+      ]
+    }
+  },
+  "options": {
+    "disable_metrics": true,
+    "attribution": {
+      "trailer_style": "none",
+      "generated_with": false
+    }
+  }
+}
