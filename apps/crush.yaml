@@ -15,8 +15,12 @@ includes:
       BINARY_WINDOWS: '**/crush.exe'
       BINARY_PATH: '$HOME/bin'
 
-configure:
-    internal: true
+tasks:
+  default:
+    - task --list --taskfile apps/crush.yaml
+
+  configure:
+    desc: "[CRUSH] ⚙️  Configure Crush"
     vars:
       CONFIG_FILE: 'crush.json'
       CONFIG_SOURCE_PATH: 'dotfiles/opencode'
@@ -53,7 +57,3 @@ configure:
         fi
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
-
-tasks:
-  default:
-    - task --list --taskfile apps/crush.yaml
