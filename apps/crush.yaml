@@ -61,17 +61,23 @@ tasks:
   slash-commands:
     desc: "[CRUSH] Configure Crush slash commands"
     vars:
-      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/crush/skills"
-      SLASH_COMMANDS_DEST_DIR: "$HOME/.crush/skills"
+      SLASH_COMMANDS_SOURCE_DIR: '{{ "dotfiles/crush/skills" | osClean }}'
+      SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.crush/skills" | osClean }}'
     dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
     sources:
-      - "*.md"
+      - "**/*.md"
     method: none
     cmds:
       - |
+        echo "SLASH_COMMANDS_SOURCE_DIR: {{ .SLASH_COMMANDS_SOURCE_DIR }}"
+        echo "SLASH_COMMANDS_DEST_DIR: {{ .SLASH_COMMANDS_DEST_DIR }}"
         if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
           mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
         fi
       - for: sources
-        cmd: |
-          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          {{- if ne $dest_path "skills" -}}
+          mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
+          {{- end }}
+          cp "{{ joinPath .SLASH_COMMANDS_SOURCE_DIR .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
