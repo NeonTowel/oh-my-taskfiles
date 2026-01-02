@@ -61,7 +61,7 @@ tasks:
   slash-commands:
     desc: "[CRUSH] Configure Crush slash commands"
     vars:
-      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/crush/prompts"
+      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/crush/skills"
       SLASH_COMMANDS_DEST_DIR: "$HOME/.crush/skills"
     dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
     sources:
