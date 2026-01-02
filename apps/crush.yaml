@@ -62,7 +62,7 @@ tasks:
     desc: "[CRUSH] Configure Crush slash commands"
     vars:
       SLASH_COMMANDS_SOURCE_DIR: '{{ "dotfiles/crush/skills" | osClean }}'
-      SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.crush/skills" | osClean }}'
+      SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/crush/skills" | osClean }}'
     dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
     sources:
       - "**/*.md"
