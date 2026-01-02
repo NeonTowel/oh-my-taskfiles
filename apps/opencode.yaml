@@ -12,14 +12,6 @@ tasks:
       CONFIG_DEST_PATH: '$HOME/.config/opencode'
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
-      DEFAULT_MODELS:
-        - gpt-4.1-mini
-        - gpt-5.1-chat
-        - gpt-5.1-codex-mini
-        - gpt-5.2-chat
-        - Phi-4
-        - Codestral-2501
-        - sora
     cmds:
       - |
         if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
@@ -42,13 +34,6 @@ tasks:
         fi
         if gum confirm "Do you want to configure OpenCode to use Microsoft Foundry?"; then
           FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
-          echo -e "\n \t NOTE: To be able to successfully use the models, you need to have matching deployment in Foundry.
-            Otherwise, just select none and configure manually later.\n" | gum format
-          MODELS=$(gum choose --header "Select models to enable (esc to skip)" --no-limit --selected="*"{{ range .DEFAULT_MODELS }} "{{ . }}"{{ end }}) && {
-            export MODELS="$MODELS"
-          } || {
-            export MODELS=""
-          }
           export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
           {{ .gum_info }} " Remember to set environment variable AZURE_OPENAI_API_KEY to your api key!"
@@ -84,3 +69,26 @@ tasks:
       - task: install:linux
         platforms: [linux]
       - task: configure
+      - task: slash-commands
+
+  slash-commands:
+    desc: "[OPENCODE] Configure OpenCode skills"
+    vars:
+      SLASH_COMMANDS_SOURCE_DIR: '{{ "dotfiles/opencode/skill" | osClean }}'
+      SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/opencode/skill" | osClean }}'
+    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
+    sources:
+      - "**/*.md"
+    method: none
+    cmds:
+      - |-
+        if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
+          mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
+        fi
+      - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          {{- if ne $dest_path "skills" -}}
+          mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
+          {{- end }}
+          cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
