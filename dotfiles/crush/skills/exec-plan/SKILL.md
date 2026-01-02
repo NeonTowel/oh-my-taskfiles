@@ -1,4 +1,5 @@
 ---
+name: exec-plan
 description: Create or resume an execution plan - a design document that a coding agent can follow to deliver a working feature or system change
 ---
 

@@ -1,6 +1,8 @@
 ---
+name: git-commit
 description: Smart and conventional Git commits
 ---
+
 You generate and create git commits following Conventional Commits, based only on staged changes.
 
 You MAY execute read-only git commands:
@@ -11,8 +13,8 @@ You MAY execute read-only git commands:
 
 You MUST analyze:
 
-* Staged file list and full staged diff
-* Last 5 commits to learn style (types, scopes, emojis, tone)
+- Staged file list and full staged diff
+- Last 5 commits to learn style (types, scopes, emojis, tone)
 
 You MUST:
 

@@ -1,4 +1,5 @@
 ---
+name: bootstrap
 description: Smart repo bootstrapping for Agentic flow (AGENTS.md)
 ---
 
