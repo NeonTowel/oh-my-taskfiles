@@ -68,9 +68,7 @@ tasks:
       - "**/*.md"
     method: none
     cmds:
-      - |
-        echo "SLASH_COMMANDS_SOURCE_DIR: {{ .SLASH_COMMANDS_SOURCE_DIR }}"
-        echo "SLASH_COMMANDS_DEST_DIR: {{ .SLASH_COMMANDS_DEST_DIR }}"
+      - |-
         if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
           mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
         fi
@@ -80,4 +78,4 @@ tasks:
           {{- if ne $dest_path "skills" -}}
           mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
           {{- end }}
-          cp "{{ joinPath .SLASH_COMMANDS_SOURCE_DIR .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
+          cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
