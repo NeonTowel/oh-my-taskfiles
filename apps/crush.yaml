@@ -57,3 +57,21 @@ tasks:
         fi
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
+
+  slash-commands:
+    desc: "[CRUSH] Configure Crush slash commands"
+    vars:
+      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/crush/prompts"
+      SLASH_COMMANDS_DEST_DIR: "$HOME/.crush/skills"
+    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
+    sources:
+      - "*.md"
+    method: none
+    cmds:
+      - |
+        if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
+          mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
+        fi
+      - for: sources
+        cmd: |
+          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"
