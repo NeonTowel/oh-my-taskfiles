@@ -1,0 +1,14 @@
+# Disables caching of the prompt/response
+no-cache: true
+# Turn off the client-side limit on the size of the input into the model
+no-limit: true
+# Wrap formatted output at specific width (default is 80)
+word-wrap: 0
+# Maximum number of times to retry API calls
+max-retries: 5
+# Your desired level of fanciness
+fanciness: 30
+# Text to show while generating
+status-text: Thinking
+# Theme to use in the forms; valid choices are charm, catppuccin, dracula, and base16
+theme: catppuccin

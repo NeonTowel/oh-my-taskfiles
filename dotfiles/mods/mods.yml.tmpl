@@ -1,0 +1,86 @@
+# Disables caching of the prompt/response
+no-cache: true
+# Turn off the client-side limit on the size of the input into the model
+no-limit: true
+# Wrap formatted output at specific width (default is 80)
+word-wrap: 0
+# Maximum number of times to retry API calls
+max-retries: 5
+# Your desired level of fanciness
+fanciness: 30
+# Text to show while generating
+status-text: Thinking
+# Theme to use in the forms; valid choices are charm, catppuccin, dracula, and base16
+theme: catppuccin
+# OpenAI compatible REST API (default Microsoft Foundry / Azure Cognitive Services)
+default-api: azure
+# Default model (gpt-4.1-mini)
+default-model: gpt-4.1-mini
+# Default character limit on input to model (default for gpt-4.1-mini)
+max-input-chars: 4190304
+# Default token limit on model responses (default for gpt-4.1-mini)
+max-tokens: 32768
+# max-tokens value depends on the model used, pass it as a "--max-tokens" flag instead:
+#   claude-haiku-4-5:
+#     --model claude-haiku-4-5 --api anthropic --temp 1 --topp -1.0 --max-tokens 32000
+#   claude-sonnet-4-5:
+#     --model claude-sonnet-4-5 --api anthropic --temp 1 --topp -1.0 --max-tokens 64000
+#   claude-opus-4-5:
+#     --model claude-opus-4-5 --api anthropic --temp 1 --topp -1.0 --max-tokens 32000
+#   gpt-5-2-chat:
+#     --model gpt-5.2-chat --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 128000
+#   gpt-5-1-chat:
+#     --model gpt-5.2-chat --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 128000
+#   gpt-4-1-mini:
+#     --model gpt-4.1-mini --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 64000
+#   gpt-4-1:
+#     --model gpt-4.1 --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 16384
+apis:
+  anthropic:
+    base-url: https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic/v1
+    api-key-env: AZURE_OPENAI_API_KEY
+    models:
+      claude-haiku-4-5:
+        max-input-chars: 800000
+      claude-sonnet-4-5:
+        max-input-chars: 800000
+      claude-opus-4-5:
+        max-input-chars: 400000
+  azure:
+    base-url: https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.cognitiveservices.azure.com/openai/v1
+    api-key-env: AZURE_OPENAI_API_KEY
+    models:
+      gpt-5.2-chat:
+        max-input-chars: 1600000
+      gpt-5.1-chat:
+        max-input-chars: 1600000
+      gpt-5.1-codex-mini:
+        max-input-chars: 1600000
+      gpt-4.1:
+        max-input-chars: 524288
+      gpt-4.1-mini:
+        max-input-chars: 4190304
+
+{{- if file.IsDir "dotfiles/mods/roles" }}
+  {{- $all_files := file.Walk "dotfiles/mods/roles/" }}
+  {{- $roles_list := coll.Slice }}
+  {{- range $file := $all_files }}
+    {{- if (and (not (file.IsDir $file)) ($file | strings.HasSuffix ".txt")) }}
+      {{- $roles_list = coll.Append $file $roles_list }}
+    {{- end }}
+  {{- end }}
+  {{- if gt (len $roles_list) 0 }}
+roles:
+  "default": []
+    {{- range $role := $roles_list }}
+      {{- $name:= filepath.Base $role | strings.TrimSuffix ".txt" }}
+  "{{ $name }}":
+    - |-
+      {{- $role_data:= file.Read $role }}
+      {{- if $role_data }}
+      {{- range $line := $role_data | strings.Split "\n" }}
+      {{ $line | strings.TrimSpace }}{{ end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

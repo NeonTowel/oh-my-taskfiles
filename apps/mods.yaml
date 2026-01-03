@@ -19,3 +19,43 @@ includes:
 tasks:
   default:
     - task --list --taskfile apps/mods.yaml
+  
+  configure:
+    desc: "[MODS] ⚙️  Configure mods cli"
+    vars:
+      CONFIG_FILE: 'mods.yml'
+      CONFIG_SOURCE_PATH: 'dotfiles/mods'
+      CONFIG_DEST_PATH: '{{ if eq OS "windows" }}$HOME/Appdata/Local/mods{{ else }}$HOME/.config/mods{{ end }}'
+      CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
+      CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
+    cmds:
+      - |
+        if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+          mkdir -p "{{ .CONFIG_DEST_PATH }}"
+        fi
+        {{ if .UNATTENDED }}
+        {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
+        if [ ! -f "{{ .CONFIG_DEST_FILE }}" ]; then
+          cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+          {{ .gum_ok }} "Configuration saved successfully."
+        else
+          {{ .gum_warn }} "Configuration already exist, skipping configuration."
+        fi
+        {{ else }}
+        if [ -f "{{ .CONFIG_DEST_FILE }}" ]; then
+          if ! gum confirm "Configuration already exist, overwrite?"; then
+            {{ .gum_warn }} "Configuration already exist, skipping configuration."
+            exit 0
+          fi
+        fi
+        if gum confirm "Do you want to configure Mods to use Microsoft Foundry?"; then
+          FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+          export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
+          gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
+          {{ .gum_info }} " Remember to set environment variables AZURE_OPENAI_API_KEY to your api key!"
+        else
+          cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+        fi
+        {{ .gum_ok }} "Configuration saved successfully."
+        {{ end }}
+
