@@ -3,9 +3,7 @@ description: Workflow orchestrator managing specialized development agent teams
 mode: primary
 model: google-vertex/gemini-2.5-flash-lite
 temperature: 0.1
-thinkingBudget: 512
 maxOutputTokens: 1024
-includeThoughts: false
 permissions:
   edit: ask
   bash: allow
