@@ -1,8 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "catppuccin-macchiato",
-  "enabled_providers": [ "azure-cognitive-services", "google-vertex" ],
-  "autoupdate": "notify",
+  "enabled_providers": [ "azure-cognitive-services", "google-vertex", "azure-anthropic"],
   "provider": {
     "azure-cognitive-services": {
       "options": {
@@ -10,39 +8,100 @@
         "resourceName": "{{ .Env.FOUNDRY_RESOURCE_NAME }}",
         "setCacheKey": true
       }
-  },
-  "default_agent": "general",
-  "model": "google-vertex/gemini-2.5-flash",
-  "agent": {
-    "plan": {
-      "mode": "subagent",
-      "model": "google-vertex/gemini-3-pro-preview"
     },
-    "explore": {
-      "mode": "subagent",
-      "model": "azure-cognitive-services/gpt-5.1-codex-mini"
-    },
-    "general": {
-      "mode": "primary",
-      "model": "azure-cognitive-services/gpt-5.1-codex-mini"
-    },
-    "build": {
-      "mode": "primary",
-      "model": "google-vertex/gemini-2.5-pro"
-    },
-    "title": {
-      "mode": "subagent",
-      "model": "azure-cognitive-services/gpt-4.1-mini"
-    },
-    "compaction": {
-      "mode": "subagent",
-      "model": "google-vertex/gemini-2.5-flash"
-    },
-    "summary": {
-      "mode": "subagent",
-      "model": "google-vertex/gemini-2.5-pro"
+    "azure-anthropic": {
+      "name": "Microsoft Foundry (Anthropic)",
+      "npm": "@ai-sdk/anthropic",
+      "api": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic/v1",
+      "env": ["AZURE_OPENAI_API_KEY"],
+      "models": {
+        "claude-opus-4-5": {
+          "id": "claude-opus-4-5",
+          "name": "Claude Opus 4.5",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        },
+        "claude-sonnet-4-5": {
+          "id": "claude-sonnet-4-5",
+          "name": "Claude Sonnet 4.5",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        },
+        "claude-haiku-4-5": {
+          "id": "claude-haiku-4-5",
+          "name": "Claude Haiku 4.5",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        }
+      }
     }
   },
-  "small_model": "google-vertex/gemini-2.5-flash",
-  "share": "disabled"
+  "model": "azure-anthropic/claude-haiku-4-5",
+  "small_model": "google-vertex/gemini-2.5-flash-lite",
+  "theme": "catppuccin-macchiato",
+  "autoupdate": "notify",
+  "logLevel": "WARN",
+  "share": "disabled",
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "temperature": 0.3,
+      "tools": {
+        "bash": true,
+        "edit": true,
+        "write": true,
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "list": true,
+        "patch": true,
+        "skill": true,
+        "todowrite": true,
+        "todoread": true,
+        "webfetch": true
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "temperature": 0.6,
+      "tools": {
+        "bash": true,
+        "edit": true,
+        "write": true,
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "list": true,
+        "patch": true,
+        "skill": true,
+        "todowrite": true,
+        "todoread": true,
+        "webfetch": true
+      }
+    }
+  }
 }

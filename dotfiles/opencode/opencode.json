@@ -1,5 +1,44 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "theme": "catppuccin-macchiato",
-  "autoupdate": "notify"
+  "autoupdate": "notify",
+  "logLevel": "WARN",
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "temperature": 0.3,
+      "tools": {
+        "bash": true,
+        "edit": true,
+        "write": true,
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "list": true,
+        "patch": true,
+        "skill": true,
+        "todowrite": true,
+        "todoread": true,
+        "webfetch": true
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "temperature": 0.6,
+      "tools": {
+        "bash": true,
+        "edit": true,
+        "write": true,
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "list": true,
+        "patch": true,
+        "skill": true,
+        "todowrite": true,
+        "todoread": true,
+        "webfetch": true
+      }
+    }
+  }
 }

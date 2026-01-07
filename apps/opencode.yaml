@@ -5,11 +5,11 @@ tasks:
     - task --list --taskfile apps/opencode.yaml
 
   configure:
-    internal: true
+    desc: "[OPENCODE] ⚙️  Configure OpenCode"
     vars:
-      CONFIG_FILE: 'opencode.json'
-      CONFIG_SOURCE_PATH: 'dotfiles/opencode'
-      CONFIG_DEST_PATH: '$HOME/.config/opencode'
+      CONFIG_FILE: "opencode.json"
+      CONFIG_SOURCE_PATH: "dotfiles/opencode"
+      CONFIG_DEST_PATH: "$HOME/.config/opencode"
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
     cmds:
@@ -43,7 +43,6 @@ tasks:
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
 
-
   install:linux:
     internal: true
     platforms: [linux]
@@ -70,6 +69,7 @@ tasks:
         platforms: [linux]
       - task: configure
       - task: slash-commands
+      - task: agents
 
   slash-commands:
     desc: "[OPENCODE] Configure OpenCode skills"
@@ -92,3 +92,28 @@ tasks:
           mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
           {{- end }}
           cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
+
+  agents:
+    desc: "[OPENCODE] Configure OpenCode agents"
+    vars:
+      CONFIG_SOURCE_PATH: "dotfiles/opencode"
+      CONFIG_DEST_PATH: "$HOME/.config/opencode"
+    dir: "{{ .CONFIG_SOURCE_PATH }}"
+    sources:
+      - agent/*.md
+      - shared/*.md
+      - AGENTS.md
+    method: none
+    cmds:
+      - |-
+        if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+          mkdir -p "{{ .CONFIG_DEST_PATH }}"
+        fi
+      - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          {{- if ne $dest_path "opencode" -}}
+          mkdir -p "{{ joinPath .CONFIG_DEST_PATH $dest_path }}"
+          {{- end }}
+          cp "{{ .ITEM }}" "{{joinPath .CONFIG_DEST_PATH .ITEM }}"
+      - echo "Agents configuration saved successfully."
