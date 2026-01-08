@@ -1,7 +1,7 @@
 ---
 description: Software architect designing modular, maintainable solutions
 mode: subagent
-model: azure-anthropic/claude-opus-4-5
+model: azure-cognitive-services/gpt-5-mini
 temperature: 0.2
 thinkingBudget: 8000
 maxOutputTokens: 2048

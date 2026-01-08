@@ -1,9 +1,10 @@
 ---
 description: Code reviewer enforcing quality gates and standards
 mode: subagent
-model: google-vertex/gemini-2.5-flash-lite
+model: google-vertex-global/gemini-3-flash-preview
 temperature: 0.1
 thinkingBudget: 2000
+maxOutputTokens: 2048
 includeThoughts: false
 permissions:
   edit: allow

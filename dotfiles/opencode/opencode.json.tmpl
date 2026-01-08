@@ -1,15 +1,59 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "enabled_providers": [ "azure-cognitive-services", "google-vertex", "azure-anthropic"],
+  "enabled_providers": [
+    "azure-cognitive-services",
+    "azure-moonshot",
+    "google-vertex",
+    "google-vertex-global",
+    "azure-anthropic"
+  ],
   "provider": {
+    "azure-moonshot": {
+      "name": "Microsoft Foundry (Moonshot)",
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/models",
+      "env": ["AZURE_OPENAI_API_KEY"],
+      "models": {
+        "kimi-k2-thinking": {
+          "id": "kimi-k2-thinking",
+          "name": "Kimi K2 Thinking",
+          "options": {
+            "useCompletionUrls": true
+          }
+        }
+      }
+    },
     "azure-cognitive-services": {
       "options": {
         "apiKey": "{env:AZURE_OPENAI_API_KEY}",
-        "resourceName": "{{ .Env.FOUNDRY_RESOURCE_NAME }}",
-        "setCacheKey": true
+        "resourceName": "{{ .Env.FOUNDRY_RESOURCE_NAME }}"
+      },
+      "models": {
+        "gpt-5-mini": {
+          "id": "gpt-5-mini",
+          "name": "GPT-5 Mini"
+        }
+      }
+    },
+    "google-vertex-global": {
+      "name": "Google Vertex (Global)",
+      "npm": "@ai-sdk/google-vertex",
+      "options": {
+        "location": "global",
+        "project": "{{ .Env.VERTEX_PROJECT_NAME }}"
+      },
+      "models": {
+        "gemini-3-flash-preview": {
+          "id": "gemini-3-flash-preview",
+          "name": "Gemini 3 Flash Preview"
+        }
       }
     },
     "google-vertex": {
+      "options": {
+        "location": "{{ .Env.VERTEX_LOCATION }}",
+        "project": "{{ .Env.VERTEX_PROJECT_NAME }}"
+      },
       "models": {
         "gemini-2.5-flash-lite": {
           "id": "gemini-2.5-flash-lite",
@@ -73,7 +117,7 @@
       }
     }
   },
-  "model": "azure-anthropic/claude-haiku-4-5",
+  "model": "azure-cognitive-services/gpt-5-mini",
   "small_model": "google-vertex/gemini-2.5-flash-lite",
   "theme": "catppuccin-macchiato",
   "autoupdate": "notify",

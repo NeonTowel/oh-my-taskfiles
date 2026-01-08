@@ -12,6 +12,13 @@ tasks:
       CONFIG_DEST_PATH: "$HOME/.config/opencode"
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
+      CONFIG_FILE_EXISTS:
+        sh: >-
+          [ -f "{{ .CONFIG_DEST_FILE }}" ] && echo "yes" || true
+      CONFIG_FILE_DATA_RAW:
+        sh: '{{ if .CONFIG_FILE_EXISTS }}cat "{{ .CONFIG_DEST_FILE }}"{{ end }}'
+      CONFIG_FILE_DATA:
+        ref: "fromJson .CONFIG_FILE_DATA_RAW"
     cmds:
       - |
         if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
@@ -32,8 +39,27 @@ tasks:
             exit 0
           fi
         fi
-        if gum confirm "Do you want to configure OpenCode to use Microsoft Foundry?"; then
-          FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+        if gum confirm "Do you want to configure OpenCode to use Microsoft Foundry and Google Vertex?"; then
+          {{- if (and .CONFIG_FILE_EXISTS (index .CONFIG_FILE_DATA.provider "azure-cognitive-services")) }}
+          FOUNDRY_RESOURCE_NAME_DEFAULT="{{ (index .CONFIG_FILE_DATA.provider "azure-cognitive-services").options.resourceName }}"
+          {{- else }}
+          FOUNDRY_RESOURCE_NAME_DEFAULT=""
+          {{- end }}
+          FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --value "$FOUNDRY_RESOURCE_NAME_DEFAULT" --header "Microsoft Foundry Resource Name")
+          if [ -n $GOOGLE_CLOUD_LOCATION ]; then
+            VERTEX_LOCATION_DEFAULT=$GOOGLE_CLOUD_LOCATION
+          else
+            VERTEX_LOCATION_DEFAULT=""
+          fi
+          if [ -n $GOOGLE_CLOUD_PROJECT ]; then
+            VERTEX_PROJECT_DEFAULT=$GOOGLE_CLOUD_PROJECT
+          else
+            VERTEX_PROJECT_DEFAULT=""
+          fi
+          VERTEX_PROJECT_NAME=$(gum input --placeholder "Enter your Google Vertex Project Name" --value "$VERTEX_PROJECT_DEFAULT" --header "Google Vertex Project Name")
+          VERTEX_LOCATION=$(gum input --placeholder "Enter your Google Vertex Location" --value "$VERTEX_LOCATION_DEFAULT" --header "Google Vertex Location")
+          export VERTEX_PROJECT_NAME="$VERTEX_PROJECT_NAME"
+          export VERTEX_LOCATION="$VERTEX_LOCATION"
           export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
           {{ .gum_info }} " Remember to set environment variable AZURE_OPENAI_API_KEY to your api key!"

@@ -1,9 +1,9 @@
 ---
 description: Software engineer implementing features following architectural specifications
 mode: subagent
-model: azure-cognitive-services/gpt-5.1-codex-mini
+model: azure-cognitive-services/gpt-5-mini
 reasoningEffort: medium
-textVerbosity: low
+textVerbosity: medium
 max_completion_tokens: 32768
 compaction: enabled
 reasoningSummary: auto

@@ -1,10 +1,11 @@
 ---
 description: Test engineer validating code correctness and coverage
 mode: subagent
-model: azure-anthropic/claude-haiku-4-5
+model: google-vertex-global/gemini-3-flash-preview
 temperature: 0.1
 thinkingBudget: 2000
 maxOutputTokens: 2048
+includeThoughts: false
 permissions:
   edit: allow
   bash: allow

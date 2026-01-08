@@ -1,9 +1,9 @@
 ---
 description: Refactoring specialist improving code quality while preserving functionality
 mode: subagent
-model: azure-anthropic/claude-haiku-4-5
+model: azure-moonshot/kimi-k2-thinking
 temperature: 0.1
-thinkingBudget: -1
+thinkingBudget: 2000
 permissions:
   edit: allow
   bash: allow
