@@ -19,7 +19,11 @@ default-model: gpt-5-mini
 # Default character limit on input to model (default for gpt-5-mini)
 max-input-chars: 128000
 # Default token limit on model responses (default for gpt-5-mini)
-max-tokens: 32768
+max-tokens: 0
+# Temperature (default for gpt-5-mini)
+temp: 1
+# top_p (default for gpt-5-mini)
+topp: -1
 # max-tokens value depends on the model used, pass it as a "--max-tokens" flag instead:
 #   claude-haiku-4-5:
 #     --model claude-haiku-4-5 --api anthropic --temp 1 --topp -1.0 --max-tokens 32000
