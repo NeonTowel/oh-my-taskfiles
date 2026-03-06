@@ -1,5 +1,5 @@
-# Disables caching of the prompt/response
-no-cache: true
+# Set to true to disables caching of the prompt/response
+no-cache: false
 # Turn off the client-side limit on the size of the input into the model
 no-limit: true
 # Wrap formatted output at specific width (default is 80)
@@ -14,11 +14,11 @@ status-text: Thinking
 theme: catppuccin
 # OpenAI compatible REST API (default Microsoft Foundry / Azure Cognitive Services)
 default-api: azure
-# Default model (gpt-4.1-mini)
-default-model: gpt-4.1-mini
-# Default character limit on input to model (default for gpt-4.1-mini)
-max-input-chars: 4190304
-# Default token limit on model responses (default for gpt-4.1-mini)
+# Default model (gpt-5-mini)
+default-model: gpt-5-mini
+# Default character limit on input to model (default for gpt-5-mini)
+max-input-chars: 128000
+# Default token limit on model responses (default for gpt-5-mini)
 max-tokens: 32768
 # max-tokens value depends on the model used, pass it as a "--max-tokens" flag instead:
 #   claude-haiku-4-5:
@@ -35,6 +35,10 @@ max-tokens: 32768
 #     --model gpt-4.1-mini --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 64000
 #   gpt-4-1:
 #     --model gpt-4.1 --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 16384
+#   gpt-5-mini:
+#     --model gpt-5-mini --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 128000
+#   gpt-5-nano:
+#     --model gpt-5-nano --api azure --max-tokens 0 --temp 1 --topp -1.0 --max-tokens 128000
 apis:
   anthropic:
     base-url: https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic/v1
@@ -60,6 +64,10 @@ apis:
         max-input-chars: 524288
       gpt-4.1-mini:
         max-input-chars: 4190304
+      gpt-5-mini:
+        max-input-chars: 1600000
+      gpt-5-nano:
+        max-input-chars: 1600000
 
 {{- if file.IsDir "dotfiles/mods/roles" }}
   {{- $all_files := file.Walk "dotfiles/mods/roles/" }}

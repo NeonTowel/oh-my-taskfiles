@@ -1,5 +1,5 @@
-# Disables caching of the prompt/response
-no-cache: true
+# Set to true to disables caching of the prompt/response
+no-cache: false
 # Turn off the client-side limit on the size of the input into the model
 no-limit: true
 # Wrap formatted output at specific width (default is 80)
