@@ -1,0 +1,23 @@
+theme = "catppuccin-macchiato"
+
+confirm-before-quit = false
+
+[cursor]
+shape = 'block'
+blinking = true
+blinking-interval = 800
+
+[editor]
+program = "helix"
+args = []
+
+[window]
+opacity = 0.95
+
+[fonts]
+size = 13
+family = "JetBrainsMono Nerd Font"
+
+[shell]
+program = "pwsh"
+args = [ "-NoLogo" ]

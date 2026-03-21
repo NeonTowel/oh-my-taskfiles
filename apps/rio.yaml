@@ -1,0 +1,45 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile apps/rio.yaml
+
+  # install
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: "rio"
+
+  install:
+    desc: "[RIO] ✨ Install Rio Terminal"
+    silent: true
+    cmds:
+      - task: install:windows
+
+  # configure
+  configure:windows:
+    internal: true
+    platforms: [windows]
+    vars:
+      SOURCE: "dotfiles/rio"
+      DEST: '$HOME\AppData\Local\rio'
+    cmds:
+      - |
+        if [ ! -d "{{ .DEST }}\themes" ]; then
+          mkdir -p "{{ .DEST }}\themes"
+        fi
+        cp "{{ .SOURCE }}/catppuccin-macchiato.toml" "{{ .DEST }}/themes/"
+        echo " ✅  rio theme copied."
+      - |
+        cp "{{ .SOURCE }}/config.toml" "{{ .DEST }}/"
+        echo " ✅  rio config copied."
+
+  configure:
+    desc: "[RIO] ✨ Configure Rio Terminal"
+    silent: true
+    cmds:
+      - task: configure:windows

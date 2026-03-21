@@ -28,6 +28,7 @@ includes:
   crush: apps/crush.yaml
   mods: apps/mods.yaml
   opencode: apps/opencode.yaml
+  rio: apps/rio.yaml
 
 tasks:
   default:
