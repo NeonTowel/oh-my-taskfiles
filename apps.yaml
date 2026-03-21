@@ -29,6 +29,7 @@ includes:
   mods: apps/mods.yaml
   opencode: apps/opencode.yaml
   rio: apps/rio.yaml
+  zed: apps/zed.yaml
 
 tasks:
   default:

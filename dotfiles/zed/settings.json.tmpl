@@ -1,0 +1,77 @@
+{
+  "restore_on_startup": "empty_tab",
+  "icon_theme": "Catppuccin Mocha",
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "git_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "project_panel": {
+    "dock": "right"
+  },
+  "bottom_dock_layout": "full",
+  "agent": {
+    "cancel_generation_on_terminal_stop": false,
+    "dock": "left",
+    "tool_permissions": {
+      "tools": {
+        "terminal": {
+          "always_allow": [
+            {
+              "pattern": "^cargo\\s+run(\\s|$)"
+            }
+          ]
+        }
+      }
+    },
+    "default_model": {
+      "provider": "Foundry",
+      "model": "gpt-5.1-codex-mini",
+      "enable_thinking": false
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "language_models": {
+    "openai_compatible": {
+      "Foundry": {
+        "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
+        "available_models": [
+          {
+            "name": "gpt-5.1-codex-mini",
+            "max_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": false,
+              "chat_completions": false
+            }
+          }
+        ]
+      }
+    }
+  },
+  "terminal": {
+    "font_family": "FantasqueSansM Nerd Font Mono"
+  },
+  "auto_update": false,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Catppuccin Mocha"
+  }
+}
