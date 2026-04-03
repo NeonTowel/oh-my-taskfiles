@@ -1,44 +1,51 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "theme": "catppuccin-macchiato",
-  "autoupdate": "notify",
-  "logLevel": "WARN",
-  "agent": {
-    "build": {
-      "mode": "primary",
-      "temperature": 0.3,
-      "tools": {
-        "bash": true,
-        "edit": true,
-        "write": true,
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "list": true,
-        "patch": true,
-        "skill": true,
-        "todowrite": true,
-        "todoread": true,
-        "webfetch": true
-      }
+    "$schema": "https://opencode.ai/config.json",
+    "default_agent": "coordinator",
+    "model": "azure-cognitive-services/gpt-5.4-mini",
+    "small_model": "google-vertex/gemini-2.5-flash-lite",
+    "autoupdate": "notify",
+    "logLevel": "WARN",
+    "share": "disabled",
+    "compaction": {
+        "prune": true,
+        "auto": true
     },
-    "plan": {
-      "mode": "primary",
-      "temperature": 0.6,
-      "tools": {
-        "bash": true,
-        "edit": true,
-        "write": true,
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "list": true,
-        "patch": true,
-        "skill": true,
-        "todowrite": true,
-        "todoread": true,
-        "webfetch": true
-      }
+    "agent": {
+        "build": {
+            "mode": "primary",
+            "temperature": 0.3,
+            "tools": {
+                "bash": true,
+                "edit": true,
+                "write": true,
+                "read": true,
+                "grep": true,
+                "glob": true,
+                "list": true,
+                "patch": true,
+                "skill": true,
+                "todowrite": true,
+                "todoread": true,
+                "webfetch": true
+            }
+        },
+        "plan": {
+            "mode": "primary",
+            "temperature": 0.6,
+            "tools": {
+                "bash": true,
+                "edit": true,
+                "write": true,
+                "read": true,
+                "grep": true,
+                "glob": true,
+                "list": true,
+                "patch": true,
+                "skill": true,
+                "todowrite": true,
+                "todoread": true,
+                "webfetch": true
+            }
+        }
     }
-  }
 }

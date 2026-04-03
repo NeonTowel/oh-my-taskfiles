@@ -32,6 +32,10 @@
         "gpt-5-mini": {
           "id": "gpt-5-mini",
           "name": "GPT-5 Mini"
+        },
+        "gpt-5.4-mini": {
+            "id": "gpt-5.4-mini",
+            "name": "GPT-5.4 Mini"
         }
       }
     },
@@ -72,6 +76,20 @@
       "api": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic/v1",
       "env": ["AZURE_OPENAI_API_KEY"],
       "models": {
+        "claude-opus-4-6": {
+            "id": "claude-opus-4-6",
+            "name": "Claude Opus 4.6",
+            "tool_call": true,
+            "attachment": true,
+            "reasoning": true,
+            "temperature": true,
+            "options": {
+                "thinking": {
+                    "type": "enabled",
+                    "budgetTokens": 16000
+                }
+            }
+        },
         "claude-opus-4-5": {
           "id": "claude-opus-4-5",
           "name": "Claude Opus 4.5",
@@ -85,6 +103,20 @@
               "budgetTokens": 16000
             }
           }
+        },
+        "claude-sonnet-4-6": {
+            "id": "claude-sonnet-4-6",
+            "name": "Claude Sonnet 4.6",
+            "tool_call": true,
+            "attachment": true,
+            "reasoning": true,
+            "temperature": true,
+            "options": {
+                "thinking": {
+                    "type": "enabled",
+                    "budgetTokens": 16000
+                }
+            }
         },
         "claude-sonnet-4-5": {
           "id": "claude-sonnet-4-5",
@@ -117,17 +149,48 @@
       }
     }
   },
-  "model": "azure-cognitive-services/gpt-5-mini",
+  "default_agent": "coordinator",
+  "model": "azure-cognitive-services/gpt-5.4-mini",
   "small_model": "google-vertex/gemini-2.5-flash-lite",
-  "theme": "catppuccin-macchiato",
   "autoupdate": "notify",
   "logLevel": "WARN",
   "share": "disabled",
+  "compaction": {
+      "prune": true,
+      "auto": true
+  },
+  "mcp": {
+      "context7": {
+          "enabled": true,
+          "type": "remote",
+          "url": "https://mcp.context7.com/mcp",
+          "headers": {
+              "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+          }
+      },
+      "web-browser": {
+          "type": "local",
+          "command": ["bun", "x", "@agent-infra/mcp-server-browser@latest"],
+          "enabled": true
+      },
+      "gh_grep": {
+          "enabled": true,
+          "type": "remote",
+          "url": "https://mcp.grep.app"
+      },
+      "exa": {
+          "enabled": true,
+          "type": "remote",
+          "url": "https://mcp.exa.ai/mcp"
+      }
+  },
   "agent": {
     "build": {
       "mode": "primary",
-      "temperature": 0.3,
       "tools": {
+        "exa_*": true,
+        "gh_grep_*": true,
+        "context7_*": true,
         "bash": true,
         "edit": true,
         "write": true,
@@ -144,8 +207,10 @@
     },
     "plan": {
       "mode": "primary",
-      "temperature": 0.6,
       "tools": {
+        "exa_*": true,
+        "gh_grep_*": true,
+        "context7_*": true,
         "bash": true,
         "edit": true,
         "write": true,
