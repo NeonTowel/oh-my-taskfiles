@@ -5,10 +5,10 @@ includes:
     taskfile: lib/install-common.yaml
     flatten: true
     internal: true
-  scoop: 
+  scoop:
     taskfile: lib/scoop.yaml
     internal: true
-  winget: 
+  winget:
     taskfile: lib/winget.yaml
     internal: true
   omt:
@@ -18,4 +18,6 @@ includes:
   sudo: lib/sudo.yaml
   wsl: lib/wsl.yaml
   ide: lib/ide.yaml
-  awesome: lib/awesome.yaml
+  awesome:
+    taskfile: lib/awesome.yaml
+    flatten: true
