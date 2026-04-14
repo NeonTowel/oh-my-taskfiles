@@ -28,7 +28,6 @@ tasks:
         - lsd
         - nvim
         - pwsh
-        - rio
         - rose-pine-cursor
         - starship
         - task
@@ -40,6 +39,7 @@ tasks:
         - cryptomator
         - opencode
         - proton-pass
+        - rio
         - royal-ts
         - slack
         - vscodium
