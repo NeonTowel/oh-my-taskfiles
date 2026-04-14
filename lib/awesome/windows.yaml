@@ -9,14 +9,12 @@ tasks:
     vars:
       TOOLS:
         - 7zip
-        - alacritty
         - awesome-git
         - az
         - azd
         - bat
         - btop
         - coreutils
-        - flow-launcher
         - fonts
         - fzf
         - gcloud
@@ -24,31 +22,28 @@ tasks:
         - gomplate
         - gpg
         - gum
+        - helix
         - jq
         - k8s
-        - lazygit
         - lsd
         - nvim
         - pwsh
+        - rio
         - rose-pine-cursor
         - starship
+        - task
         - translucenttb
         - yasb
       APPS:
         - 1password
-        - cursor
-        - spotify
-        - teracopy
-        - postman
-        - royal-ts
+        - chatbox
         - cryptomator
-        - joplin
-        - simplenote
-        - podman-desktop
+        - opencode
         - proton-pass
-        - proton-drive
-        - proton-mail
-        - proton-authenticator
+        - royal-ts
+        - slack
+        - vscodium
+        - zed
       RUN:
         - git:config-global
         - lang:go:install
@@ -77,9 +72,9 @@ tasks:
         {{- $numRows := int (div (add (len $tools) (sub $cols 1)) $cols) -}}
         {{- range $row := until $numRows }}
         | {{- $idx0 := add $row (mul 0 $numRows) }}
-          {{- if lt $idx0 (len $tools) }}&nbsp;{{ index $tools $idx0 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- if lt $idx0 (len $tools) }}&nbsp;{{ index $tools $idx0 }}&nbsp;{{ else }}   {{ end }} |
           {{- $idx1 := add $row (mul 1 $numRows) }}
-          {{- if lt $idx1 (len $tools) }}&nbsp;{{ index $tools $idx1 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- if lt $idx1 (len $tools) }}&nbsp;{{ index $tools $idx1 }}&nbsp;{{ else }}   {{ end }} |
           {{- $idx2 := add $row (mul 2 $numRows) }}
           {{- if lt $idx2 (len $tools) }}&nbsp;{{ index $tools $idx2 }}&nbsp;{{ else }}   {{ end }} |
         {{- end }}
@@ -93,9 +88,9 @@ tasks:
         {{- $numRows := int (div (add (len $apps) (sub $cols 1)) $cols) -}}
         {{- range $row := until $numRows }}
         | {{- $idx0 := add $row (mul 0 $numRows) }}
-          {{- if lt $idx0 (len $apps) }}&nbsp;{{ index $apps $idx0 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- if lt $idx0 (len $apps) }}&nbsp;{{ index $apps $idx0 }}&nbsp;{{ else }}   {{ end }} |
           {{- $idx1 := add $row (mul 1 $numRows) }}
-          {{- if lt $idx1 (len $apps) }}&nbsp;{{ index $apps $idx1 }}&nbsp;{{ else }}   {{ end }} | 
+          {{- if lt $idx1 (len $apps) }}&nbsp;{{ index $apps $idx1 }}&nbsp;{{ else }}   {{ end }} |
           {{- $idx2 := add $row (mul 2 $numRows) }}
           {{- if lt $idx2 (len $apps) }}&nbsp;{{ index $apps $idx2 }}&nbsp;{{ else }}   {{ end }} |
         {{- end }}
@@ -105,13 +100,13 @@ tasks:
         {{- range .RUN }}
         - {{ . }}
         {{- end }}
-        
+
         ---
         🚀 *Press enter to embark on your legendary install quest...* 🚀
 
         EOF
         gum style --foreground 208 --align center --width 70 " "
-        gum confirm --selected.background="#44d" --selected.foreground="#fff" "Are you sure you want to continue?"      
+        gum confirm --selected.background="#44d" --selected.foreground="#fff" "Are you sure you want to continue?"
 
       - for: { var: TOOLS }
         task: "awesome-install:tool"
@@ -132,4 +127,3 @@ tasks:
           RUN: "{{ .ITEM }}"
           POS: "{{$item := .ITEM}}{{range $index, $element := .RUN}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
           MAX: "{{ .RUN_COUNT }}"
-
