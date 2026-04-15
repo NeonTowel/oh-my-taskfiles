@@ -30,6 +30,7 @@ includes:
   opencode: apps/opencode.yaml
   rio: apps/rio.yaml
   zed: apps/zed.yaml
+  see-through-windows-ng: apps/see-through-windows-ng.yaml
 
 tasks:
   default:
