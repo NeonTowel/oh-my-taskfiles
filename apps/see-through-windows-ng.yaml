@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/see-through-windows-ng.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:neontowel-install
+        vars:
+          APP: see-through-windows-ng
+
+  install:
+    desc: "[SEETHROUGHWINDOWS] ✨ Install See Through Windows NG"
+    silent: true
+    cmds:
+      - task: install:windows

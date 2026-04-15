@@ -41,6 +41,7 @@ tasks:
         - proton-pass
         - rio
         - royal-ts
+        - see-through-windows-ng
         - slack
         - vscodium
         - zed
