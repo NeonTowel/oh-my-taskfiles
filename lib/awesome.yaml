@@ -1,23 +1,11 @@
 version: '3'
 
 includes:
-  windows: 
+  windows:
     taskfile: awesome/windows.yaml
     flatten: true
 
 tasks:
-  awesome-macos:
-    platforms: [darwin]
-    internal: true
-    cmds:
-      - echo "Awesome MacOS Not implemented yet!"
-
-  awesome-linux:
-    platforms: [linux]
-    internal: true
-    cmds:
-      - echo "Awesome Linux Not implemented yet!"
-
   awesome:
     desc: "[AWESOME] ✨ Setup Awesome Experience for your OS"
     cmds:
@@ -26,6 +14,16 @@ tasks:
       - task: awesome-linux
         platforms: [linux]
       - task: awesome-macos
+        platforms: [darwin]
+
+  awesome:startup-apps:
+    desc: "[AWESOME] ✨ Setup Awesome Startup Apps for your OS"
+    cmds:
+      - task: awesome-windows:startup-apps
+        platforms: [windows]
+      - task: awesome-linux:startup-apps
+        platforms: [linux]
+      - task: awesome-macos:startup-apps
         platforms: [darwin]
 
   awesome-header:
@@ -113,3 +111,33 @@ tasks:
       - task: "{{ .RUN }}"
         vars:
           UNATTENDED: "true"
+
+  # --------------------------------------------------
+  # stub placeholders for features not yet implemented
+  # --------------------------------------------------
+
+  # macos
+  awesome-macos:
+    platforms: [darwin]
+    internal: true
+    cmds:
+      - echo "Awesome MacOS Not implemented yet!"
+
+  awesome-macos:startup-apps:
+    platforms: [darwin]
+    internal: true
+    cmds:
+      - echo "Awesome MacOS Startup Apps Not implemented yet!"
+
+  # linux
+  awesome-linux:
+    platforms: [linux]
+    internal: true
+    cmds:
+      - echo "Awesome Linux Not implemented yet!"
+
+  awesome-linux:startup-apps:
+    platforms: [linux]
+    internal: true
+    cmds:
+      - echo "Awesome Linux Startup Apps Not implemented yet!"

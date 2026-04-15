@@ -127,3 +127,63 @@ tasks:
           RUN: "{{ .ITEM }}"
           POS: "{{$item := .ITEM}}{{range $index, $element := .RUN}}{{ if eq $element $item }}{{ add $index 1 }}{{end}}{{end}}"
           MAX: "{{ .RUN_COUNT }}"
+
+
+  awesome-startup-app:
+    internal: true
+    requires:
+      vars: [ APP, TARGET ]
+    label: "awesome-install:run:{{ .RUN }}"
+    cmds:
+      - task: awesome-header
+        vars:
+          TITLE: "Adding Startup App:"
+          NAME: "{{ .APP }} 📄"
+          POS: "{{ .POS }}"
+          MAX: "{{ .MAX }}"
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Execution of {{ .RUN }} failed with code {{.EXIT_CODE}}!'
+          {{end}}
+      - |
+        pwsh -NoProfile -c Invoke-Command -scriptblock '{
+        $ShortcutPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\{{ .APP }}.lnk"
+        $TargetPath = "{{ .TARGET }}"
+        "ShortcutPath: $ShortcutPath"
+        "TargetPath: $TargetPath"
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+        $Shortcut.TargetPath = $TargetPath
+        $Shortcut.Save()
+        }'
+
+  awesome-windows:startup-apps:
+    deps: [ "tools:gum:install" ]
+    internal: true
+    platforms: [windows]
+    vars:
+      SCOOP_PREFIX:
+        sh: scoop prefix scoop
+      SCOOP_HOME: '{{ osClean (list .SCOOP_PREFIX "../../../" | join "/")}}'
+      APPS:
+        - APP: Cryptomator
+          TARGET: '{{ .SCOOP_HOME }}\apps\cryptomator\current\Cryptomator.exe'
+        - APP: GlazeWM
+          TARGET: '{{ .SCOOP_HOME }}\apps\glazewm\current\glazewm.exe'
+        - APP: See Through Windows NG
+          TARGET: '{{ .SCOOP_HOME }}\apps\see-through-windows-ng\current\see-through-windows-ng.exe'
+        - APP: TranslucentTB
+          TARGET: '{{ .SCOOP_HOME }}\apps\translucenttb\current\TranslucentTB.exe'
+      APPS_COUNT: "{{ len .APPS }}"
+    cmds:
+      - for: { var: APPS }
+        task: "awesome-startup-app"
+        vars:
+          APP: "{{ .ITEM.APP }}"
+          PATH: "{{ .ITEM.PATH }}"
+          TARGET: "{{ .ITEM.TARGET }}"
+          POS: "{{$item := .ITEM}}{{range $index, $element := .APPS}}{{ if eq $element.APP $item.APP }}{{ add $index 1 }}{{end}}{{end}}"
+          MAX: "{{ .APPS_COUNT }}"
