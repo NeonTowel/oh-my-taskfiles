@@ -1,77 +1,64 @@
 {
-  "restore_on_startup": "empty_tab",
-  "icon_theme": "Catppuccin Mocha",
-  "collaboration_panel": {
-    "dock": "right",
+  "tab_size": 2,
+  "context_servers": {
+
   },
-  "git_panel": {
-    "dock": "right",
+  "format_on_save": "off",
+  "collaboration_panel": {
+    "dock": "right"
   },
   "outline_panel": {
-    "dock": "right",
+    "dock": "right"
   },
   "project_panel": {
-    "dock": "right",
+    "dock": "right"
   },
   "bottom_dock_layout": "full",
+  "git_panel": {
+    "dock": "right",
+    "tree_view": true
+  },
+  "ui_font_weight": 500.0,
+  "terminal": {
+    "dock": "bottom",
+    "font_size": 16.0
+  },
+  "ui_font_family": "FantasqueSansM Nerd Font Propo",
+  "buffer_line_height": "standard",
+  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
   "agent": {
-    "cancel_generation_on_terminal_stop": false,
     "dock": "left",
     "tool_permissions": {
       "tools": {
-        "terminal": {
-          "always_allow": [
-            {
-              "pattern": "^cargo\\s+run(\\s|$)",
-            },
-          ],
+        "move_path": {
+          "default": "allow"
         },
-      },
-    },
-    "default_model": {
-      "provider": "Foundry",
-      "model": "gpt-5.1-codex-mini",
-      "enable_thinking": false,
-    },
-    "favorite_models": [],
-    "model_parameters": [],
-  },
-  "language_models": {
-    "openai_compatible": {
-      "Foundry": {
-        "api_url": "https://dev-cogai.openai.azure.com/openai/v1",
-        "available_models": [
-          {
-            "name": "gpt-5.1-codex-mini",
-            "max_tokens": 128000,
-            "capabilities": {
-              "tools": true,
-              "images": true,
-              "parallel_tool_calls": true,
-              "prompt_cache_key": false,
-              "chat_completions": false,
-            },
-          },
-        ],
-      },
-    },
-  },
-  "terminal": {
-    "font_family": "FantasqueSansM Nerd Font Mono",
+        "create_directory": {
+          "default": "allow"
+        },
+        "edit_file": {
+          "default": "allow"
+        },
+        "restore_file_from_disk": {
+          "default": "allow"
+        }
+      }
+    }
   },
   "auto_update": false,
+  "session": {
+    "trust_all_worktrees": true
+  },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false,
+    "metrics": false
   },
-  "session": {
-    "trust_all_worktrees": true,
-  },
-  "ui_font_size": 16,
-  "buffer_font_size": 15,
+  "icon_theme": "Catppuccin Mocha",
+  "ui_font_size": 18.0,
+  "buffer_font_size": 16.0,
   "theme": {
-    "mode": "system",
-    "light": "One Light",
+    "mode": "dark",
+    "light": "Gruvbox Light",
     "dark": "Catppuccin Mocha",
   },
 }

@@ -1,10 +1,17 @@
 {
-  "restore_on_startup": "empty_tab",
-  "icon_theme": "Catppuccin Mocha",
-  "collaboration_panel": {
-    "dock": "right"
+  "edit_predictions": {
+    "mode": "subtle",
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "model": "{{ .Env.EDIT_PREDICTIONS_MODEL }}",
+      "prompt_format": "{{ .Env.EDIT_PREDICTIONS_PROMPT_FORMAT }}",
+      "api_url": "{{ .Env.EDIT_PREDICTIONS_API_URL }}"
+    }
   },
-  "git_panel": {
+  "tab_size": 2,
+  "context_servers": {},
+  "format_on_save": "off",
+  "collaboration_panel": {
     "dock": "right"
   },
   "outline_panel": {
@@ -14,64 +21,124 @@
     "dock": "right"
   },
   "bottom_dock_layout": "full",
+  "git_panel": {
+    "dock": "right",
+    "tree_view": true
+  },
+  "ui_font_weight": 500.0,
+  "terminal": {
+    "dock": "bottom",
+    "font_size": 16.0
+  },
+  "ui_font_family": "FantasqueSansM Nerd Font Propo",
+  "buffer_line_height": "standard",
+  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
   "agent": {
-    "cancel_generation_on_terminal_stop": false,
     "dock": "left",
     "tool_permissions": {
       "tools": {
-        "terminal": {
-          "always_allow": [
-            {
-              "pattern": "^cargo\\s+run(\\s|$)"
-            }
-          ]
+        "move_path": {
+          "default": "allow"
+        },
+        "create_directory": {
+          "default": "allow"
+        },
+        "edit_file": {
+          "default": "allow"
+        },
+        "restore_file_from_disk": {
+          "default": "allow"
         }
       }
     },
     "default_model": {
-      "provider": "Foundry",
-      "model": "gpt-5.1-codex-mini",
+      "provider": "Foundry_Responses",
+      "model": "gpt-5.4-mini",
       "enable_thinking": false
     },
-    "favorite_models": [],
-    "model_parameters": []
+    "favorite_models": [
+      {
+        "provider": "openai_compatible:Foundry_Responses",
+        "model": "gpt-5.4-mini"
+      },
+      {
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "gpt-5.4-mini"
+      }
+    ],
+    "model_parameters": [
+      {
+        "provider": "openai_compatible:Foundry_Responses",
+        "model": "gpt-5.4-mini",
+        "temperature": 0.1,
+        "top_p": 0.95,
+        "frequency_penalty": 0.1
+      },
+      {
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "gpt-5.4-mini",
+        "temperature": 0.1,
+        "top_p": 0.95,
+        "frequency_penalty": 0.1
+      }
+    ]
   },
   "language_models": {
     "openai_compatible": {
-      "Foundry": {
+      "Foundry_Responses": {
         "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
         "available_models": [
           {
-            "name": "gpt-5.1-codex-mini",
-            "max_tokens": 128000,
+            "name": "gpt-5.4-mini",
+            "display_name": "GPT-5.4 Mini",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
             "capabilities": {
               "tools": true,
               "images": true,
               "parallel_tool_calls": true,
-              "prompt_cache_key": false,
+              "prompt_cache_key": true,
               "chat_completions": false
+            }
+          }
+        ]
+      },
+      "Foundry_Chat": {
+        "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
+        "available_models": [
+          {
+            "name": "gpt-5.4-mini",
+            "display_name": "GPT-5.4 Mini (Chat)",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true
             }
           }
         ]
       }
     }
   },
-  "terminal": {
-    "font_family": "FantasqueSansM Nerd Font Mono"
-  },
   "auto_update": false,
+  "session": {
+    "trust_all_worktrees": true
+  },
   "telemetry": {
     "diagnostics": false,
     "metrics": false
   },
-  "session": {
-    "trust_all_worktrees": true
-  },
-  "ui_font_size": 16,
-  "buffer_font_size": 15,
+  "icon_theme": "Catppuccin Mocha",
+  "ui_font_size": 18.0,
+  "buffer_font_size": 16.0,
   "theme": {
-    "mode": "system",
-    "light": "One Light",
-    "dark": "Catppuccin Mocha"
-  }
+    "mode": "dark",
+    "light": "Gruvbox Light",
+    "dark": "Catppuccin Mocha",
+  },
 }

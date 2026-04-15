@@ -53,9 +53,18 @@ tasks:
         fi
         if gum confirm "Do you want to configure Zed to use Microsoft Foundry?"; then
           FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --header "Microsoft Foundry Resource Name")
+          EDIT_PREDICTIONS_MODEL=$(gum input --placeholder "Enter your Edit Predictions Model (f.ex. Codestral-2501)" --header "Edit Predictions Model")
+          EDIT_PREDICTIONS_PROMPT_FORMAT=$(gum input --placeholder "Enter your Edit Predictions Prompt Format (f.ex. codestral)" --header "Edit Predictions Prompt Format")
+          EDIT_PREDICTIONS_API_URL=$(gum input --placeholder "Enter your Edit Predictions API URL (f.ex. https://<serverless-endpoint>.<region>.models.ai.azure.com/v2/fim/completions)" --header "Edit Predictions FIM API URL")
           export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
+          export EDIT_PREDICTIONS_MODEL="$EDIT_PREDICTIONS_MODEL"
+          export EDIT_PREDICTIONS_PROMPT_FORMAT="$EDIT_PREDICTIONS_PROMPT_FORMAT"
+          export EDIT_PREDICTIONS_API_URL="$EDIT_PREDICTIONS_API_URL"
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
-          {{ .gum_info }} " Remember to set environment variable FOUNDRY_API_KEY to your api key!"
+          {{ .gum_info }} " Remember to set these environment variables to your Foundry API KEY:"
+          {{ .gum_info }} "  - OPEN_AI_COMPATIBLE_API_API_KEY"
+          {{ .gum_info }} "  - FOUNDRY_CHAT_API_KEY"
+          {{ .gum_info }} "  - FOUNDRY_RESPONSES_API_KEY"
         else
           cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
         fi
