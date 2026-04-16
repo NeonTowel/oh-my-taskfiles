@@ -1,14 +1,14 @@
 ---
 description: 'Senior software engineer implementing high quality features following architectural specifications'
-name: 'senior-developer'
-model: google-vertex-global/gemini-3.1-pro-preview
+name: 'senior-developer-claude'
+model: azure-anthropic/claude-sonnet-4-6
 mode: subagent
 
-# Provider pass-through → Google Vertex AI
-thinkingConfig:
-  includeThoughts: false
-  thinkingBudget: 8192      # high quality implementation work
-temperature: 0.6          # some creativity for problem solving
+# Provider pass-through → Anthropic API
+thinking:
+  type: enabled
+  budgetTokens: 16000     # high quality implementation work
+temperature: 1.0          # recommended when thinking is enabled
 
 # OpenCode permissions (built-in tools)
 permission:

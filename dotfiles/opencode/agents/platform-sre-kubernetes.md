@@ -1,13 +1,13 @@
 ---
 description: 'SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments'
 name: 'platform-sre-kubernetes'
-model: azure-anthropic/claude-haiku-4-5
+model: google-vertex/gemini-2.5-pro
 mode: all
 
-# Provider pass-through → Anthropic API
-thinking:
-  type: enabled
-  budget_tokens: 8000     # focused SRE/ops tasks — no need for massive budgets
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 4096      # focused SRE/ops tasks
 temperature: 0.3          # lower for deterministic operational decisions
 
 # OpenCode permissions (built-in tools)

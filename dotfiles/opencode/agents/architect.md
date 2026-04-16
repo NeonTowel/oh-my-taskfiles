@@ -1,12 +1,13 @@
 ---
 description: Software architect designing modular, maintainable solutions
-model: azure-anthropic/claude-opus-4-6
+name: 'architect'
+model: google-vertex-global/gemini-3.1-pro-preview
 mode: all
 
-# Provider pass-through → Anthropic API (4.6 adaptive thinking)
-thinking:
-  type: adaptive
-effort: high              # architecture decisions need full reasoning
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 8192      # architecture decisions need full reasoning
 temperature: 0.7          # creative for architectural exploration
 
 # OpenCode permissions (built-in tools)

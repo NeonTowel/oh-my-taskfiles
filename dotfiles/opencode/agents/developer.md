@@ -1,7 +1,7 @@
 ---
 description: 'Software engineer implementing features following architectural specifications'
 name: 'developer'
-model: azure-cognitive-services/gpt-5.4-mini
+model: google-vertex/gemini-2.5-pro
 mode: all
 
 # OpenCode permissions (built-in tools)
@@ -22,9 +22,11 @@ tools:
   todoread: true
   todowrite: true
 
-# Provider pass-through → sent directly to provider API
-reasoning_effort: high
-verbosity: medium
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 8192      # implementation needs robust reasoning
+temperature: 0.6          # balanced for coding
 ---
 
 # Role

@@ -1,7 +1,7 @@
 ---
 description: 'Generate an implementation plan for new features or refactoring existing code.'
 name: 'implementation-plan'
-model: azure-cognitive-services/gpt-5.4-mini
+model: google-vertex/gemini-2.5-pro
 mode: all
 
 # OpenCode permissions (built-in tools)
@@ -22,9 +22,11 @@ tools:
   todoread: true
   todowrite: true
 
-# Provider pass-through → sent directly to provider API
-reasoning_effort: high
-verbosity: medium
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 8192      # planning requires deeper reasoning
+temperature: 0.5          # structured planning
 ---
 
 # Implementation Plan Generation Mode

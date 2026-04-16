@@ -7,11 +7,14 @@ tasks:
   configure:
     desc: "[OPENCODE] ⚙️  Configure OpenCode"
     vars:
-      CONFIG_FILE: "opencode.json"
+      CONFIG_FILE: opencode.json
+      TUI_FILE: tui.json
       CONFIG_SOURCE_PATH: "dotfiles/opencode"
       CONFIG_DEST_PATH: "$HOME/.config/opencode"
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
+      TUI_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .TUI_FILE | join "/")}}'
+      TUI_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .TUI_FILE | join "/")}}'
       CONFIG_FILE_EXISTS:
         sh: >-
           [ -f "{{ .CONFIG_DEST_FILE }}" ] && echo "yes" || true
@@ -28,6 +31,7 @@ tasks:
         {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
         if [ ! -f "{{ .CONFIG_DEST_FILE }}" ]; then
           cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+          cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
           {{ .gum_ok }} "Configuration saved successfully."
         else
           {{ .gum_warn }} "Configuration already exist, skipping configuration."
@@ -62,9 +66,11 @@ tasks:
           export VERTEX_LOCATION="$VERTEX_LOCATION"
           export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
+          cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
           {{ .gum_info }} " Remember to set environment variable AZURE_OPENAI_API_KEY to your api key!"
         else
           cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+          cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
         fi
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
@@ -126,7 +132,7 @@ tasks:
       CONFIG_DEST_PATH: "$HOME/.config/opencode"
     dir: "{{ .CONFIG_SOURCE_PATH }}"
     sources:
-      - agent/*.md
+      - agents/*.md
       - shared/*.md
       - AGENTS.md
     method: none

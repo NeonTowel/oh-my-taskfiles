@@ -1,13 +1,13 @@
 ---
 description: 'Debug your application to find and fix a bug'
 name: 'debug-agent'
-model: azure-anthropic/claude-haiku-4-5
+model: google-vertex-global/gemini-3.1-pro-preview
 mode: all
 
-# Provider pass-through → Anthropic API
-thinking:
-  type: enabled
-  budget_tokens: 16000    # debug benefits from deeper reasoning
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 8192      # debug benefits from deeper reasoning
 temperature: 0.2          # very deterministic for systematic debugging
 
 # OpenCode permissions (built-in tools)

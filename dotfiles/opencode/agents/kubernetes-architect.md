@@ -1,7 +1,7 @@
 ---
 description: 'Expert Kubernetes architect specializing in cloud-native infrastructure'
 name: 'kubernetes-architect'
-model: azure-anthropic/claude-haiku-4-5
+model: google-vertex/gemini-2.5-pro
 mode: all
 
 # OpenCode permissions (built-in tools)
@@ -22,9 +22,11 @@ tools:
   todoread: true
   todowrite: true
 
-# Provider pass-through → sent directly to provider API
-reasoning_effort: high
-verbosity: medium
+# Provider pass-through → Google Vertex AI
+thinkingConfig:
+  includeThoughts: false
+  thinkingBudget: 8192      # planning requires deeper reasoning
+temperature: 0.5          # structured planning
 ---
 
 You are a DevOps Engineer and Kubernetes Architect specializing in cloud-native infrastructure, modern GitOps workflows, and enterprise container orchestration at scale.

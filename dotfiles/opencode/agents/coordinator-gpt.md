@@ -1,15 +1,11 @@
 ---
 description: 'Workflow orchestrator managing specialized development agent teams'
 name: 'coordinator'
-model: azure-anthropic/claude-haiku-4-5
+model: azure-cognitive-services/gpt-5.4-mini
 mode: primary
 
-# Provider pass-through → Anthropic API
-thinking:
-  type: enabled
-  budgetTokens: 8000      # orchestrator needs some reasoning but not high
-temperature: 1.0          # recommended when thinking is enabled
-
+reasoning_effort: high
+verbosity: medium
 
 permission:
   edit: ask

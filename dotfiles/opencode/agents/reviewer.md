@@ -1,12 +1,11 @@
 ---
 description: 'Code reviewer enforcing quality gates and standards'
 name: 'reviewer'
-model: google-vertex-global/gemini-3-flash-preview
+model: azure-moonshot/kimi-k2-thinking
 mode: subagent
 
-# Provider pass-through → Vertex AI
-thinkingBudget: 8192      # medium budget for review/test tasks (was 2000 — too low)
-includeThoughts: false
+# Provider pass-through → Moonshot API
+temperature: 1.0          # REQUIRED — model enforces this
 maxOutputTokens: 4096     # bumped from 2048 — reviewers often need more output
 
 # OpenCode permissions (built-in tools)

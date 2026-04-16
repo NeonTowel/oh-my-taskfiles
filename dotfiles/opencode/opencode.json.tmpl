@@ -36,6 +36,10 @@
         "gpt-5.4-mini": {
             "id": "gpt-5.4-mini",
             "name": "GPT-5.4 Mini"
+        },
+        "gpt-5.4-nano": {
+            "id": "gpt-5.4-nano",
+            "name": "GPT-5.4 Nano"
         }
       }
     },
@@ -47,26 +51,54 @@
         "project": "{{ .Env.VERTEX_PROJECT_NAME }}"
       },
       "models": {
-        "gemini-3-flash-preview": {
-          "id": "gemini-3-flash-preview",
-          "name": "Gemini 3 Flash Preview"
+        "gemini-3.1-pro-preview": {
+            "id": "gemini-3.1-pro-preview",
+            "name": "Gemini 3.1 Pro Preview"
+        },
+        "gemini-2.5-pro": {
+            "id": "gemini-2.5-pro",
+            "name": "Gemini 2.5 Pro"
+        },
+        "gemini-2.5-flash": {
+            "id": "gemini-2.5-flash",
+            "name": "Gemini 2.5 Flash"
+        },
+        "gemini-2.5-flash-lite": {
+            "id": "gemini-2.5-flash-lite",
+            "name": "Gemini 2.5 Flash-Lite",
+            "options": {
+                "thinkingConfig": {
+                    "includeThoughts": false,
+                    "thinkingBudget": 0
+                }
+            }
         }
       }
     },
     "google-vertex": {
+      "name": "Google Vertex ({{ .Env.VERTEX_LOCATION }})",
+      "npm": "@ai-sdk/google-vertex",
       "options": {
         "location": "{{ .Env.VERTEX_LOCATION }}",
         "project": "{{ .Env.VERTEX_PROJECT_NAME }}"
       },
       "models": {
+        "gemini-2.5-pro": {
+            "id": "gemini-2.5-pro",
+            "name": "Gemini 2.5 Pro"
+        },
+        "gemini-2.5-flash": {
+          "id": "gemini-2.5-flash",
+          "name": "Gemini 2.5 Flash"
+        },
         "gemini-2.5-flash-lite": {
-          "id": "gemini-2.5-flash-lite",
-          "options": {
-            "thinkingConfig": {
-              "includeThoughts": false,
-              "thinkingBudget": 0
+            "id": "gemini-2.5-flash-lite",
+            "options": {
+                "thinkingConfig": {
+                    "includeThoughts": false,
+                    "thinkingBudget": 0
+                }
             }
-          }
         }
       }
     },
@@ -151,15 +183,27 @@
   },
   "default_agent": "coordinator",
   "model": "azure-cognitive-services/gpt-5.4-mini",
-  "small_model": "google-vertex/gemini-2.5-flash-lite",
+  "small_model": "azure-cognitive-services/gpt-5.4-nano",
   "autoupdate": "notify",
   "logLevel": "WARN",
   "share": "disabled",
-  "compaction": {
-      "prune": true,
-      "auto": true
-  },
-  "mcp": {
+    "permission": {
+        "external_directory": {
+            "~/.config/opencode/**": "allow",
+            "/tmp/**": "allow"
+        },
+        "edit": {
+            "README.md": "allow",
+            "AGENTS.md": "allow",
+            ".ai/plans/**": "allow",
+            "~/.config/opencode/**": "deny"
+        }
+    },
+    "compaction": {
+        "prune": true,
+        "auto": true
+    },
+    "mcp": {
       "context7": {
           "enabled": true,
           "type": "remote",
@@ -168,9 +212,14 @@
               "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
           }
       },
-      "web-browser": {
+      "Memory": {
           "type": "local",
-          "command": ["bun", "x", "@agent-infra/mcp-server-browser@latest"],
+          "command": ["bunx", "-y", "@modelcontextprotocol/server-memory"],
+          "enabled": true
+      },
+      "Azure": {
+          "type": "local",
+          "command": ["bunx", "-y", "@azure/mcp@latest", "server", "start"],
           "enabled": true
       },
       "gh_grep": {
