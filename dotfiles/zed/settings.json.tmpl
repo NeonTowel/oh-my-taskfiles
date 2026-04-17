@@ -1,16 +1,26 @@
+// Zed settings v2.0
 {
-  "edit_predictions": {
-    "mode": "subtle",
-    "provider": "open_ai_compatible_api",
-    "open_ai_compatible_api": {
-      "model": "{{ .Env.EDIT_PREDICTIONS_MODEL }}",
-      "prompt_format": "{{ .Env.EDIT_PREDICTIONS_PROMPT_FORMAT }}",
-      "api_url": "{{ .Env.EDIT_PREDICTIONS_API_URL }}"
-    }
-  },
   "tab_size": 2,
-  "context_servers": {},
   "format_on_save": "off",
+  "restore_on_startup": "last_session",
+
+  "agent_buffer_font_size": 16.0,
+  "agent_ui_font_size": 18.0,
+  "ui_font_family": "Cousine Nerd Font",
+  "ui_font_size": 17.5,
+  "ui_font_weight": 500.0,
+  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
+  "buffer_font_size": 17.0,
+  "buffer_line_height": "standard",
+  "buffer_font_weight": 400.0,
+
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "One Dark Pro"
+  },
+  "icon_theme": "Catppuccin Mocha",
+
   "collaboration_panel": {
     "dock": "right"
   },
@@ -20,30 +30,123 @@
   "project_panel": {
     "dock": "right"
   },
-  "bottom_dock_layout": "full",
   "git_panel": {
     "dock": "right",
     "tree_view": true
   },
-  "ui_font_weight": 500.0,
   "terminal": {
-    "dock": "bottom",
-    "font_size": 16.0
+    "font_weight": 400.0,
+    "dock": "left",
+    "font_family": "Mononoki Nerd Font",
+    "font_size": 14.0
   },
-  "ui_font_family": "FantasqueSansM Nerd Font Propo",
-  "buffer_line_height": "standard",
-  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
+  "bottom_dock_layout": "left_aligned",
+  "auto_update": false,
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+
+  // ============================================================================
+  // AI AGENT CONFIGURATION
+  // ============================================================================
+  "agent_servers": {
+    "opencode": {
+      "default_model": "azure-anthropic/claude-haiku-4-5",
+      "type": "registry",
+      "default_mode": "coordinator"
+    }
+  },
   "agent": {
     "dock": "left",
+    "cancel_generation_on_terminal_stop": false,
+    "single_file_review": false,
+    "play_sound_when_agent_done": false,
+    "message_editor_min_lines": 4,
+    "use_modifier_to_send": false,
+    "expand_edit_card": true,
+    "expand_terminal_card": true,
+    "enable_feedback": true,
+
+    "default_model": {
+      "provider": "openai_compatible:Foundry_Chat",
+      "model": "gpt-5.4-nano",
+      "enable_thinking": false
+    },
+
+    "inline_assistant_model": {
+      "provider": "openai_compatible:Foundry_Chat",
+      "model": "gpt-5.4-mini",
+      "enable_thinking": false
+    },
+
+    "commit_message_model": {
+      "provider": "openai_compatible:Foundry_Chat",
+      "model": "gpt-5.4-mini",
+      "enable_thinking": true
+    },
+
+    "thread_summary_model": {
+      "provider": "openai_compatible:Foundry_Chat",
+      "model": "gpt-5.4-nano",
+      "enable_thinking": false
+    },
+
+    "favorite_models": [
+      {
+        "provider": "openai_compatible:Foundry_Responses",
+        "model": "gpt-5.4-mini"
+      },
+      {
+        "provider": "openai_compatible:Foundry_Responses",
+        "model": "gpt-5.4-nano"
+      },
+      {
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "Codestral-2501"
+      }
+    ],
+
+    // Only temperature for chat models
+    "model_parameters": [
+      {
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "codestral-2501",
+        "temperature": 0.3
+      }
+    ],
+
     "tool_permissions": {
+      "default": "confirm",
       "tools": {
+        "terminal": {
+          "default": "confirm",
+          "always_allow": [
+            { "pattern": "^cargo\\s+(build|test|check)" },
+            { "pattern": "^git\\s+(status|log|diff)" },
+            { "pattern": "^ls\\s+" }
+          ],
+          "always_deny": [
+            { "pattern": "rm\\s+-rf\\s+(/|~)" }
+          ],
+          "always_confirm": [
+            { "pattern": "sudo\\s" }
+          ]
+        },
+        "edit_file": {
+          "default": "allow",
+          "always_deny": [
+            { "pattern": "\\.env", "case_sensitive": false },
+            { "pattern": "\\.(pem|key)$", "case_sensitive": false }
+          ]
+        },
         "move_path": {
           "default": "allow"
         },
         "create_directory": {
-          "default": "allow"
-        },
-        "edit_file": {
           "default": "allow"
         },
         "restore_file_from_disk": {
@@ -51,40 +154,17 @@
         }
       }
     },
-    "default_model": {
-      "provider": "Foundry_Responses",
-      "model": "gpt-5.4-mini",
-      "enable_thinking": false
-    },
-    "favorite_models": [
-      {
-        "provider": "openai_compatible:Foundry_Responses",
-        "model": "gpt-5.4-mini"
-      },
-      {
-        "provider": "openai_compatible:Foundry_Chat",
-        "model": "gpt-5.4-mini"
-      }
-    ],
-    "model_parameters": [
-      {
-        "provider": "openai_compatible:Foundry_Responses",
-        "model": "gpt-5.4-mini",
-        "temperature": 0.1,
-        "top_p": 0.95,
-        "frequency_penalty": 0.1
-      },
-      {
-        "provider": "openai_compatible:Foundry_Chat",
-        "model": "gpt-5.4-mini",
-        "temperature": 0.1,
-        "top_p": 0.95,
-        "frequency_penalty": 0.1
-      }
-    ]
+
   },
+
+  // ============================================================================
+  // LANGUAGE MODEL PROVIDERS
+  // ============================================================================
   "language_models": {
     "openai_compatible": {
+      // FOUNDRY REASONING - /responses endpoint
+      // GPT-5.4-mini and GPT-5.4-nano: 400K context window
+      // 400K input + 128K output capability
       "Foundry_Responses": {
         "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
         "available_models": [
@@ -101,18 +181,131 @@
               "prompt_cache_key": true,
               "chat_completions": false
             }
+          },
+          {
+            "name": "gpt-5.4-nano",
+            "display_name": "GPT-5.4 Nano",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "gpt-5.1-codex-mini",
+            "display_name": "GPT-5.1 Codex Mini",
+            "max_tokens": 400000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true
+            }
+          },
+          {
+            "name": "gpt-5.4-mini",
+            "display_name": "GPT-5.4 Mini (High)",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "gpt-5.4-nano",
+            "display_name": "GPT-5.4 Nano (High)",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "gpt-5.1-codex-mini",
+            "display_name": "GPT-5.1 Codex Mini (High)",
+            "max_tokens": 400000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true
+            }
           }
         ]
       },
+
+      // FOUNDRY CHAT - /chat/completions endpoint
+      // Codestral 2501: 256K context window
       "Foundry_Chat": {
         "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
         "available_models": [
           {
             "name": "gpt-5.4-mini",
-            "display_name": "GPT-5.4 Mini (Chat)",
+            "display_name": "GPT-5.4 Mini",
             "max_tokens": 400000,
             "max_output_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "gpt-5.4-nano",
+            "display_name": "GPT-5.4 Nano",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "codestral-2501",
+            "display_name": "Codestral 2501 (Chat)",
+            "max_tokens": 256000,
+            "max_output_tokens": 64000,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true
+            }
+          },
+          {
+            "name": "gpt-5.1-codex-mini",
+            "display_name": "GPT-5.1 Codex Mini (Chat)",
+            "max_tokens": 400000,
             "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
             "capabilities": {
               "tools": true,
               "images": true,
@@ -125,20 +318,18 @@
       }
     }
   },
-  "auto_update": false,
-  "session": {
-    "trust_all_worktrees": true
+
+  "edit_predictions": {
+    "mode": "subtle",
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "model": "{{ .Env.EDIT_PREDICTIONS_MODEL }}",
+      "prompt_format": "{{ .Env.EDIT_PREDICTIONS_PROMPT_FORMAT }}",
+      "api_url": "{{ .Env.EDIT_PREDICTIONS_API_URL }}",
+      "max_output_tokens": 128
+    }
   },
-  "telemetry": {
-    "diagnostics": false,
-    "metrics": false
-  },
-  "icon_theme": "Catppuccin Mocha",
-  "ui_font_size": 18.0,
-  "buffer_font_size": 16.0,
-  "theme": {
-    "mode": "dark",
-    "light": "Gruvbox Light",
-    "dark": "Catppuccin Mocha",
-  },
+
+  "context_servers": {},
+
 }

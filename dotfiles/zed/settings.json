@@ -1,9 +1,26 @@
+// Zed settings v2.0
 {
   "tab_size": 2,
-  "context_servers": {
-
-  },
   "format_on_save": "off",
+  "restore_on_startup": "last_session",
+
+  "agent_buffer_font_size": 16.0,
+  "agent_ui_font_size": 18.0,
+  "ui_font_family": "Cousine Nerd Font",
+  "ui_font_size": 17.5,
+  "ui_font_weight": 500.0,
+  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
+  "buffer_font_size": 17.0,
+  "buffer_line_height": "standard",
+  "buffer_font_weight": 400.0,
+
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "One Dark Pro"
+  },
+  "icon_theme": "Catppuccin Mocha",
+
   "collaboration_panel": {
     "dock": "right"
   },
@@ -13,38 +30,17 @@
   "project_panel": {
     "dock": "right"
   },
-  "bottom_dock_layout": "full",
   "git_panel": {
     "dock": "right",
     "tree_view": true
   },
-  "ui_font_weight": 500.0,
   "terminal": {
-    "dock": "bottom",
-    "font_size": 16.0
-  },
-  "ui_font_family": "FantasqueSansM Nerd Font Propo",
-  "buffer_line_height": "standard",
-  "buffer_font_family": "FantasqueSansM Nerd Font Mono",
-  "agent": {
+    "font_weight": 400.0,
     "dock": "left",
-    "tool_permissions": {
-      "tools": {
-        "move_path": {
-          "default": "allow"
-        },
-        "create_directory": {
-          "default": "allow"
-        },
-        "edit_file": {
-          "default": "allow"
-        },
-        "restore_file_from_disk": {
-          "default": "allow"
-        }
-      }
-    }
+    "font_family": "Mononoki Nerd Font",
+    "font_size": 14.0
   },
+  "bottom_dock_layout": "left_aligned",
   "auto_update": false,
   "session": {
     "trust_all_worktrees": true
@@ -53,12 +49,59 @@
     "diagnostics": false,
     "metrics": false
   },
-  "icon_theme": "Catppuccin Mocha",
-  "ui_font_size": 18.0,
-  "buffer_font_size": 16.0,
-  "theme": {
-    "mode": "dark",
-    "light": "Gruvbox Light",
-    "dark": "Catppuccin Mocha",
+
+  // ============================================================================
+  // AI AGENT CONFIGURATION
+  // ============================================================================
+  "agent": {
+    "dock": "left",
+    "cancel_generation_on_terminal_stop": false,
+    "single_file_review": false,
+    "play_sound_when_agent_done": false,
+    "message_editor_min_lines": 4,
+    "use_modifier_to_send": false,
+    "expand_edit_card": true,
+    "expand_terminal_card": true,
+    "enable_feedback": true,
+
+    "tool_permissions": {
+      "default": "confirm",
+      "tools": {
+        "terminal": {
+          "default": "confirm",
+          "always_allow": [
+            { "pattern": "^cargo\\s+(build|test|check)" },
+            { "pattern": "^git\\s+(status|log|diff)" },
+            { "pattern": "^ls\\s+" }
+          ],
+          "always_deny": [
+            { "pattern": "rm\\s+-rf\\s+(/|~)" }
+          ],
+          "always_confirm": [
+            { "pattern": "sudo\\s" }
+          ]
+        },
+        "edit_file": {
+          "default": "allow",
+          "always_deny": [
+            { "pattern": "\\.env", "case_sensitive": false },
+            { "pattern": "\\.(pem|key)$", "case_sensitive": false }
+          ]
+        },
+        "move_path": {
+          "default": "allow"
+        },
+        "create_directory": {
+          "default": "allow"
+        },
+        "restore_file_from_disk": {
+          "default": "allow"
+        }
+      }
+    },
+
   },
+
+  "context_servers": {},
+
 }

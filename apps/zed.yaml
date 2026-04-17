@@ -62,7 +62,7 @@ tasks:
           export EDIT_PREDICTIONS_API_URL="$EDIT_PREDICTIONS_API_URL"
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
           {{ .gum_info }} " Remember to set these environment variables to your Foundry API KEY:"
-          {{ .gum_info }} "  - OPEN_AI_COMPATIBLE_API_API_KEY"
+          {{ .gum_info }} "  - ZED_OPEN_AI_COMPATIBLE_EDIT_PREDICTION_API_KEY"
           {{ .gum_info }} "  - FOUNDRY_CHAT_API_KEY"
           {{ .gum_info }} "  - FOUNDRY_RESPONSES_API_KEY"
         else
