@@ -27,14 +27,8 @@ tasks:
       - |
         NVM_CLI="nvm"
         if ! command -v nvm >/dev/null 2>&1; then
-          if [ -f "$HOME\scoop\apps\nvm\current\nvm.exe" ]; then
-            PATH="$HOME\scoop\apps\nvm\current\:$HOME\scoop\apps\nvm\current\:$PATH"
-            NVM_HOME="$HOME\scoop\apps\nvm\current"
-            NVM_SYMLINK="$HOME\scoop\apps\nvm\current\nodejs\nodejs"
-            NVM_CLI="$HOME\scoop\apps\nvm\current\nvm.exe"
-          elif [ -f "$HOME/.nvm/nvm.sh" ]; then
+          if [ -f "$HOME/.nvm/nvm.sh" ]; then
             export NVM_DIR="$HOME/.nvm"
-            export NVM_HOME="$NVM_DIR"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           else
             echo "❌ ERROR: nvm is not installed"
@@ -42,16 +36,8 @@ tasks:
             exit 1
           fi
         fi
-        if [ -z $NVM_HOME ]; then
-            echo "❌ ERROR: NVM_HOME is not set"
-            exit 1
-        fi
-        if [ -z $NVM_SYMLINK ]; then
-            echo "❌ ERROR: NVM_SYMLINK is not set"
-            exit 1
-        fi
-        NVM_HOME=$NVM_HOME NVM_SYMLINK=$NVM_SYMLINK $NVM_CLI install lts
-        NVM_HOME=$NVM_HOME NVM_SYMLINK=$NVM_SYMLINK $NVM_CLI use lts
+        $NVM_CLI install lts
+        $NVM_CLI use lts
 
   install-nvm:windows:
     internal: true
