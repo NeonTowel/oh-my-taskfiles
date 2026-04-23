@@ -34,7 +34,8 @@ tasks:
             NVM_CLI="$HOME\scoop\apps\nvm\current\nvm.exe"
           elif [ -f "$HOME/.nvm/nvm.sh" ]; then
             export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            export NVM_HOME="$NVM_DIR"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           else
             echo "❌ ERROR: nvm is not installed"
             echo "Please install nvm first."
