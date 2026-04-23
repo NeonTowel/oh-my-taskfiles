@@ -27,7 +27,10 @@ tasks:
         source "$NVM_DIR/nvm.sh"
         nvm --version
         env|grep NVM
-        nvm install -b --lts --default
+        if [ ! nvm install -b --lts --default ]; then
+          echo "Retrying..."
+          nvm install -b --lts --default
+        fi
         nvm use --lts
         nvm current
 
