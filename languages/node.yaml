@@ -12,12 +12,6 @@ tasks:
     platforms: [linux]
     cmds:
       - |
-        if [ -x "$HOME/.nvm/nvm.sh" ]; then
-          echo "nvm is already installed."
-        else
-          curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v{{ .NVM_VERSION }}/install.sh" | bash
-          echo "nvm has been installed successfully."
-        fi
 
   install:linux:
     internal: true
@@ -25,19 +19,17 @@ tasks:
     cmds:
       - task: install-nvm:linux
       - |
-        NVM_CLI="nvm"
-        if ! command -v nvm >/dev/null 2>&1; then
-          if [ -f "$HOME/.nvm/nvm.sh" ]; then
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          else
-            echo "❌ ERROR: nvm is not installed"
-            echo "Please install nvm first."
-            exit 1
-          fi
+        if [ ! -x "$HOME/.nvm/nvm.sh" ]; then
+          curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v{{ .NVM_VERSION }}/install.sh" | bash
+          echo "nvm has been installed successfully."
         fi
-        $NVM_CLI install lts
-        $NVM_CLI use lts
+        export NVM_DIR="$HOME/.nvm"
+        source "$NVM_DIR/nvm.sh"
+        nvm --version
+        env|grep NVM
+        nvm install -b --lts --default
+        nvm use --lts
+        nvm current
 
   install-nvm:windows:
     internal: true
