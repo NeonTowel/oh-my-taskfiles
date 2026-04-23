@@ -9,9 +9,10 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - >-
-        {{- if (not .FORCE) }}command -v difft >/dev/null && exit 0{{ end }}
-        curl -sSL https://github.com/Wilfred/difftastic/releases/latest/download/difft-x86_64-unknown-linux-gnu.tar.gz | tar xz -C ~/bin difft
+      - |
+        if ! command -v difft >/dev/null 2>&1; then
+          curl -sSL https://github.com/Wilfred/difftastic/releases/latest/download/difft-x86_64-unknown-linux-gnu.tar.gz | tar xz -C ~/bin difft
+        fi
 
   install:windows:
     platforms: [windows]
