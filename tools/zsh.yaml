@@ -53,12 +53,16 @@ tasks:
     desc: "[ZSH] Set zsh as default shell"
     cmds:
       - |
-        if [ "$SHELL" != "$(which zsh)" ]; then
-          echo "Setting zsh as default shell..."
-          sudo chsh -s $(which zsh) $(whoami)
-          echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
+        if [ "$CHSH" == "no "]; then
+          echo "Skipping default shell setup due to CHSH environment variable (CHSH=no)."
         else
-          echo "Zsh is already your default shell."
+          if [ "$SHELL" != "$(which zsh)" ]; then
+            echo "Setting zsh as default shell..."
+            sudo chsh -s $(which zsh) $(whoami)
+            echo "Zsh is now your default shell. Please log out and log back in for changes to take effect."
+          else
+            echo "Zsh is already your default shell."
+          fi
         fi
 
   install-zshrc:linux:
@@ -74,7 +78,7 @@ tasks:
         else
           echo "Source file $src does not exist. Skipping .zshrc installation."
         fi
-  
+
   install-zshrc:
     desc: "[ZSH] Install .zshrc"
     cmds:
