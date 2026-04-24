@@ -53,7 +53,7 @@ tasks:
     desc: "[ZSH] Set zsh as default shell"
     cmds:
       - |
-        if [ "$CHSH" == "no "]; then
+        if [ "$CHSH" == "no" ]; then
           echo "Skipping default shell setup due to CHSH environment variable (CHSH=no)."
         else
           if [ "$SHELL" != "$(which zsh)" ]; then
