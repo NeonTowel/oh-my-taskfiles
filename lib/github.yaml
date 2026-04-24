@@ -40,8 +40,6 @@ tasks:
         ref: 'fromJson .RELEASES_LATEST_RAW'
       FILE_NAME: '{{ default (list (base .REPO) "latest" | join "-") .FILE_NAME }}'
       RELEASE_PACKAGE: '{{ .FILE_NAME }}{{ if eq OS "windows" }}.zip{{ else }}.tar.gz{{ end }}'
-      GUM:
-        sh: 'command -v gum'
       SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
       SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
       WITTY_PHRASES:
@@ -77,7 +75,7 @@ tasks:
       - "Searching for meaning in a pile of floats"
       - "Preparing vaguely helpful insights"
       WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
-      GUM_SPIN: '{{ if (and .GUM (or (eq .GUM_SPINNER_ENABLED true) (eq .GUM_SPINNER_ENABLED nil))) }}gum spin --spinner {{ .SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr --show-stdout  -- {{ end }}'
+      GUM_SPIN: '{{ if (and .GUM_PRESENT (or (eq .GUM_SPINNER_ENABLED true) (eq .GUM_SPINNER_ENABLED nil))) }}gum spin --spinner {{ .SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr --show-stdout  -- {{ end }}'
       CONFIRM_OVERWRITE: '{{ if (and (eq .CONFIRM_OVERWRITE false) (ne .CONFIRM_OVERWRITE nil)) }} -y{{ end }}'
     cmds:
       - |
