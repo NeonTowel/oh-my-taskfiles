@@ -52,6 +52,7 @@ tasks:
   settings:
     desc: "[GEMINI] Configure Gemini settings"
     cmds:
+      - mkdir -p $HOME/.gemini
       - cp dotfiles/gemini/settings.json $HOME/.gemini/settings.json
 
   slash-commands:
