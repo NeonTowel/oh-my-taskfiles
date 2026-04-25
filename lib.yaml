@@ -1,5 +1,41 @@
 version: '3'
 
+# global vars
+vars:
+  SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
+  WITTY_PHRASES:
+    - "You forget a thousand things every day. This isn't one of them. Probably."
+    - "Connecting to AGI (please hold your existential dread)"
+    - "Summoning silicon spirits…"
+    - "Adjusting neural hamsters…"
+    - "Reticulating splines (again)"
+    - "Asking electrons nicely"
+    - "Consulting the oracle (it runs on JavaScript)"
+    - "Arranging bits into meaningful lies"
+    - "Convincing math to think"
+    - "Loading intelligence… no refunds"
+    - "Initiating polite conversation with a machine"
+    - "Teaching rocks to reason"
+    - "Aligning vibes and vectors"
+    - "Shaking hands with probability"
+    - "Applying duct tape to reality"
+    - "Spinning up artificial opinions"
+    - "Coaxing thoughts from sand"
+    - "Engaging speculative cognition"
+    - "Crossing fingers, flipping bits"
+    - "Borrowing intelligence from the future"
+    - "Negotiating with entropy"
+    - "Putting the 'artificial' in artificial intelligence"
+    - "Loading answers, questions sold separately"
+    - "Briefly confusing causality"
+    - "Starting thought experiment #42"
+    - "Inviting chaos, but politely"
+    - "Computing… please blame math"
+    - "Turning coffee into logic"
+    - "Standing on the shoulders of very small transistors"
+    - "Searching for meaning in a pile of floats"
+    - "Preparing vaguely helpful insights"
+
 includes:
   install-common:
     taskfile: lib/install-common.yaml
