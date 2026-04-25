@@ -7,6 +7,7 @@ includes:
   lsd: tools/lsd.yaml
   bat: tools/bat.yaml
   direnv: tools/direnv.yaml
+  dra: tools/dra.yaml
   k8s: tools/k8s.yaml
   gum: tools/gum.yaml
   awesome-git: tools/awesome-git.yaml
