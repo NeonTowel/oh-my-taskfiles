@@ -49,7 +49,16 @@ tasks:
         vars:
           font: "{{.ITEM}}"
 
+  dra:present:
+    platforms: [linux]
+    internal: true
+    status:
+      - command -v dra
+    cmds:
+      - task: ::tools:dra:install
+
   install:linux:
+    deps: [ dra:present ]
     internal: true
     platforms: [linux]
     vars:
