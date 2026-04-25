@@ -14,41 +14,6 @@ tasks:
         vars:
           APP: "{{ .font }}"
 
-  install-font:linux:
-    internal: true
-    platforms: [linux]
-    requires:
-      vars: [ FONT_FILE ]
-    vars:
-      FONTS_DIR: "$HOME/.local/share/fonts"
-      FONTS_REPO: ryanoasis/nerd-fonts
-      GH_AUTH_TOKEN_YAML:
-        sh: |
-          if [ -f ~/.config/gh/hosts.yml ]; then
-            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
-          else
-            echo ""
-          fi
-      GH_AUTH_TOKEN:
-        ref: 'fromYaml .GH_AUTH_TOKEN_YAML'
-    cmds:
-      - |
-        if [ ! -d "{{ .FONTS_DIR }}" ]; then
-          mkdir -p {{ .FONTS_DIR }}
-        fi
-        {{- if (and
-          .GH_AUTH_TOKEN
-          (gt (len .GH_AUTH_TOKEN) 0)
-          (hasKey .GH_AUTH_TOKEN "oauth_token")
-         ) }}
-        export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
-        {{- end }}
-        dra download --select "{{ .FONT_FILE }}" --output /tmp {{ .FONTS_REPO }}
-        tar xf /tmp/{{ .FONT_FILE }} -C {{ .FONTS_DIR }} "*.ttf"
-        rm -f /tmp/{{ .FONT_FILE }}
-      - cmd: sleep $SLEEP
-        if: '[ ! -z "$SLEEP" ]'
-
   install:windows:
     internal: true
     platforms: [windows]
@@ -76,7 +41,7 @@ tasks:
       - task: ::tools:dra:install
 
   install:linux:
-    deps: [ dra:present ]
+    deps: [ '::tools:jq:install' ]
     internal: true
     platforms: [linux]
     vars:
@@ -95,12 +60,24 @@ tasks:
         - SourceCodePro.tar.xz
         - VictorMono.tar.xz
         - ZedMono.tar.xz
+      FONTS_DIR: "$HOME/.local/share/fonts"
+      REPO: ryanoasis/nerd-fonts
     cmds:
-      - for: { var: FONTS }
-        task: install-font:linux
-        vars:
-          FONT_FILE: "{{.ITEM}}"
-      - fc-cache -fv
+      - |
+        version=$({{ printf .gum_spin_title "Fetching latest release tag..." }}bash -c "
+          curl -sSf https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name'
+        ")
+        echo "Version: $version"
+        if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          {{ .gum_warn }} "⚠️  Warning: unambigious version ($version), downloads may fail!"
+        fi
+        {{ printf .gum_spin_title "Downloading fonts..." }}bash -c "
+        {{- range .FONTS }}
+          curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/{{ . }} | tar -xJf - --overwrite -C {{ expandenv $.FONTS_DIR }} --wildcards '*.ttf'
+        {{- end }}
+        "
+        #{{ printf .gum_spin_title "Reloading font cache..." }}fc-cache -fv
+        {{ .gum_ok }} " ✅  fonts installed successfully."
 
   install:
     silent: true

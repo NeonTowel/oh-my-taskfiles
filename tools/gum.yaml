@@ -27,6 +27,25 @@ vars:
         )
       )
     }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-error -- {{ end }}'
+  gum_spin_silent: '{{
+    if (and
+        .GUM_PRESENT
+        (or
+          (eq .GUM_SPINNER_ENABLED true)
+          (eq .GUM_SPINNER_ENABLED nil)
+        )
+      )
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr -- {{ end }}'
+  gum_spin_title: >-
+    {{
+    if (and
+        .GUM_PRESENT
+        (or
+          (eq .GUM_SPINNER_ENABLED true)
+          (eq .GUM_SPINNER_ENABLED nil)
+        )
+      )
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "%s" --show-stderr -- {{ end }}
 
 tasks:
   install:windows:
