@@ -34,7 +34,7 @@ tasks:
           ) }}
           export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
           {{- end }}
-          while ! {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' {{ if .BINARY_RELEASE }}--install{{ else }}--install-file '{{ .EXECUTABLE }}'{{ end }} {{ .REPO }}; do
+          while ! ({{ .gum_spin }}dra download {{ if .SELECT_ASSET }}--select '{{ .SELECT_ASSET }}'{{ else }}--automatic{{ end }} --output '{{ expandenv .BINARY_PATH }}' {{ if .BINARY_RELEASE }}--install{{ else }}--install-file '{{ .EXECUTABLE }}'{{ end }} {{ .REPO }}); do
             if [ $attempts -ge $max_attempts ]; then
             {{ .gum_error }} " ⚠️   Install failed because we are unable to download the asset, bailing out..."
               exit 1

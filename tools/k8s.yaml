@@ -18,6 +18,7 @@ includes:
     vars:
       HELP_PREFIX: "[KUBECTX] ✨  "
       REPO: ahmetb/kubectx
+      SELECT_ASSET: 'kubectx*'
       BINARY_LINUX: '**/kubectx'
       BINARY_DARWIN: '**/kubectx'
       BINARY_WINDOWS: '**/kubectx.exe'
@@ -29,6 +30,7 @@ includes:
     vars:
       HELP_PREFIX: "[KUBENS] ✨  "
       REPO: ahmetb/kubectx
+      SELECT_ASSET: 'kubens*'
       BINARY_LINUX: '**/kubens'
       BINARY_DARWIN: '**/kubens'
       BINARY_WINDOWS: '**/kubens.exe'
@@ -90,7 +92,7 @@ tasks:
     cmds:
       - |
         if ! command -v kubectl >/dev/null 2>&1; then
-          {{ .gum_spin }}curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" | tar xz -C ~/bin kubectl
+          {{ .gum_spin }}curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o ~/bin/kubectl
           chmod +x ~/bin/kubectl
           {{ .gum_ok }} " ✅  kubectl has been installed successfully."
         fi
