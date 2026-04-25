@@ -20,8 +20,8 @@ tasks:
           else
             {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
           fi
+        {{- if .CLI_VERBOSE }}
         else
-          {{- if .CLI_VERBOSE }}
           {{ .gum_info }} " {{ .EXECUTABLE }} is already installed."
           {{- end }}
         fi
@@ -31,7 +31,7 @@ tasks:
     requires:
       vars: [ EXECUTABLE ]
     status:
-      - command -v {{ .EXECUTABLE }}
+      - command -v {{ .EXECUTABLE }}x
     cmds:
       - task: install:exec
 
