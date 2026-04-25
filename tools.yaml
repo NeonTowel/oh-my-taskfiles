@@ -1,42 +1,43 @@
 version: '3'
 
 includes:
-  omt: tools/omt.yaml
-  zsh: tools/zsh.yaml
-  starship: tools/starship.yaml
-  lsd: tools/lsd.yaml
-  bat: tools/bat.yaml
-  direnv: tools/direnv.yaml
-  dra: tools/dra.yaml
-  k8s: tools/k8s.yaml
-  gum: tools/gum.yaml
+  7zip: tools/7zip.yaml
+  alacritty: tools/alacritty.yaml
   awesome-git: tools/awesome-git.yaml
   az: tools/az.yaml
   azd: tools/azd.yaml
-  lazygit: tools/lazygit.yaml
-  alacritty: tools/alacritty.yaml
-  coreutils: tools/coreutils.yaml
-  fonts: tools/fonts.yaml
-  pwsh: tools/pwsh.yaml
-  7zip: tools/7zip.yaml
-  gpg: tools/gpg.yaml
-  jq: tools/jq.yaml
-  glazewm: tools/glazewm.yaml
-  yasb: tools/yasb.yaml
-  flow-launcher: tools/flow-launcher.yaml
-  fzf: tools/fzf.yaml
-  nvim: tools/nvim.yaml
+  bat: tools/bat.yaml
   btop: tools/btop.yaml
-  helix: tools/helix.yaml
-  gomplate: tools/gomplate.yaml
-  rose-pine-cursor: tools/rose-pine-cursor.yaml
-  gcloud: tools/gcloud.yaml
-  translucenttb: tools/translucenttb.yaml
-  zenity: tools/zenity.yaml
-  openshift: tools/openshift.yaml
-  task: tools/task.yaml
-  glow: tools/glow.yaml
+  coreutils: tools/coreutils.yaml
   difft: tools/difft.yaml
+  direnv: tools/direnv.yaml
+  dra: tools/dra.yaml
+  flow-launcher: tools/flow-launcher.yaml
+  fonts: tools/fonts.yaml
+  fzf: tools/fzf.yaml
+  gcloud: tools/gcloud.yaml
+  github: tools/github.yaml
+  glazewm: tools/glazewm.yaml
+  glow: tools/glow.yaml
+  gomplate: tools/gomplate.yaml
+  gpg: tools/gpg.yaml
+  gum: tools/gum.yaml
+  helix: tools/helix.yaml
+  jq: tools/jq.yaml
+  k8s: tools/k8s.yaml
+  lazygit: tools/lazygit.yaml
+  lsd: tools/lsd.yaml
+  nvim: tools/nvim.yaml
+  omt: tools/omt.yaml
+  openshift: tools/openshift.yaml
+  pwsh: tools/pwsh.yaml
+  rose-pine-cursor: tools/rose-pine-cursor.yaml
+  starship: tools/starship.yaml
+  task: tools/task.yaml
+  translucenttb: tools/translucenttb.yaml
+  yasb: tools/yasb.yaml
+  zenity: tools/zenity.yaml
+  zsh: tools/zsh.yaml
 
 tasks:
   default:

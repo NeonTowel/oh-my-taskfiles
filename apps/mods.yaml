@@ -2,7 +2,7 @@ version: "3"
 
 includes:
   github:
-    taskfile: ../lib/github.yaml
+    taskfile: ../lib/github-v2.yaml
     flatten: true
     vars:
       HELP_PREFIX: "[MODS] ✨  "
@@ -19,7 +19,7 @@ includes:
 tasks:
   default:
     - task --list --taskfile apps/mods.yaml
-  
+
   configure:
     desc: "[MODS] ⚙️  Configure mods cli"
     vars:
@@ -58,4 +58,3 @@ tasks:
         fi
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
-

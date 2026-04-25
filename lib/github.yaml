@@ -1,18 +1,8 @@
 version: '3'
 
 tasks:
-  install:
-    desc: '{{ default "" .HELP_PREFIX}}Install from GitHub latest release'
-    requires:
-      vars:
-        - REPO
-        - SEARCH_LINUX
-        - SEARCH_DARWIN
-        - SEARCH_WINDOWS
-        - BINARY_LINUX
-        - BINARY_DARWIN
-        - BINARY_WINDOWS
-        - BINARY_PATH
+  install:exec:
+    internal: true
     vars:
       CACHE_DIR: '{{ printf "%s/.config/omt/cache" (env "HOME") }}'
       CACHE_ASSETS_DIR: '{{ printf "%s/assets" .CACHE_DIR }}'
@@ -41,11 +31,10 @@ tasks:
         ref: 'fromJson .RELEASES_LATEST_RAW'
       FILE_NAME: '{{ default (list (base .REPO) "latest" | join "-") .FILE_NAME }}'
       RELEASE_PACKAGE: '{{ .FILE_NAME }}{{ if eq OS "windows" }}.zip{{ else }}.tar.gz{{ end }}'
-      SPINNER: "{{ index .SPINNERS (randInt 0 (len .SPINNERS)) }}"
+      SPINNER: "{{ index .GUM_SPINNERS (randInt 0 (len .GUM_SPINNERS)) }}"
       WITTY_PHRASE: "{{ index .WITTY_PHRASES (randInt 0 (len .WITTY_PHRASES)) }}"
       GUM_SPIN: '{{ if (and .GUM_PRESENT (or (eq .GUM_SPINNER_ENABLED true) (eq .GUM_SPINNER_ENABLED nil))) }}gum spin --spinner {{ .SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr --show-stdout  -- {{ end }}'
       CONFIRM_OVERWRITE: '{{ if (and (eq .CONFIRM_OVERWRITE false) (ne .CONFIRM_OVERWRITE nil)) }} -y{{ end }}'
-      EXECUTABLE: '{{ if eq OS "linux" }}{{ base .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ base .BINARY_DARWIN }}{{ else if eq OS "windows" }}{{ base .BINARY_WINDOWS }}{{ end }}'
     cmds:
       - |
         {{- range $index, $element := .RELEASE.assets }}
@@ -93,5 +82,33 @@ tasks:
         if [ -x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
           {{ .gum_ok }} " ✅  {{ base .REPO}} {{ .RELEASE.name }} installed successfully."
         else
-          {{ .gum_error }} " ⚠️   File not found or not executable! ({{ .BINARY_PATH }}/{{ .EXECUTABLE }})"
+          {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
         fi
+
+  executable:present:
+    internal: true
+    requires:
+      vars: [ EXECUTABLE ]
+    status:
+      - command -v {{ .EXECUTABLE }}
+    cmds:
+      - task: install:exec
+
+  install:
+    desc: '{{ default "" .HELP_PREFIX}}Install from GitHub latest release ({{ .REPO }})'
+    requires:
+      vars:
+        - REPO
+        - SEARCH_LINUX
+        - SEARCH_DARWIN
+        - SEARCH_WINDOWS
+        - BINARY_LINUX
+        - BINARY_DARWIN
+        - BINARY_WINDOWS
+        - BINARY_PATH
+    vars:
+      EXECUTABLE: '{{ if eq OS "linux" }}{{ base .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ base .BINARY_DARWIN }}{{ else if eq OS "windows" }}{{ base .BINARY_WINDOWS }}{{ end }}'
+    cmds:
+      - task: executable:present
+        vars:
+          EXECUTABLE: '{{ .EXECUTABLE }}'

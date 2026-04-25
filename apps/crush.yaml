@@ -2,7 +2,7 @@ version: "3"
 
 includes:
   github:
-    taskfile: ../lib/github.yaml
+    taskfile: ../lib/github-v2.yaml
     flatten: true
     vars:
       HELP_PREFIX: "[CRUSH] ✨  "

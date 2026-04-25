@@ -2,6 +2,8 @@ version: '3'
 
 vars:
   GUM_VERSION: "0.16.0"
+  GUM_SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
+  GUM_SPINNER: '{{ index .GUM_SPINNERS (randInt 0 (len .GUM_SPINNERS)) }}'
   GUM_PRESENT:
     sh: command -v gum 2>/dev/null || true
 
@@ -16,6 +18,15 @@ vars:
   gum_warn: '{{ if .GUM_PRESENT }}gum style --foreground 208 --bold{{ else }}echo{{ end -}}'
   gum_error: '{{ if .GUM_PRESENT }}gum style --foreground 196 --bold{{ else }}echo{{ end -}}'
   gum_ok: '{{ if .GUM_PRESENT }}gum style --foreground 46 --bold{{ else }}echo{{ end -}}'
+  gum_spin: '{{
+    if (and
+        .GUM_PRESENT
+        (or
+          (eq .GUM_SPINNER_ENABLED true)
+          (eq .GUM_SPINNER_ENABLED nil)
+        )
+      )
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-error -- {{ end }}'
 
 tasks:
   install:windows:

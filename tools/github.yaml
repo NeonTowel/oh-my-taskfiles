@@ -1,0 +1,20 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[GITHUB-CLI] ✨  "
+      REPO: cli/cli
+      SEARCH_LINUX: 'linux amd64'
+      SEARCH_DARWIN: 'macOS universal'
+      SEARCH_WINDOWS: 'windows amd64'
+      BINARY_LINUX: '**/gh'
+      BINARY_DARWIN: '**/gh'
+      BINARY_WINDOWS: '**/gh.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/github.yaml
