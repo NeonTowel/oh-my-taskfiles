@@ -14,7 +14,19 @@ tasks:
     cmds:
       - |
         if ! command -v {{ .EXECUTABLE }} >/dev/null 2>&1; then
-          {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' --install-file '{{ .EXECUTABLE }}' {{ .REPO }}
+          attempts=0
+          max_attempts=3
+          sleep_times=(5 10 15)
+          while ! {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' --install-file '{{ .EXECUTABLE }}' {{ .REPO }}; do
+            if [ $attempts -ge $max_attempts ]; then
+            {{ .gum_error }} " ⚠️   Install failed because we are unable to download the asset, bailing out..."
+              exit 1
+            fi
+            wait_time=${sleep_times[$attempts]}
+            {{ .gum_warn }} " ⏳  Download failed, retrying in ${wait_time}s:"
+            {{ .gum_spin }}sleep $wait_time
+            ((attempts++))
+          done
           if [ -x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
             {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
           else
