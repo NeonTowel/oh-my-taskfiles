@@ -15,7 +15,7 @@ tasks:
       GH_AUTH_TOKEN_YAML:
         sh: |
           if [ -f ~/.config/gh/hosts.yml ]; then
-            cat ~/.config/gh/hosts.yml
+            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
           else
             echo ""
           fi
