@@ -6,7 +6,7 @@ tasks:
     status:
       - command -v dra
     cmds:
-      - task: ::tools:dra:install
+      - task: :::tools:dra:install
 
   install:exec:
     internal: true
