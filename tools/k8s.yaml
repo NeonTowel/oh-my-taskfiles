@@ -1,13 +1,42 @@
 version: '3'
 
-vars:
-  KUBECM_VERSION: "v0.35.1"
-  KUBECTX_VERSION: "v0.11.0"
-  KUBENS_VERSION: "{{ .KUBECTX_VERSION }}"
-  HELM_VERSION: "v4.1.4"
-  FZF_VERSION: "0.71.0"
+includes:
+  kubecm:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[KUBECM] ✨  "
+      REPO: sunny0826/kubecm
+      BINARY_LINUX: '**/kubecm'
+      BINARY_DARWIN: '**/kubecm'
+      BINARY_WINDOWS: '**/kubecm.exe'
+      BINARY_PATH: '$HOME/bin'
+
+  kubectx:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[KUBECTX] ✨  "
+      REPO: ahmetb/kubectx
+      BINARY_LINUX: '**/kubectx'
+      BINARY_DARWIN: '**/kubectx'
+      BINARY_WINDOWS: '**/kubectx.exe'
+      BINARY_PATH: '$HOME/bin'
+
+  kubens:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[KUBENS] ✨  "
+      REPO: ahmetb/kubectx
+      BINARY_LINUX: '**/kubens'
+      BINARY_DARWIN: '**/kubens'
+      BINARY_WINDOWS: '**/kubens.exe'
+      BINARY_PATH: '$HOME/bin'
 
 tasks:
+  default:
+    - task --list --taskfile tools/k8s.yaml
 
   install:windows:
     platforms: [windows]
@@ -33,25 +62,20 @@ tasks:
       - task: ::scoop:install
         vars:
           APP: helm
-      - task: ::scoop:install
-        vars:
-          APP: fzf
-
 
   install:linux:
     platforms: [linux]
     internal: true
     silent: true
     cmds:
-      - task: install-kubecm
-      - task: install-kubectx
-      - task: install-kubens
-      - task: install-kubectl
-      - task: install-helm
-      - task: install-fzf
+      - task: kubecm:install
+      - task: kubectx:install
+      - task: kubens:install
+      - task: kubectl:install
+      - task: helm:install
 
   install:
-    desc: "[K8S] ✨ Install all tools"
+    desc: "[K8S] ✨ Install Kubernetes tools (kubecm, kubectx, kubens, kubectl and helm)"
     cmds:
       - task: install:windows
         platforms: [windows]
@@ -60,74 +84,26 @@ tasks:
 
   ############################################################
 
-  install-kubecm:
+  kubectl:install:
+    internal: true
+    platforms: [linux]
     cmds:
       - |
-        if command -v kubecm >/dev/null 2>&1; then
-          echo "kubecm is already installed."
-        else
-          {{ .gum_spin }}curl -sL "https://github.com/sunny0826/kubecm/releases/download/{{ .KUBECM_VERSION }}/kubecm_{{ .KUBECM_VERSION }}_Linux_x86_64.tar.gz" | tar xz -C ~/bin kubecm
-          chmod +x ~/bin/kubecm
-          echo "kubecm has been installed successfully."
-        fi
-    desc: "[K8S] Install kubecm"
-
-  install-kubectx:
-    cmds:
-      - |
-        if command -v kubectx >/dev/null 2>&1; then
-          echo "kubectx is already installed."
-        else
-          {{ .gum_spin }}curl -sL "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBECTX_VERSION }}/kubectx_{{ .KUBECTX_VERSION }}_linux_x86_64.tar.gz" | tar xz -C ~/bin kubectx
-          chmod +x ~/bin/kubectx
-          echo "kubectx has been installed successfully."
-        fi
-    desc: "[K8S] Install kubectx"
-
-  install-kubens:
-    cmds:
-      - |
-        if command -v kubens >/dev/null 2>&1; then
-          echo "kubens is already installed."
-        else
-          {{ .gum_spin }}curl -sLO "https://github.com/ahmetb/kubectx/releases/download/{{ .KUBENS_VERSION }}/kubens_{{ .KUBENS_VERSION }}_linux_x86_64.tar.gz" | tar xz -C ~/bin kubens
-          chmod +x ~/bin/kubens
-          echo "kubens has been installed successfully."
-        fi
-    desc: "[K8S] Install kubens"
-
-  install-kubectl:
-    cmds:
-      - |
-        if command -v kubectl >/dev/null 2>&1; then
-          echo "kubectl is already installed."
-        else
+        if ! command -v kubectl >/dev/null 2>&1; then
           {{ .gum_spin }}curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" | tar xz -C ~/bin kubectl
           chmod +x ~/bin/kubectl
-          echo "kubectl has been installed successfully."
+          {{ .gum_ok }} " ✅  kubectl has been installed successfully."
         fi
-    desc: "[K8S] Install kubectl"
 
-  install-fzf:
+  helm:install:
+    internal: true
+    platforms: [linux]
+    deps: [ '::tools:jq:install' ]
     cmds:
       - |
-        if command -v fzf >/dev/null 2>&1; then
-          echo "fzf is already installed."
-        else
-          {{ .gum_spin }}curl -sLO "https://github.com/junegunn/fzf/releases/download/v{{ .FZF_VERSION }}/fzf-{{ .FZF_VERSION }}-linux_amd64.tar.gz" | tar xz -C ~/bin kubectl
-          chmod +x ~/bin/fzf
-          echo "fzf has been installed successfully."
-        fi
-    desc: "[K8S] Install fzf"
-
-  install-helm:
-    cmds:
-      - |
-        if command -v helm >/dev/null 2>&1; then
-          echo "helm is already installed."
-        else
-          {{ .gum_spin }}curl -sLO "https://get.helm.sh/helm-{{ .HELM_VERSION }}-linux-amd64.tar.gz" | tar xz -C ~/bin "**/helm"
+        if ! command -v helm >/dev/null 2>&1; then
+          version=$(curl -sSf https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
+          {{ .gum_spin }}curl -sL "https://get.helm.sh/helm-${version}-linux-amd64.tar.gz" | tar xz --strip-components=1 --overwrite -C ~/bin "**/helm"
           chmod +x ~/bin/helm
-          echo "helm has been installed successfully."
+          {{ .gum_ok }} " ✅  helm installed successfully."
         fi
-    desc: "[K8S] Install helm"

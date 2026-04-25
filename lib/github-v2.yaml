@@ -34,7 +34,7 @@ tasks:
           ) }}
           export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
           {{- end }}
-          while ! {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' --install-file '{{ .EXECUTABLE }}' {{ .REPO }}; do
+          while ! {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' {{ if .BINARY_RELEASE }}--install{{ else }}--install-file '{{ .EXECUTABLE }}'{{ end }} {{ .REPO }}; do
             if [ $attempts -ge $max_attempts ]; then
             {{ .gum_error }} " ⚠️   Install failed because we are unable to download the asset, bailing out..."
               exit 1
@@ -51,7 +51,7 @@ tasks:
           fi
         {{- if .CLI_VERBOSE }}
         else
-          {{ .gum_info }} " {{ .EXECUTABLE }} is already installed."
+          {{ .gum_info }} "{{ .EXECUTABLE }} is already installed."
           {{- end }}
         fi
 
@@ -60,18 +60,17 @@ tasks:
     requires:
       vars: [ EXECUTABLE ]
     status:
-      - command -v {{ .EXECUTABLE }}x
+      - command -v {{ .EXECUTABLE }}
     cmds:
       - task: install:exec
+        vars:
+          EXECUTABLE: '{{ .EXECUTABLE }}'
 
   install:
     desc: '{{ default "" .HELP_PREFIX}}Install from GitHub latest release ({{ .REPO }})'
     requires:
       vars:
         - REPO
-        - SEARCH_LINUX
-        - SEARCH_DARWIN
-        - SEARCH_WINDOWS
         - BINARY_LINUX
         - BINARY_DARWIN
         - BINARY_WINDOWS

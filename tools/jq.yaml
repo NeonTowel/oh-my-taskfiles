@@ -1,5 +1,18 @@
 version: '3'
 
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[JQ] ✨  "
+      REPO: jqlang/jq
+      BINARY_LINUX: '**/jq'
+      BINARY_DARWIN: '**/jq'
+      BINARY_WINDOWS: '**/jq.exe'
+      BINARY_RELEASE: true
+      BINARY_PATH: '$HOME/bin'
+
 tasks:
   install:windows:
     platforms: [windows]
@@ -10,8 +23,18 @@ tasks:
         vars:
           APP: jq
 
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - task: github:install
+
   install:
     desc: "[JQ] ✨ Install jq"
     silent: true
     cmds:
       - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
