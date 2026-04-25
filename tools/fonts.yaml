@@ -64,19 +64,19 @@ tasks:
       REPO: ryanoasis/nerd-fonts
     cmds:
       - |
-        version=$({{ printf .gum_spin_title "Fetching latest release tag..." }}bash -c "
+        version=$({{ printf .gum_spin_printf "Fetching latest release tag..." }}bash -c "
           curl -sSf https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name'
         ")
         echo "Version: $version"
         if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
           {{ .gum_warn }} "⚠️  Warning: unambigious version ($version), downloads may fail!"
         fi
-        {{ printf .gum_spin_title "Downloading fonts..." }}bash -c "
+        {{ printf .gum_spin_printf "Downloading fonts..." }}bash -c "
         {{- range .FONTS }}
           curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/{{ . }} | tar -xJf - --overwrite -C {{ expandenv $.FONTS_DIR }} --wildcards '*.ttf'
         {{- end }}
         "
-        #{{ printf .gum_spin_title "Reloading font cache..." }}fc-cache -fv
+        #{{ printf .gum_spin_printf "Reloading font cache..." }}fc-cache -fv
         {{ .gum_ok }} " ✅  fonts installed successfully."
 
   install:

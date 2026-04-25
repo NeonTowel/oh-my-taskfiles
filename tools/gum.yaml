@@ -1,6 +1,8 @@
 version: '3'
 
 vars:
+  HAS_TTY:
+    sh: '[ -t 1 ] && echo "true" || echo "false"'
   GUM_VERSION: "0.16.0"
   GUM_SPINNERS: [ line, dot, minidot, jump, points, hamburger ]
   GUM_SPINNER: '{{ index .GUM_SPINNERS (randInt 0 (len .GUM_SPINNERS)) }}'
@@ -14,38 +16,41 @@ vars:
   # {{ .gum_warn }} "This is a warning message"
   # {{ .gum_error }} "This is an error message"
   # {{ .gum_ok }} "This is an ok message"
-  gum_info: '{{ if .GUM_PRESENT }}gum style --foreground 240{{ else }}echo{{ end -}}'
-  gum_warn: '{{ if .GUM_PRESENT }}gum style --foreground 208 --bold{{ else }}echo{{ end -}}'
-  gum_error: '{{ if .GUM_PRESENT }}gum style --foreground 196 --bold{{ else }}echo{{ end -}}'
-  gum_ok: '{{ if .GUM_PRESENT }}gum style --foreground 46 --bold{{ else }}echo{{ end -}}'
+  gum_info: '{{ if (and .GUM_PRESENT .HAS_TTY) }}gum style --foreground 240{{ else }}echo{{ end -}}'
+  gum_warn: '{{ if (and .GUM_PRESENT .HAS_TTY) }}gum style --foreground 208 --bold{{ else }}echo{{ end -}}'
+  gum_error: '{{ if (and .GUM_PRESENT .HAS_TTY) }}gum style --foreground 196 --bold{{ else }}echo{{ end -}}'
+  gum_ok: '{{ if (and .GUM_PRESENT .HAS_TTY) }}gum style --foreground 46 --bold{{ else }}echo{{ end -}}'
   gum_spin: '{{
     if (and
         .GUM_PRESENT
+        .HAS_TTY
         (or
           (eq .GUM_SPINNER_ENABLED true)
           (eq .GUM_SPINNER_ENABLED nil)
         )
       )
-    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-error -- {{ end }}'
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-error -- {{ end -}}'
   gum_spin_silent: '{{
     if (and
         .GUM_PRESENT
+        .HAS_TTY
         (or
           (eq .GUM_SPINNER_ENABLED true)
           (eq .GUM_SPINNER_ENABLED nil)
         )
       )
-    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr -- {{ end }}'
-  gum_spin_title: >-
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "{{ .WITTY_PHRASE }}" --show-stderr -- {{ end -}}'
+  gum_spin_printf: >-
     {{
     if (and
         .GUM_PRESENT
+        .HAS_TTY
         (or
           (eq .GUM_SPINNER_ENABLED true)
           (eq .GUM_SPINNER_ENABLED nil)
         )
       )
-    }}gum spin --spinner {{ .GUM_SPINNER }} --title "%s" --show-stderr -- {{ end }}
+    }}gum spin --spinner {{ .GUM_SPINNER }} --title "%s" --show-stderr -- {{ else }}echo "%s"{{ end -}}
 
 tasks:
   install:windows:

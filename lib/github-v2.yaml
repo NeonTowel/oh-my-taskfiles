@@ -47,7 +47,16 @@ tasks:
           if [ -x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
             {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
           else
+            {{- if .ALT_EXECUTABLE }}
+            if [ -f "{{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}" ]; then
+              mv "{{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}" "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+              chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+            else
+              {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}"
+            fi
+            {{- else }}
             {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+            {{- end }}
           fi
         {{- if .CLI_VERBOSE }}
         else

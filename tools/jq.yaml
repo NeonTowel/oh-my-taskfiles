@@ -11,6 +11,7 @@ includes:
       BINARY_DARWIN: '**/jq'
       BINARY_WINDOWS: '**/jq.exe'
       BINARY_RELEASE: true
+      ALT_EXECUTABLE: 'jq-linux-amd64'
       BINARY_PATH: '$HOME/bin'
 
 tasks:
