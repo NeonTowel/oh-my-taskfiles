@@ -11,12 +11,29 @@ tasks:
   install:exec:
     internal: true
     deps: [ dra:present ]
+    vars:
+      GH_AUTH_TOKEN_YAML:
+        sh: |
+          if [ -f ~/.config/gh/hosts.yml ]; then
+            cat ~/.config/gh/hosts.yml
+          else
+            echo ""
+          fi
+      GH_AUTH_TOKEN:
+        ref: 'fromYaml .GH_AUTH_TOKEN_YAML'
     cmds:
       - |
         if ! command -v {{ .EXECUTABLE }} >/dev/null 2>&1; then
           attempts=0
           max_attempts=3
           sleep_times=(5 10 15)
+          {{- if (and
+            .GH_AUTH_TOKEN
+            (gt (len .GH_AUTH_TOKEN) 0)
+            (hasKey .GH_AUTH_TOKEN "oauth_token")
+          ) }}
+          export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
+          {{- end }}
           while ! {{ .gum_spin }}dra download --automatic --output '{{ expandenv .BINARY_PATH }}' --install-file '{{ .EXECUTABLE }}' {{ .REPO }}; do
             if [ $attempts -ge $max_attempts ]; then
             {{ .gum_error }} " ⚠️   Install failed because we are unable to download the asset, bailing out..."

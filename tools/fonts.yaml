@@ -22,14 +22,32 @@ tasks:
     vars:
       FONTS_DIR: "$HOME/.local/share/fonts"
       FONTS_REPO: ryanoasis/nerd-fonts
+      GH_AUTH_TOKEN_YAML:
+        sh: |
+          if [ -f ~/.config/gh/hosts.yml ]; then
+            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
+          else
+            echo ""
+          fi
+      GH_AUTH_TOKEN:
+        ref: 'fromYaml .GH_AUTH_TOKEN_YAML'
     cmds:
       - |
         if [ ! -d "{{ .FONTS_DIR }}" ]; then
           mkdir -p {{ .FONTS_DIR }}
         fi
+        {{- if (and
+          .GH_AUTH_TOKEN
+          (gt (len .GH_AUTH_TOKEN) 0)
+          (hasKey .GH_AUTH_TOKEN "oauth_token")
+         ) }}
+        export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
+        {{- end }}
         dra download --select "{{ .FONT_FILE }}" --output /tmp {{ .FONTS_REPO }}
         tar xf /tmp/{{ .FONT_FILE }} -C {{ .FONTS_DIR }} "*.ttf"
         rm -f /tmp/{{ .FONT_FILE }}
+      - cmd: sleep $SLEEP
+        if: '[ ! -z "$SLEEP" ]'
 
   install:windows:
     internal: true
