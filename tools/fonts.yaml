@@ -14,11 +14,28 @@ tasks:
         vars:
           APP: "{{ .font }}"
 
+  install-font:linux:
+    internal: true
+    platforms: [linux]
+    requires:
+      vars: [ FONT_FILE ]
+    vars:
+      FONTS_DIR: "$HOME/.local/share/fonts"
+      FONTS_REPO: ryanoasis/nerd-fonts
+    cmds:
+      - |
+        if [ ! -d "{{ .FONTS_DIR }}" ]; then
+          mkdir -p {{ .FONTS_DIR }}
+        fi
+        dra download --select "{{ .FONT_FILE }}" --output /tmp {{ .FONTS_REPO }}
+        tar xf /tmp/{{ .FONT_FILE }} -C {{ .FONTS_DIR }} "*.ttf"
+        rm -f /tmp/{{ .FONT_FILE }}
+
   install:windows:
     internal: true
     platforms: [windows]
     vars:
-      FONTS: 
+      FONTS:
         - Mononoki-NF
         - Mononoki-NF-Mono
         - FantasqueSansMono-NF
@@ -32,12 +49,31 @@ tasks:
         vars:
           font: "{{.ITEM}}"
 
-  install:linux: # TODO: add Linux support
+  install:linux:
     internal: true
     platforms: [linux]
+    vars:
+      FONTS:
+        - Mononoki.tar.xz
+        - FantasqueSansMono.tar.xz
+        - JetBrainsMono.tar.xz
+        - Meslo.tar.xz
+        - Cousine.tar.xz
+        - Agave.tar.xz
+        - MartianMono.tar.xz
+        - Lekton.tar.xz
+        - Noto.tar.xz
+        - RobotoMono.tar.xz
+        - SpaceMono.tar.xz
+        - SourceCodePro.tar.xz
+        - VictorMono.tar.xz
+        - ZedMono.tar.xz
     cmds:
-      - |
-        echo "Not implemented yet."
+      - for: { var: FONTS }
+        task: install-font:linux
+        vars:
+          FONT_FILE: "{{.ITEM}}"
+      - fc-cache -fv
 
   install:
     silent: true
