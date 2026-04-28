@@ -7,9 +7,9 @@ includes:
     vars:
       HELP_PREFIX: "[CRUSH] ✨  "
       REPO: charmbracelet/crush
-      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
-      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
-      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      DOWNLOAD_LINUX: 'crush_%s_Linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'crush_%s_Darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'crush_%s_Windows_x86_64.zip'
       BINARY_LINUX: '**/crush'
       BINARY_DARWIN: '**/crush'
       BINARY_WINDOWS: '**/crush.exe'

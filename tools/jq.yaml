@@ -7,10 +7,13 @@ includes:
     vars:
       HELP_PREFIX: "[JQ] ✨  "
       REPO: jqlang/jq
+      BINARY_RELEASE: true
+      DOWNLOAD_LINUX: 'jq-linux64'
+      DOWNLOAD_DARWIN: 'jq-macos-amd64'
+      DOWNLOAD_WINDOWS: 'jq-windows-amd64.exe'
       BINARY_LINUX: '**/jq'
       BINARY_DARWIN: '**/jq'
       BINARY_WINDOWS: '**/jq.exe'
-      BINARY_RELEASE: true
       ALT_EXECUTABLE: 'jq-linux-amd64'
       BINARY_PATH: '$HOME/bin'
 

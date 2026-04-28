@@ -8,7 +8,8 @@ tasks:
     cmds:
       - task: :::tools:dra:install
 
-  install:exec:
+  install:v3:
+    if: '{{eq (default "false" .USE_V3) "true"}}'
     internal: true
     deps: [ dra:present ]
     vars:
@@ -64,6 +65,114 @@ tasks:
           {{- end }}
         fi
 
+  install:v2:
+    if: '{{eq (default "true" .USE_V2) "true"}}'
+    internal: true
+    silent: false
+    requires:
+      vars:
+        - DOWNLOAD_LINUX
+        - DOWNLOAD_DARWIN
+        - DOWNLOAD_WINDOWS
+    preconditions:
+      - sh: command -v jq
+        msg: 'requires jq to be installed'
+    vars:
+      CACHE_DIR: '{{ printf "%s/.config/omt/cache" (env "HOME") }}'
+      CACHE_ASSETS_DIR: '{{ printf "%s/assets" .CACHE_DIR }}'
+      GH_AUTH_TOKEN_SH:
+        sh: |
+          if [ -f ~/.config/gh/hosts.yml ]; then
+            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
+          else
+            echo ""
+          fi
+      GH_AUTH_TOKEN_YAML:
+        ref: 'fromYaml .GH_AUTH_TOKEN_SH'
+      GH_AUTH_TOKEN:
+        sh: |
+          {{- if (and
+            .GH_AUTH_TOKEN_YAML
+            (gt (len .GH_AUTH_TOKEN_YAML) 0)
+            (hasKey .GH_AUTH_TOKEN_YAML "oauth_token")
+          ) }}echo {{ .GH_AUTH_TOKEN_YAML.oauth_token }}
+          {{ else }}
+            echo ""
+          {{- end }}
+    cmds:
+      - |
+        tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name')
+        version=${tag_name#v}
+        version_z=${version//./}
+        if [ -z "${tag_name}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release tag_name!"
+          exit 1
+        fi
+        if [ -z "${version}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release version!"
+          exit 1
+        fi
+        download='{{ if eq OS "linux" }}{{ .DOWNLOAD_LINUX }}{{ else if eq OS "darwin" }}{{ .DOWNLOAD_DARWIN }}{{ else if eq OS "windows" }}{{ .DOWNLOAD_WINDOWS }}{{ end }}'
+        download=${download//\%s/$version}
+        download=${download//\%z/$version_z}
+        download=$(printf %s "$download" | jq -sRr @uri)
+        {{- if .CLI_VERBOSE }}
+        echo "Got download: $download"
+        {{- end }}
+        if [ -z "${download}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect download for OS!"
+          exit 1
+        fi
+        {{- if .BINARY_RELEASE }}
+        {{- if .CLI_VERBOSE }}
+        echo "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+        {{- end }}
+        {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
+        if [ -f "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+          chmod +x "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
+          {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
+        else
+          {{ .gum_error }} " ⚠️  ERROR: Error while downloading asset: https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}"
+          exit 1
+        fi
+        {{ else }}
+        if [ ! -s "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
+          {{- if .CLI_VERBOSE }}
+          echo "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+          {{- end }}
+          {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ .CACHE_ASSETS_DIR }}/$download"
+          if [ ! -f "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
+            {{ .gum_error }} " ⚠️  ERROR: Error while downloading asset: https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}"
+            exit 1
+          fi
+        else
+          echo "Found asset from local cache ({{ .CACHE_ASSETS_DIR }}/$download), skipping download."
+        fi
+        {{- if eq OS "windows" }}
+        {{ .gum_spin }}7z e "{{ .CACHE_ASSETS_DIR }}/$download" {{ .BINARY_WINDOWS }} -o"{{ expandenv .BINARY_PATH }}" -bd{{ .CONFIRM_OVERWRITE }}
+        {{- else }}
+        extract_binary='{{ if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }}'
+        if [ -z "${extract_binary}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect binary executable format for OS!"
+          exit 1
+        fi
+        {{- if not .TAR_HAS_SUBFOLDER }}
+        extract_binary="${extract_binary//*/}"
+        {{- end }}
+        tar xfa "{{ .CACHE_ASSETS_DIR }}/$download" {{ if .TAR_HAS_SUBFOLDER }}--strip-components=1 {{ end }}-C {{ expandenv .BINARY_PATH }} $extract_binary
+        {{- end }}
+        if [ -f "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+          chmod +x "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
+          {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
+        else
+          {{ .gum_error }} " ⚠️  ERROR: Error while extracting $download! Installation failed."
+          exit 1
+        fi
+        if [ -f "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
+          rm "{{ .CACHE_ASSETS_DIR }}/$download"
+        fi
+        {{- end }}
+
   executable:present:
     internal: true
     requires:
@@ -71,11 +180,15 @@ tasks:
     status:
       - command -v {{ .EXECUTABLE }}
     cmds:
-      - task: install:exec
+      - task: install:v2
+        vars:
+          EXECUTABLE: '{{ .EXECUTABLE }}'
+      - task: install:v3
         vars:
           EXECUTABLE: '{{ .EXECUTABLE }}'
 
   install:
+    run: when_changed
     desc: '{{ default "" .HELP_PREFIX}}Install from GitHub latest release ({{ .REPO }})'
     requires:
       vars:

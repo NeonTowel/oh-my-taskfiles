@@ -7,9 +7,10 @@ includes:
     internal: true
     vars:
       REPO: ip7z/7zip
-      SEARCH_LINUX: '-linux-x64.tar.xz'
-      SEARCH_DARWIN: '-mac.tar.xz'
-      SEARCH_WINDOWS: ''
+      DOWNLOAD_LINUX: '7z%z-linux-x64.tar.xz'
+      DOWNLOAD_DARWIN: '7z%z-mac.tar.xz'
+      TAR_HAS_SUBFOLDER: false
+      DOWNLOAD_WINDOWS: ''
       BINARY_LINUX: '7zz'
       BINARY_DARWIN: '7zz'
       BINARY_WINDOWS: ''

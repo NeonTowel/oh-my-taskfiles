@@ -7,6 +7,10 @@ includes:
     vars:
       HELP_PREFIX: "[KUBECM] ✨  "
       REPO: sunny0826/kubecm
+      DOWNLOAD_LINUX: 'kubecm_v%s_Linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'kubecm_v%s_Darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'kubecm_v%s_Windows_x86_64.tar.gz'
+      TAR_HAS_SUBFOLDER: false
       BINARY_LINUX: '**/kubecm'
       BINARY_DARWIN: '**/kubecm'
       BINARY_WINDOWS: '**/kubecm.exe'
@@ -18,7 +22,10 @@ includes:
     vars:
       HELP_PREFIX: "[KUBECTX] ✨  "
       REPO: ahmetb/kubectx
-      SELECT_ASSET: 'kubectx*'
+      DOWNLOAD_LINUX: 'kubectx_v%s_linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'kubectx_v%s_darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'kubectx_v%s_windows_x86_64.zip'
+      TAR_HAS_SUBFOLDER: false
       BINARY_LINUX: '**/kubectx'
       BINARY_DARWIN: '**/kubectx'
       BINARY_WINDOWS: '**/kubectx.exe'
@@ -30,7 +37,10 @@ includes:
     vars:
       HELP_PREFIX: "[KUBENS] ✨  "
       REPO: ahmetb/kubectx
-      SELECT_ASSET: 'kubens*'
+      DOWNLOAD_LINUX: 'kubens_v%s_linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'kubens_v%s_darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'kubens_v%s_windows_x86_64.zip'
+      TAR_HAS_SUBFOLDER: false
       BINARY_LINUX: '**/kubens'
       BINARY_DARWIN: '**/kubens'
       BINARY_WINDOWS: '**/kubens.exe'

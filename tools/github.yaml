@@ -7,9 +7,10 @@ includes:
     vars:
       HELP_PREFIX: "[GITHUB-CLI] ✨  "
       REPO: cli/cli
-      SEARCH_LINUX: 'linux amd64'
-      SEARCH_DARWIN: 'macOS universal'
-      SEARCH_WINDOWS: 'windows amd64'
+      DOWNLOAD_LINUX: 'GitHub CLI %s linux amd64'
+      DOWNLOAD_DARWIN: 'GitHub CLI %s macOS universal'
+      DOWNLOAD_WINDOWS: 'GitHub CLI %s windows amd64'
+      BINARY_RELEASE: true
       BINARY_LINUX: '**/gh'
       BINARY_DARWIN: '**/gh'
       BINARY_WINDOWS: '**/gh.exe'

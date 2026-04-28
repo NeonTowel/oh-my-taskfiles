@@ -7,14 +7,13 @@ includes:
     vars:
       HELP_PREFIX: "[MODS] ✨  "
       REPO: charmbracelet/mods
-      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
-      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
-      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      DOWNLOAD_LINUX: 'mods_%s_Linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'mods_%s_Darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'mods_%s_Windows_x86_64.zip'
       BINARY_LINUX: '**/mods'
       BINARY_DARWIN: '**/mods'
       BINARY_WINDOWS: '**/mods.exe'
       BINARY_PATH: '$HOME/bin'
-      CONFIRM_OVERWRITE: false
 
 tasks:
   default:

@@ -7,14 +7,13 @@ includes:
     vars:
       HELP_PREFIX: "[GLOW] ✨  "
       REPO: charmbracelet/glow
-      SEARCH_LINUX: 'Linux_x86_64.tar.gz'
-      SEARCH_DARWIN: 'Darwin_x86_64.tar.gz'
-      SEARCH_WINDOWS: 'Windows_x86_64.zip'
+      DOWNLOAD_LINUX: 'glow_%s_Linux_x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'glow_%s_Darwin_x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'glow_%s_Windows_x86_64.zip'
       BINARY_LINUX: '**/glow'
       BINARY_DARWIN: '**/glow'
       BINARY_WINDOWS: '**/glow.exe'
       BINARY_PATH: '$HOME/bin'
-      CONFIRM_OVERWRITE: false
 
 tasks:
   default:
