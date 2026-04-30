@@ -10,6 +10,7 @@ includes:
       DOWNLOAD_LINUX: 'gh_%s_linux_amd64.tar.gz'
       DOWNLOAD_DARWIN: 'gh_%s_macOS_amd64.zip'
       DOWNLOAD_WINDOWS: 'gh_%s_windows_amd64.zip'
+      TAR_HAS_SUBFOLDER: true
       BINARY_LINUX: '**/gh'
       BINARY_DARWIN: '**/gh'
       BINARY_WINDOWS: '**/gh.exe'
