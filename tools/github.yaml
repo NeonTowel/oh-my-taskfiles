@@ -11,9 +11,10 @@ includes:
       DOWNLOAD_DARWIN: 'gh_%s_macOS_amd64.zip'
       DOWNLOAD_WINDOWS: 'gh_%s_windows_amd64.zip'
       TAR_HAS_SUBFOLDER: true
-      BINARY_LINUX: '**/bin/gh'
-      BINARY_DARWIN: '**/bin/gh'
-      BINARY_WINDOWS: '**/bin/gh.exe'
+      TAR_STRIP_COMPONENTS: 2
+      BINARY_LINUX: '**/gh'
+      BINARY_DARWIN: '**/gh'
+      BINARY_WINDOWS: '**/gh.exe'
       BINARY_PATH: '$HOME/bin'
 
 tasks:

@@ -159,7 +159,7 @@ tasks:
         {{- if not .TAR_HAS_SUBFOLDER }}
         extract_binary="${extract_binary//*/}"
         {{- end }}
-        tar xfa "{{ .CACHE_ASSETS_DIR }}/$download" {{ if .TAR_HAS_SUBFOLDER }}--strip-components=1 {{ end }}-C {{ expandenv .BINARY_PATH }} $extract_binary
+        tar xfa "{{ .CACHE_ASSETS_DIR }}/$download" {{ if .TAR_HAS_SUBFOLDER }}--strip-components={{ if .TAR_STRIP_COMPONENTS }}{{ .TAR_STRIP_COMPONENTS }}{{ else }}1 {{ end }}{{ end }}-C {{ expandenv .BINARY_PATH }} $extract_binary
         {{- end }}
         if [ -f "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
           chmod +x "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
