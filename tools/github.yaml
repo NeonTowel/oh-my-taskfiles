@@ -7,9 +7,9 @@ includes:
     vars:
       HELP_PREFIX: "[GITHUB-CLI] ✨  "
       REPO: cli/cli
-      DOWNLOAD_LINUX: 'GitHub CLI %s linux amd64'
-      DOWNLOAD_DARWIN: 'GitHub CLI %s macOS universal'
-      DOWNLOAD_WINDOWS: 'GitHub CLI %s windows amd64'
+      DOWNLOAD_LINUX: 'gh_%s_linux_amd64.tar.gz'
+      DOWNLOAD_DARWIN: 'gh_2.92.0_macOS_amd64.zip'
+      DOWNLOAD_WINDOWS: 'gh_2.92.0_windows_amd64.zip'
       BINARY_RELEASE: true
       BINARY_LINUX: '**/gh'
       BINARY_DARWIN: '**/gh'
