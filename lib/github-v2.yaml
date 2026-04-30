@@ -140,6 +140,9 @@ tasks:
           {{- if .CLI_VERBOSE }}
           echo "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
           {{- end }}
+          if [ ! -d "{{ .CACHE_ASSETS_DIR }}" ]; then
+            mkdir -p "{{ .CACHE_ASSETS_DIR }}"
+          fi
           {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ .CACHE_ASSETS_DIR }}/$download"
           if [ ! -f "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
             {{ .gum_error }} " ⚠️  ERROR: Error while downloading asset: https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}"
