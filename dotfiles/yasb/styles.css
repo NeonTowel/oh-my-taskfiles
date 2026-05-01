@@ -274,10 +274,26 @@
 
 /* Taskbar (currently active apps) */
 
-/*.taskbar-widget .app-icon{
-    font-size: 12px;
-    padding: 0 0 0 10px;
-}*/
+.taskbar-widget .app-container {
+    margin: 4px 2px;
+    border-radius: 6px;
+    padding: 0 4px;
+}
+.taskbar-widget .app-container.foreground {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.taskbar-widget .app-container.flashing {
+    background-color: rgba(255, 106, 106, 0.63);
+}
+.taskbar-widget .app-container.running {
+    background-color: rgba(255, 255, 255, 0.20);
+}
+.taskbar-widget .app-container:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.taskbar-widget .app-container .app-title {
+    padding-left: 4px;
+}
 
 /* Wifi */
 

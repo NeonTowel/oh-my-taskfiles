@@ -12,8 +12,8 @@ tasks:
         if [ ! -d "$HOME/.config/yasb" ]; then
           mkdir -p "$HOME/.config/yasb"
         fi
-        cp "$HOME/.omt/dotfiles/yasb/config.yaml" "$HOME/.config/yasb/config.yaml"
-        cp "$HOME/.omt/dotfiles/yasb/styles.css" "$HOME/.config/yasb/styles.css"
+        cp "dotfiles/yasb/config.yaml" "$HOME/.config/yasb/config.yaml"
+        cp "dotfiles/yasb/styles.css" "$HOME/.config/yasb/styles.css"
         echo "yasb has been configured successfully."
 
   install:windows:
