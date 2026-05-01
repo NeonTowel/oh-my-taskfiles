@@ -69,7 +69,7 @@ tasks:
     internal: true
     cmds:
       - |
-        src="$HOME/.omt/dotfiles/zshrc_linux"
+        src="$HOME/.omt/dotfiles/zshrc/zshrc"
         dest="$HOME/.zshrc"
         if [ -f "$src" ]; then
           echo "Installing .zshrc from $src"

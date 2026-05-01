@@ -78,31 +78,9 @@ if [ -x "$HOME/.cargo/bin/rustc" ]; then
   source "$HOME/.cargo/env"
 fi
 
-# Node configuration
-if [ -x "$HOME/.nvm/nvm.sh" ]; then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
-
 # Awesome-git configuration
 if command -v awesome-git &> /dev/null; then
   alias ag='awesome-git'
-fi
-
-# if npiperelay.exe is in the path, copy agent-bridge.sh to the home directory from $HOME/.omt/dotfiles/agent-bridge.sh
-if [ -f "/usr/local/bin/npiperelay.exe" ] && [ ! -f "$HOME/.agent-bridge.sh" ]; then
-  if [ -f "$HOME/.omt/dotfiles/agent-bridge.sh" ]; then
-    cp $HOME/.omt/dotfiles/agent-bridge.sh $HOME/.agent-bridge.sh
-  fi
-fi
-
-# 1Password SSH Agent bridge for WSL
-if [ -f "$HOME/.agent-bridge.sh" ]; then
-  source "$HOME/.agent-bridge.sh"
-  if [ -f "$HOME/.1password/agent.sock" ]; then
-    export SSH_AUTH_SOCK=$HOME/.1password/agent.sock
-  fi
 fi
 
 # Podman socket configuration
@@ -125,4 +103,26 @@ fi
 # Load environment variables safely from ~/.env, if it exists
 if [ -f "$HOME/.env" ]; then
   export $(cat "$HOME/.env" | xargs)
+fi
+
+# opencode configuration
+if [ -x "$HOME/.opencode/bin/opencode" ]; then
+  export PATH=$HOME/.opencode/bin:$PATH
+fi
+
+
+# fnm configuration
+if [ -x "$HOME/.local/share/fnm/fnm" ]; then
+  FNM_PATH="$HOME/.local/share/fnm"
+  if [ -d "$FNM_PATH" ]; then
+    export PATH="$FNM_PATH:$PATH"
+    eval "$(fnm env --shell zsh)"
+  fi
+fi
+
+# bun configuration
+if [ -x "$HOME/.bun/bin/bun" ]; then
+  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
 fi

@@ -19,7 +19,7 @@ tasks:
     cmds:
       - |
         if [ ! -f "$HOME\.pwshrc.ps1" ]; then
-          cp dotfiles/pwshrc_windows.ps1 $HOME/.pwshrc.ps1
+          cp dotfiles/pwsh/pwshrc.ps1 $HOME/.pwshrc.ps1
           if [ ! -d "$HOME\Documents\PowerShell" ]; then
             echo "Creating PowerShell core profile folder..."
             mkdir -p "$HOME\Documents\PowerShell"
@@ -35,7 +35,7 @@ tasks:
           echo "\$PROFILE"
           echo ""
         else
-          cp dotfiles/pwshrc_windows.ps1 $HOME/.pwshrc.ps1
+          cp dotfiles/pwsh/pwshrc.ps1 $HOME/.pwshrc.ps1
         fi
         echo "pwsh profile has been installed successfully to $HOME\.pwshrc.ps1"
         echo "Ensure you source the profile to your current shell."

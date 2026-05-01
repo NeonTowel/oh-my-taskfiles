@@ -12,7 +12,7 @@ tasks:
         if [ ! -d "$HOME/.glzr/glazewm" ]; then
           mkdir -p "$HOME/.glzr/glazewm"
         fi
-        cp "$HOME/.omt/dotfiles/glazewm.yaml" "$HOME/.glzr/glazewm/config.yaml"
+        cp "dotfiles/glazewm/config.yaml" "$HOME/.glzr/glazewm/config.yaml"
         echo "glazewm has been configured successfully."
 
   install:windows:
