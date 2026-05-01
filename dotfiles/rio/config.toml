@@ -21,3 +21,8 @@ family = "JetBrainsMono Nerd Font"
 [shell]
 program = "pwsh"
 args = [ "-NoLogo" ]
+
+[bindings]
+keys = [
+  { key = "d", with = "control", action = "Quit" }
+]
