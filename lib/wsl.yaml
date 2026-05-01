@@ -110,7 +110,7 @@ tasks:
         fi
         op_ssh_sign_exe_path=""
         if [ -f /mnt/c/Users/$username/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe ]; then
-          op_ssh_sign_exe_path="C:/Users/$username/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
+          op_ssh_sign_exe_path="/mnt/c/Users/$username/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
         elif [ -f /mnt/c/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe ]; then
           op_ssh_sign_exe_path="/mnt/c/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe"
         elif [ -f C:/Users/$username/AppData/Local/1Password/app/8/op-ssh-sign.exe ]; then
