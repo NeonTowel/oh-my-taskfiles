@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/tailscale.yaml
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - curl -fsSL https://tailscale.com/install.sh | sh
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::winget:install
+        vars:
+          APP: Tailscale.Tailscale
+
+  install:
+    desc: "[TAILSCALE] ✨ Install Tailscale"
+    silent: true
+    cmds:
+      - task: "install:{{ OS }}"

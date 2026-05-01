@@ -1,0 +1,74 @@
+version: '3'
+
+includes:
+  github:tilt:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[TILT] ✨  "
+      REPO: tilt-dev/tilt
+      TAR_HAS_SUBFOLDER: false
+      DOWNLOAD_LINUX: 'tilt.%s.linux.x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'tilt.%s.mac.x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: ''
+      BINARY_LINUX: 'tilt'
+      BINARY_DARWIN: 'tilt'
+      BINARY_WINDOWS: 'tilt.exe'
+      BINARY_PATH: '$HOME/bin'
+
+  github:ctlptl:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[CTLPTL] ✨  "
+      REPO: tilt-dev/ctlptl
+      TAR_HAS_SUBFOLDER: false
+      DOWNLOAD_LINUX: 'ctlptl.%s.linux.x86_64.tar.gz'
+      DOWNLOAD_DARWIN: 'ctlptl.%s.mac.x86_64.tar.gz'
+      DOWNLOAD_WINDOWS: 'ctlptl.%s.windows.x86_64.zip'
+      BINARY_LINUX: '**/ctlptl'
+      BINARY_DARWIN: '**/ctlptl'
+      BINARY_WINDOWS: '**/ctlptl.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/tilt.yaml
+
+  install:
+    desc: "[TILT] ✨ Install Tilt cli"
+    silent: true
+    cmds:
+      - task: "install:{{ OS }}"
+
+  install:windows:
+    internal: true
+    silent: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:buckets:ensure
+        vars:
+          BUCKET: tilt-dev
+          BUCKET_URL: https://github.com/tilt-dev/scoop-bucket
+      - task: ::scoop:install
+        vars:
+          APP: ctlptl
+      - task: ::scoop:install
+        vars:
+          APP: tilt
+
+  install:darwin:
+    platforms: [darwin]
+    internal: true
+    silent: true
+    cmds:
+      - task: github:tilt:install
+      - task: github:ctlptl:install
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - task: github:tilt:install
+      - task: github:ctlptl:install

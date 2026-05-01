@@ -9,6 +9,7 @@ includes:
   bat: tools/bat.yaml
   btop: tools/btop.yaml
   bun: tools/bun.yaml
+  caffeine: tools/caffeine.yaml
   coreutils: tools/coreutils.yaml
   difft: tools/difft.yaml
   direnv: tools/direnv.yaml
@@ -35,6 +36,7 @@ includes:
   rose-pine-cursor: tools/rose-pine-cursor.yaml
   starship: tools/starship.yaml
   task: tools/task.yaml
+  tilt: tools/tilt.yaml
   translucenttb: tools/translucenttb.yaml
   yasb: tools/yasb.yaml
   zenity: tools/zenity.yaml

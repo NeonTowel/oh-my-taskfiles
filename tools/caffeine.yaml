@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/caffeine.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::winget:install
+        vars:
+          APP: ZhornSoftware.Caffeine
+
+  install:
+    desc: "[CAFFEINE] ✨ Install Caffeine"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]

@@ -1,36 +1,37 @@
 version: "3"
 
 includes:
-  chatbox: apps/chatbox.yaml
   1password: apps/1password.yaml
-  cursor: apps/cursor.yaml
-  spotify: apps/spotify.yaml
-  heroic: apps/heroic.yaml
-  postman: apps/postman.yaml
-  joplin: apps/joplin.yaml
-  cryptomator: apps/cryptomator.yaml
-  librehardwaremonitor: apps/librehardwaremonitor.yaml
-  royal-ts: apps/royal-ts.yaml
   bitwarden: apps/bitwarden.yaml
-  teracopy: apps/teracopy.yaml
-  simplenote: apps/simplenote.yaml
-  vscodium: apps/vscodium.yaml
-  podman-desktop: apps/podman-desktop.yaml
-  proton-pass: apps/proton-pass.yaml
-  proton-drive: apps/proton-drive.yaml
-  proton-mail: apps/proton-mail.yaml
-  proton-authenticator: apps/proton-authenticator.yaml
+  chatbox: apps/chatbox.yaml
   claude: apps/claude.yaml
   codex: apps/codex.yaml
-  gemini: apps/gemini.yaml
-  synology: apps/synology.yaml
-  slack: apps/slack.yaml
   crush: apps/crush.yaml
+  cryptomator: apps/cryptomator.yaml
+  cursor: apps/cursor.yaml
+  gemini: apps/gemini.yaml
+  heroic: apps/heroic.yaml
+  joplin: apps/joplin.yaml
+  librehardwaremonitor: apps/librehardwaremonitor.yaml
   mods: apps/mods.yaml
   opencode: apps/opencode.yaml
+  podman-desktop: apps/podman-desktop.yaml
+  postman: apps/postman.yaml
+  proton-authenticator: apps/proton-authenticator.yaml
+  proton-drive: apps/proton-drive.yaml
+  proton-mail: apps/proton-mail.yaml
+  proton-pass: apps/proton-pass.yaml
   rio: apps/rio.yaml
-  zed: apps/zed.yaml
+  royal-ts: apps/royal-ts.yaml
   see-through-windows-ng: apps/see-through-windows-ng.yaml
+  simplenote: apps/simplenote.yaml
+  slack: apps/slack.yaml
+  spotify: apps/spotify.yaml
+  synology: apps/synology.yaml
+  tailscale: apps/tailscale.yaml
+  teracopy: apps/teracopy.yaml
+  vscodium: apps/vscodium.yaml
+  zed: apps/zed.yaml
 
 tasks:
   default:
