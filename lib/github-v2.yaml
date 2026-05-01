@@ -117,7 +117,7 @@ tasks:
         download=${download//\%z/$version_z}
         download=$(printf %s "$download" | jq -sRr @uri)
         {{- if .CLI_VERBOSE }}
-        echo "Got download: $download"
+        {{ .gum_info }} "Computed download asset: $download"
         {{- end }}
         if [ -z "${download}" ]; then
           {{ .gum_error }} " ⚠️  ERROR: Unable to detect download for OS!"
@@ -125,7 +125,7 @@ tasks:
         fi
         {{- if .BINARY_RELEASE }}
         {{- if .CLI_VERBOSE }}
-        echo "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+        {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
         {{- end }}
         {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
         if [ -f "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
@@ -138,7 +138,7 @@ tasks:
         {{ else }}
         if [ ! -s "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
           {{- if .CLI_VERBOSE }}
-          echo "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+          {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
           {{- end }}
           if [ ! -d "{{ .CACHE_ASSETS_DIR }}" ]; then
             mkdir -p "{{ .CACHE_ASSETS_DIR }}"
@@ -149,25 +149,36 @@ tasks:
             exit 1
           fi
         else
-          echo "Found asset from local cache ({{ .CACHE_ASSETS_DIR }}/$download), skipping download."
+          {{ .gum_info }} "Found asset from local cache ({{ .CACHE_ASSETS_DIR }}/$download), skipping download."
         fi
         {{- if eq OS "windows" }}
         {{ .gum_spin }}7z e "{{ .CACHE_ASSETS_DIR }}/$download" {{ .BINARY_WINDOWS }} -o"{{ expandenv .BINARY_PATH }}" -bd{{ .CONFIRM_OVERWRITE }}
         {{- else }}
         extract_binary='{{ if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }}'
+        {{- if not .TAR_HAS_SUBFOLDER }}
+        extract_binary="${extract_binary//\*/}"
+        extract_binary=${extract_binary#\/}
+        {{- end }}
         if [ -z "${extract_binary}" ]; then
-          {{ .gum_error }} " ⚠️  ERROR: Unable to detect binary executable format for OS!"
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect binary executable format for OS (extract_binary: '${extract_binary}')!"
           exit 1
         fi
-        {{- if not .TAR_HAS_SUBFOLDER }}
-        extract_binary="${extract_binary//*/}"
+        {{- if .CLI_VERBOSE }}
+        {{ .gum_info }} "Extracting ${extract_binary} from ${download} to {{ expandenv .BINARY_PATH }}:"
+        {{ .gum_info }} 'tar xfa "{{ .CACHE_ASSETS_DIR }}/$download" {{ if .TAR_HAS_SUBFOLDER }}--strip-components={{ if .TAR_STRIP_COMPONENTS }}{{ .TAR_STRIP_COMPONENTS }} {{ else }}1 {{ end }}{{ end }}-C {{ expandenv .BINARY_PATH }} $extract_binary'
         {{- end }}
         tar xfa "{{ .CACHE_ASSETS_DIR }}/$download" {{ if .TAR_HAS_SUBFOLDER }}--strip-components={{ if .TAR_STRIP_COMPONENTS }}{{ .TAR_STRIP_COMPONENTS }} {{ else }}1 {{ end }}{{ end }}-C {{ expandenv .BINARY_PATH }} $extract_binary
         {{- end }}
         if [ -f "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+          {{- if .CLI_VERBOSE }}
+          {{ .gum_info }} "Marking ${extract_binary} as executable in {{ expandenv .BINARY_PATH }}."
+          {{- end }}
           chmod +x "{{ expandenv .BINARY_PATH }}/{{ .EXECUTABLE }}"
           {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
         else
+          {{- if .CLI_VERBOSE }}
+          {{ .gum_warn }} "Unable to find extracted binary ${extract_binary} in {{ expandenv .BINARY_PATH }}!"
+          {{- end }}
           {{ .gum_error }} " ⚠️  ERROR: Error while extracting $download! Installation failed."
           exit 1
         fi
