@@ -1,0 +1,30 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile tools/bun.yaml
+
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        if command -v bun >/dev/null 2>&1; then
+          echo "bun is already installed."
+        else
+          curl -fsSL https://bun.com/install | bash
+          {{ .gum_ok }} "bun has been installed successfully."
+        fi
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: bun
+
+  install:
+    desc: "[BUN] ✨ Install bun"
+    cmds:
+      - task: 'install:{{ OS }}'

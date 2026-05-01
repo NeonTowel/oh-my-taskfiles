@@ -8,6 +8,7 @@ includes:
   azd: tools/azd.yaml
   bat: tools/bat.yaml
   btop: tools/btop.yaml
+  bun: tools/bun.yaml
   coreutils: tools/coreutils.yaml
   difft: tools/difft.yaml
   direnv: tools/direnv.yaml
