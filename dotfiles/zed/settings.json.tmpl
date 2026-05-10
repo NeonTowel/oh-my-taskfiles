@@ -72,25 +72,25 @@
     "enable_feedback": true,
 
     "default_model": {
-      "provider": "openai_compatible:Foundry_Chat",
-      "model": "gpt-5.4-nano",
-      "enable_thinking": false
+      "provider": "Foundry_Responses",
+      "model": "gpt-5.3-codex",
+      "enable_thinking": true
     },
 
     "inline_assistant_model": {
-      "provider": "openai_compatible:Foundry_Chat",
-      "model": "gpt-5.4-mini",
+      "provider": "openai_compatible:Foundry_Responses",
+      "model": "gpt-5.3-codex",
       "enable_thinking": false
     },
 
     "commit_message_model": {
-      "provider": "openai_compatible:Foundry_Chat",
-      "model": "gpt-5.4-mini",
-      "enable_thinking": true
+      "provider": "openai_compatible:Foundry_Responses",
+      "model": "gpt-5.4-nano",
+      "enable_thinking": false
     },
 
     "thread_summary_model": {
-      "provider": "openai_compatible:Foundry_Chat",
+      "provider": "openai_compatible:Foundry_Responses",
       "model": "gpt-5.4-nano",
       "enable_thinking": false
     },
@@ -168,6 +168,34 @@
       "Foundry_Responses": {
         "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
         "available_models": [
+          {
+            "name": "gpt-5.3-codex",
+            "display_name": "GPT-5.3 Codex",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
+          {
+            "name": "gpt-5.5",
+            "display_name": "GPT-5.5",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false
+            }
+          },
           {
             "name": "gpt-5.4-mini",
             "display_name": "GPT-5.4 Mini",
@@ -262,6 +290,34 @@
         "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.openai.azure.com/openai/v1",
         "available_models": [
           {
+            "name": "gpt-5.3-codex",
+            "display_name": "GPT-5.3 Codex",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true
+            }
+          },
+          {
+            "name": "gpt-5.5",
+            "display_name": "GPT-5.5",
+            "max_tokens": 400000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true
+            }
+          },
+          {
             "name": "gpt-5.4-mini",
             "display_name": "GPT-5.4 Mini",
             "max_tokens": 400000,
@@ -271,7 +327,7 @@
               "images": true,
               "parallel_tool_calls": true,
               "prompt_cache_key": true,
-              "chat_completions": false
+              "chat_completions": true
             }
           },
           {
@@ -284,7 +340,7 @@
               "images": true,
               "parallel_tool_calls": true,
               "prompt_cache_key": true,
-              "chat_completions": false
+              "chat_completions": true
             }
           },
           {
