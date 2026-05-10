@@ -72,7 +72,7 @@
       "description": "Workflow orchestrator managing specialized development agent teams",
       "prompt": "{file:./prompts/coordinator.md}",
       "mode": "all",
-      "steps": 20,
+      "steps": 80,
       "model": "google-vertex/gemini-2.5-flash",
       "temperature": 0.1,
       "permission": {
@@ -84,7 +84,7 @@
       "description": "Read-only investigative middleman for the coordinator",
       "prompt": "{file:./prompts/assistant.md}",
       "mode": "subagent",
-      "steps": 40,
+      "steps": 60,
       "model": "google-vertex/gemini-2.5-flash",
       "temperature": 0.2,
       "permission": {
@@ -113,7 +113,7 @@
       "description": "Software architect designing modular, maintainable solutions",
       "prompt": "{file:./prompts/architect.md}",
       "mode": "all",
-      "steps": 60,
+      "steps": 120,
       "model": "google/gemini-3.1-pro-preview",
       "temperature": 0.6,
       "permission": {
@@ -124,7 +124,7 @@
       "description": "Software architect designing modular, maintainable solutions",
       "prompt": "{file:./prompts/architect.md}",
       "mode": "all",
-      "steps": 60,
+      "steps": 120,
       "model": "anthropic/claude-opus-4-7",
       "temperature": 0.6,
       "permission": {
@@ -135,7 +135,7 @@
       "description": "Debug your application to find and fix a bug",
       "prompt": "{file:./prompts/debug-agent.md}",
       "mode": "all",
-      "steps": 40,
+      "steps": 60,
       "model": "google/gemini-2.5-pro",
       "temperature": 0.2,
       "permission": {
@@ -146,7 +146,7 @@
       "description": "Software engineer implementing features following architectural specifications",
       "prompt": "{file:./prompts/developer.md}",
       "mode": "all",
-      "steps": 60,
+      "steps": 120,
       "model": "openai/gpt-5.3-codex",
       "temperature": 0.4,
       "permission": {
@@ -157,7 +157,7 @@
       "description": "Senior software engineer implementing high quality features following architectural specifications",
       "prompt": "{file:./prompts/senior-developer.md}",
       "mode": "all",
-      "steps": 60,
+      "steps": 120,
       "model": "google/gemini-3.1-pro-preview",
       "temperature": 0.4,
       "permission": {
@@ -168,7 +168,7 @@
       "description": "Senior software engineer implementing high quality features following architectural specifications",
       "prompt": "{file:./prompts/senior-developer.md}",
       "mode": "all",
-      "steps": 60,
+      "steps": 120,
       "model": "anthropic/claude-sonnet-4-6",
       "temperature": 0.4,
       "permission": {
@@ -179,7 +179,7 @@
       "description": "Generate an implementation plan for new features or refactoring existing code",
       "prompt": "{file:./prompts/planner.md}",
       "mode": "all",
-      "steps": 40,
+      "steps": 60,
       "model": "google/gemini-2.5-pro",
       "temperature": 0.3,
       "permission": {
@@ -190,7 +190,7 @@
       "description": "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments",
       "prompt": "{file:./prompts/devops-architect.md}",
       "mode": "all",
-      "steps": 40,
+      "steps": 60,
       "model": "google-vertex/gemini-2.5-pro",
       "temperature": 0.6,
       "permission": {
@@ -201,7 +201,7 @@
       "description": "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments",
       "prompt": "{file:./prompts/sre.md}",
       "mode": "all",
-      "steps": 20,
+      "steps": 60,
       "model": "google/gemini-2.5-pro",
       "temperature": 0.3,
       "permission": {
@@ -212,7 +212,7 @@
       "description": "Refactoring specialist improving code quality while preserving functionality",
       "prompt": "{file:./prompts/refactor.md}",
       "mode": "subagent",
-      "steps": 40,
+      "steps": 80,
       "model": "moonshotai/kimi-k2.6",
       "options": {
         "thinking": {
@@ -228,7 +228,7 @@
       "description": "Refactoring specialist improving code quality while preserving functionality",
       "prompt": "{file:./prompts/refactor.md}",
       "mode": "subagent",
-      "steps": 20,
+      "steps": 80,
       "model": "moonshotai/kimi-k2.6",
       "options": {
         "thinking": {
@@ -244,7 +244,7 @@
       "description": "Test engineer validating code correctness and coverage",
       "prompt": "{file:./prompts/tester.md}",
       "mode": "all",
-      "steps": 40,
+      "steps": 80,
       "model": "moonshotai/kimi-k2.6",
       "options": {
         "thinking": {
