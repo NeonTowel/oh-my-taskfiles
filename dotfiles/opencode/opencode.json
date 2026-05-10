@@ -68,6 +68,17 @@
     }
   },
   "agent": {
+    "general": {
+      "description": "Autonomous pair programmer. Minimal prose, maximum precision. Plans, executes, debugs, ships — no hand-holding, no scope creep, and just enough salt to keep the codebase interesting.",
+      "prompt": "{file:./prompts/general-caveman.md}",
+      "mode": "all",
+      "steps": 120,
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.2,
+      "permission": {
+        "*": "allow",
+      }
+    },
     "coordinator": {
       "description": "Workflow orchestrator managing specialized development agent teams",
       "prompt": "{file:./prompts/coordinator.md}",
