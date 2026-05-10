@@ -133,7 +133,7 @@ tasks:
             CONFIG_DEST_PATH: "$HOME/.config/opencode"
         dir: "{{ .CONFIG_SOURCE_PATH }}"
         sources:
-            - agents/*.md
+            - prompts/*.md
             - shared/*.md
             - AGENTS.md
         method: none

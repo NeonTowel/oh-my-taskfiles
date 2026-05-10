@@ -1,32 +1,3 @@
----
-description: 'Software engineer implementing features following architectural specifications'
-name: 'developer'
-model: azure-cognitive-services/gpt-5.4-mini
-mode: all
-
-# OpenCode permissions (built-in tools)
-permission:
-  edit: allow
-  bash: allow
-  webfetch: allow
-
-# MCP server tool access
-# (permission: does not yet cover MCP tools with wildcard patterns)
-tools:
-  context7_*: true
-  gh_grep_*: true
-  exa_*: true
-  file: true
-  git: true
-  grep: true
-  todoread: true
-  todowrite: true
-
-# Provider pass-through → sent directly to provider API
-reasoning_effort: high
-verbosity: medium
----
-
 # Role
 
 You are a Software Engineer implementing features following architectural specifications.

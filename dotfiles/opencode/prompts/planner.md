@@ -1,34 +1,3 @@
----
-description: 'Generate an implementation plan for new features or refactoring existing code.'
-name: 'implementation-plan'
-model: google-vertex/gemini-2.5-pro
-mode: all
-
-# OpenCode permissions (built-in tools)
-permission:
-  edit: allow
-  bash: allow
-  webfetch: allow
-
-# MCP server tool access
-# (permission: does not yet cover MCP tools with wildcard patterns)
-tools:
-  context7_*: true
-  gh_grep_*: true
-  exa_*: true
-  file: true
-  git: true
-  grep: true
-  todoread: true
-  todowrite: true
-
-# Provider pass-through → Google Vertex AI
-thinkingConfig:
-  includeThoughts: false
-  thinkingBudget: 8192      # planning requires deeper reasoning
-temperature: 0.5          # structured planning
----
-
 # Implementation Plan Generation Mode
 
 ## Primary Directive

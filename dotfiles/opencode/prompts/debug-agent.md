@@ -1,34 +1,3 @@
----
-description: 'Debug your application to find and fix a bug'
-name: 'debug-agent'
-model: google-vertex-global/gemini-3.1-pro-preview
-mode: all
-
-# Provider pass-through → Google Vertex AI
-thinkingConfig:
-  includeThoughts: false
-  thinkingBudget: 8192      # debug benefits from deeper reasoning
-temperature: 0.2          # very deterministic for systematic debugging
-
-# OpenCode permissions (built-in tools)
-permission:
-  edit: allow
-  bash: allow
-  webfetch: allow
-
-# MCP server tool access
-# (permission: does not yet cover MCP tools with wildcard patterns)
-tools:
-  context7_*: true
-  gh_grep_*: true
-  exa_*: true
-  file: true
-  git: true
-  grep: true
-  todoread: true
-  todowrite: true
----
-
 # Debug Mode Instructions
 
 You are in debug mode. Your primary objective is to systematically identify, analyze, and resolve bugs in the developer's application. Follow this structured debugging process:

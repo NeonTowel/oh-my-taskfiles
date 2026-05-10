@@ -14,11 +14,12 @@
       "api": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/models",
       "env": ["AZURE_OPENAI_API_KEY"],
       "models": {
-        "kimi-k2-thinking": {
-          "id": "kimi-k2-thinking",
-          "name": "Kimi K2 Thinking",
+        "kimi-k2.6": {
+          "id": "kimi-k2.6",
+          "name": "Kimi K2.6",
           "options": {
-            "useCompletionUrls": true
+            "useCompletionUrls": true,
+            "maxOutputTokens": 4096
           }
         }
       }
@@ -29,6 +30,14 @@
         "resourceName": "{{ .Env.FOUNDRY_RESOURCE_NAME }}"
       },
       "models": {
+        "gpt-5.3-codex": {
+          "id": "gpt-5.3-codex",
+          "name": "GPT-5.3 Codex"
+        },
+        "gpt-5.5": {
+          "id": "gpt-5.5",
+          "name": "GPT-5.5"
+        },
         "gpt-5-mini": {
           "id": "gpt-5-mini",
           "name": "GPT-5 Mini"
@@ -52,26 +61,43 @@
       },
       "models": {
         "gemini-3.1-pro-preview": {
-            "id": "gemini-3.1-pro-preview",
-            "name": "Gemini 3.1 Pro Preview"
+          "id": "gemini-3.1-pro-preview",
+          "name": "Gemini 3.1 Pro Preview",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false,
+              "thinkingLevel": "high"
+            }
+          }
         },
         "gemini-2.5-pro": {
-            "id": "gemini-2.5-pro",
-            "name": "Gemini 2.5 Pro"
+          "id": "gemini-2.5-pro",
+          "name": "Gemini 2.5 Pro",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false
+            }
+          }
         },
         "gemini-2.5-flash": {
-            "id": "gemini-2.5-flash",
-            "name": "Gemini 2.5 Flash"
+          "id": "gemini-2.5-flash",
+          "name": "Gemini 2.5 Flash",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false,
+              "thinkingBudget": 8000
+            }
+          }
         },
         "gemini-2.5-flash-lite": {
-            "id": "gemini-2.5-flash-lite",
-            "name": "Gemini 2.5 Flash-Lite",
-            "options": {
-                "thinkingConfig": {
-                    "includeThoughts": false,
-                    "thinkingBudget": 0
-                }
+          "id": "gemini-2.5-flash-lite",
+          "name": "Gemini 2.5 Flash-Lite",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false,
+              "thinkingBudget": 0
             }
+          }
         }
       }
     },
@@ -84,21 +110,32 @@
       },
       "models": {
         "gemini-2.5-pro": {
-            "id": "gemini-2.5-pro",
-            "name": "Gemini 2.5 Pro"
+          "id": "gemini-2.5-pro",
+          "name": "Gemini 2.5 Pro",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false
+            }
+          }
         },
         "gemini-2.5-flash": {
           "id": "gemini-2.5-flash",
-          "name": "Gemini 2.5 Flash"
+          "name": "Gemini 2.5 Flash",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false,
+              "thinkingBudget": 8000
+            }
+          }
         },
         "gemini-2.5-flash-lite": {
-            "id": "gemini-2.5-flash-lite",
-            "options": {
-                "thinkingConfig": {
-                    "includeThoughts": false,
-                    "thinkingBudget": 0
-                }
+          "id": "gemini-2.5-flash-lite",
+          "options": {
+            "thinkingConfig": {
+              "includeThoughts": false,
+              "thinkingBudget": 0
             }
+          }
         }
       }
     },
@@ -108,19 +145,39 @@
       "api": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic/v1",
       "env": ["AZURE_OPENAI_API_KEY"],
       "models": {
-        "claude-opus-4-6": {
-            "id": "claude-opus-4-6",
-            "name": "Claude Opus 4.6",
-            "tool_call": true,
-            "attachment": true,
-            "reasoning": true,
-            "temperature": true,
-            "options": {
-                "thinking": {
-                    "type": "enabled",
-                    "budgetTokens": 16000
-                }
+        "claude-opus-4-7": {
+          "id": "claude-opus-4-7",
+          "name": "Claude Opus 4.7",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "thinking": {
+              "type": "adaptive",
+              "effort": "high"
             }
+          }
+        },
+        "claude-opus-4-6": {
+          "id": "claude-opus-4-6",
+          "name": "Claude Opus 4.6",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "thinking": {
+              "type": "adaptive",
+              "effort": "high"
+            }
+          }
         },
         "claude-opus-4-5": {
           "id": "claude-opus-4-5",
@@ -130,6 +187,9 @@
           "reasoning": true,
           "temperature": true,
           "options": {
+            "cache_control": {
+              "type": "ephemeral"
+            },
             "thinking": {
               "type": "enabled",
               "budgetTokens": 16000
@@ -137,18 +197,18 @@
           }
         },
         "claude-sonnet-4-6": {
-            "id": "claude-sonnet-4-6",
-            "name": "Claude Sonnet 4.6",
-            "tool_call": true,
-            "attachment": true,
-            "reasoning": true,
-            "temperature": true,
-            "options": {
-                "thinking": {
-                    "type": "enabled",
-                    "budgetTokens": 16000
-                }
+          "id": "claude-sonnet-4-6",
+          "name": "Claude Sonnet 4.6",
+          "tool_call": true,
+          "attachment": true,
+          "reasoning": true,
+          "temperature": true,
+          "options": {
+            "thinking": {
+              "type": "adaptive",
+              "effort": "high"
             }
+          }
         },
         "claude-sonnet-4-5": {
           "id": "claude-sonnet-4-5",
@@ -158,6 +218,9 @@
           "reasoning": true,
           "temperature": true,
           "options": {
+            "cache_control": {
+              "type": "ephemeral"
+            },
             "thinking": {
               "type": "enabled",
               "budgetTokens": 16000
@@ -172,6 +235,9 @@
           "reasoning": true,
           "temperature": true,
           "options": {
+            "cache_control": {
+              "type": "ephemeral"
+            },
             "thinking": {
               "type": "enabled",
               "budgetTokens": 16000
@@ -181,97 +247,254 @@
       }
     }
   },
+  "model": "azure-cognitive-services/gpt-5.3-codex",
+  "small_model": "google-vertex/gemini-2.5-flash-lite",
   "default_agent": "coordinator",
-  "model": "azure-cognitive-services/gpt-5.4-mini",
-  "small_model": "azure-cognitive-services/gpt-5.4-nano",
-  "autoupdate": "notify",
+  "autoupdate": true,
   "logLevel": "WARN",
   "share": "disabled",
-    "permission": {
-        "external_directory": {
-            "~/.config/opencode/**": "allow",
-            "/tmp/**": "allow"
-        },
-        "edit": {
-            "README.md": "allow",
-            "AGENTS.md": "allow",
-            ".ai/plans/**": "allow",
-            "~/.config/opencode/**": "deny"
+  "formatter": true,
+  "permission": {
+    "external_directory": {
+      "~/.config/opencode/**": "allow",
+      "/tmp/**": "allow"
+    },
+    "bash": {
+      "rm -fr /*": "deny",
+      "rm -f /*": "deny",
+      "rm -r /*": "deny",
+    },
+    "edit": {
+      "README.md": "allow",
+      "AGENTS.md": "allow",
+      ".ai/plans/**": "allow",
+      "~/.config/opencode/**": "deny",
+      "*.env": "deny",
+      ".env": "deny",
+      ".*ignore": "deny"
+    }
+  },
+  "compaction": {
+      "prune": true,
+      "auto": true
+  },
+  "mcp": {
+    "context7": {
+        "enabled": true,
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "headers": {
+            "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
         }
     },
-    "compaction": {
-        "prune": true,
-        "auto": true
+    "Memory": {
+        "type": "local",
+        "command": ["bunx", "-y", "@modelcontextprotocol/server-memory"],
+        "enabled": true
     },
-    "mcp": {
-      "context7": {
-          "enabled": true,
-          "type": "remote",
-          "url": "https://mcp.context7.com/mcp",
-          "headers": {
-              "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
-          }
-      },
-      "Memory": {
-          "type": "local",
-          "command": ["bunx", "-y", "@modelcontextprotocol/server-memory"],
-          "enabled": true
-      },
-      "Azure": {
-          "type": "local",
-          "command": ["bunx", "-y", "@azure/mcp@latest", "server", "start"],
-          "enabled": true
-      },
-      "gh_grep": {
-          "enabled": true,
-          "type": "remote",
-          "url": "https://mcp.grep.app"
-      },
-      "exa": {
-          "enabled": true,
-          "type": "remote",
-          "url": "https://mcp.exa.ai/mcp"
-      }
+    "Azure": {
+        "type": "local",
+        "command": ["bunx", "-y", "@azure/mcp@latest", "server", "start"],
+        "enabled": false
+    },
+    "gh_grep": {
+        "enabled": true,
+        "type": "remote",
+        "url": "https://mcp.grep.app"
+    },
+    "exa": {
+        "enabled": true,
+        "type": "remote",
+        "url": "https://mcp.exa.ai/mcp"
+    }
   },
   "agent": {
-    "build": {
-      "mode": "primary",
-      "tools": {
-        "exa_*": true,
-        "gh_grep_*": true,
-        "context7_*": true,
-        "bash": true,
-        "edit": true,
-        "write": true,
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "list": true,
-        "patch": true,
-        "skill": true,
-        "todowrite": true,
-        "todoread": true,
-        "webfetch": true
+    "coordinator": {
+      "description": "Workflow orchestrator managing specialized development agent teams",
+      "prompt": "{file:./prompts/coordinator.md}",
+      "mode": "all",
+      "steps": 20,
+      "model": "google-vertex/gemini-2.5-flash",
+      "temperature": 0.1,
+      "permission": {
+        "*": "allow",
+        "edit": "ask"
       }
     },
-    "plan": {
-      "mode": "primary",
-      "tools": {
-        "exa_*": true,
-        "gh_grep_*": true,
-        "context7_*": true,
-        "bash": true,
-        "edit": true,
-        "write": true,
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "list": true,
-        "patch": true,
-        "skill": true,
-        "todowrite": true,
-        "todoread": true,
-        "webfetch": true
+    "assistant": {
+      "description": "Read-only investigative middleman for the coordinator",
+      "prompt": "{file:./prompts/assistant.md}",
+      "mode": "subagent",
+      "steps": 40,
+      "model": "google-vertex/gemini-2.5-flash",
+      "temperature": 0.2,
+      "permission": {
+        "*": "allow",
+        "edit": "deny",
+        "todowrite": "deny",
+        "task": "deny",
+        "bash": {
+          "*": "deny",
+          "git log*": "allow",
+          "git diff*": "allow",
+          "git show*": "allow",
+          "git blame*": "allow",
+          "git status*": "allow",
+          "cat *": "allow",
+          "head *": "allow",
+          "tail *": "allow",
+          "find *": "allow",
+          "rg *": "allow",
+          "fd *": "allow",
+          "wc *": "allow"
+        }
+      }
+    },
+    "architect": {
+      "description": "Software architect designing modular, maintainable solutions",
+      "prompt": "{file:./prompts/architect.md}",
+      "mode": "all",
+      "steps": 60,
+      "model": "google-vertex-global/gemini-3.1-pro-preview",
+      "temperature": 0.6,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "architect-claude": {
+      "description": "Software architect designing modular, maintainable solutions",
+      "prompt": "{file:./prompts/architect.md}",
+      "mode": "all",
+      "steps": 60,
+      "model": "azure-anthropic/claude-opus-4-7",
+      "temperature": 0.6,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "debug-agent": {
+      "description": "Debug your application to find and fix a bug",
+      "prompt": "{file:./prompts/debug-agent.md}",
+      "mode": "all",
+      "steps": 40,
+      "model": "google-vertex/gemini-2.5-pro",
+      "temperature": 0.2,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "developer": {
+      "description": "Software engineer implementing features following architectural specifications",
+      "prompt": "{file:./prompts/developer.md}",
+      "mode": "all",
+      "steps": 60,
+      "model": "azure-cognitive-services/gpt-5.3-codex",
+      "temperature": 0.4,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "senior-developer": {
+      "description": "Senior software engineer implementing high quality features following architectural specifications",
+      "prompt": "{file:./prompts/senior-developer.md}",
+      "mode": "all",
+      "steps": 60,
+      "model": "google-vertex-global/gemini-3.1-pro-preview",
+      "temperature": 0.4,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "senior-developer-claude": {
+      "description": "Senior software engineer implementing high quality features following architectural specifications",
+      "prompt": "{file:./prompts/senior-developer.md}",
+      "mode": "all",
+      "steps": 60,
+      "model": "azure-anthropic/claude-sonnet-4-6",
+      "temperature": 0.4,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "planner": {
+      "description": "Generate an implementation plan for new features or refactoring existing code",
+      "prompt": "{file:./prompts/planner.md}",
+      "mode": "all",
+      "steps": 40,
+      "model": "google-vertex/gemini-2.5-pro",
+      "temperature": 0.3,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "devops-architect": {
+      "description": "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments",
+      "prompt": "{file:./prompts/devops-architect.md}",
+      "mode": "all",
+      "steps": 40,
+      "model": "google-vertex/gemini-2.5-pro",
+      "temperature": 0.6,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "sre": {
+      "description": "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments",
+      "prompt": "{file:./prompts/sre.md}",
+      "mode": "all",
+      "steps": 20,
+      "model": "google-vertex/gemini-2.5-pro",
+      "temperature": 0.3,
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "refactor": {
+      "description": "Refactoring specialist improving code quality while preserving functionality",
+      "prompt": "{file:./prompts/refactor.md}",
+      "mode": "subagent",
+      "steps": 40,
+      "model": "azure-moonshot/kimi-k2.6",
+      "options": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "maxTokens": 30000
+      },
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "reviewer": {
+      "description": "Refactoring specialist improving code quality while preserving functionality",
+      "prompt": "{file:./prompts/refactor.md}",
+      "mode": "subagent",
+      "steps": 20,
+      "model": "azure-moonshot/kimi-k2.6",
+      "options": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "maxTokens": 5000
+      },
+      "permission": {
+        "*": "allow"
+      }
+    },
+    "tester": {
+      "description": "Test engineer validating code correctness and coverage",
+      "prompt": "{file:./prompts/tester.md}",
+      "mode": "all",
+      "steps": 40,
+      "model": "azure-moonshot/kimi-k2.6",
+      "options": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "maxTokens": 10000
+      },
+      "permission": {
+        "*": "allow"
       }
     }
   }

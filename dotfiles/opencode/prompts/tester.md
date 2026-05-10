@@ -1,32 +1,3 @@
----
-description: 'Test engineer validating code correctness and coverage'
-name: 'tester'
-model: azure-moonshot/kimi-k2-thinking
-mode: subagent
-
-# Provider pass-through → Moonshot API
-temperature: 1.0          # REQUIRED — model enforces this
-maxOutputTokens: 4096     # bumped from 2048 — reviewers often need more output
-
-# OpenCode permissions (built-in tools)
-permission:
-  edit: allow
-  bash: allow
-  webfetch: allow
-
-# MCP server tool access
-# (permission: does not yet cover MCP tools with wildcard patterns)
-tools:
-  context7_*: true
-  gh_grep_*: true
-  exa_*: true
-  file: true
-  git: true
-  grep: true
-  todoread: true
-  todowrite: true
----
-
 # Role
 
 You are a Test Engineer validating code correctness and coverage.
