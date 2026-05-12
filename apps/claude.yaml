@@ -27,6 +27,7 @@ tasks:
 
   configure:windows:
     internal: true
+    silent: true
     platforms: [windows]
     deps: ["::tools:gomplate:install"]
     cmds:
@@ -81,6 +82,7 @@ tasks:
 
   configure:linux:
     internal: true
+    silent: true
     platforms: [linux]
     deps: ["::tools:gomplate:install"]
     cmds:
@@ -130,35 +132,107 @@ tasks:
         gomplate -f "dotfiles/claude/settings.json.tmpl" -o "$HOME/.claude/settings.json"
         {{ .gum_ok }} "Claude settings have been configured successfully."
         {{ end }}
+      - task: agents
+      - task: mcp
 
-  slash-commands:
-    desc: "[CLAUDE] Configure Claude slash commands"
+  agents:
+    desc: "[CLAUDE] Configure Claude agents (and skills)"
+    silent: true
     vars:
-      SLASH_COMMANDS_SOURCE_DIR: "dotfiles/claude/commands"
-      SLASH_COMMANDS_DEST_DIR: "$HOME/.claude/commands"
-    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
+      CONFIG_SOURCE_PATH: "dotfiles/claude"
+      CONFIG_DEST_PATH: "$HOME/.claude"
+    dir: "{{ .CONFIG_SOURCE_PATH }}"
     sources:
-      - "*.md"
+      - agents/*.md
+      - skills/*.md
+      - shared/*.md
+      - AGENTS.md
     method: none
     cmds:
-      - |
-        if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
-          mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
+      - |-
+        if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+          mkdir -p "{{ .CONFIG_DEST_PATH }}"
         fi
       - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          {{- if ne $dest_path "opencode" -}}
+          mkdir -p "{{ joinPath .CONFIG_DEST_PATH $dest_path }}"
+          {{- end }}
+          cp "{{ .ITEM }}" "{{joinPath .CONFIG_DEST_PATH .ITEM }}"
+      - echo "Agents configuration saved successfully."
+
+  mcp:
+    desc: "[CLAUDE] Configure Claude MCP servers"
+    silent: true
+    vars:
+      SERVERS:
+        - name: gh_grep
+          scope: user
+          transport: http
+          url: https://mcp.grep.app
+        - name: exa
+          scope: user
+          transport: http
+          url: https://mcp.exa.ai/mcp
+          headers:
+            - 'X-Api-Key: \${EXA_API_KEY}'
+        - name: context7
+          scope: user
+          transport: http
+          url: https://mcp.context7.com/mcp
+          headers:
+            - 'CONTEXT7_API_KEY: \${CONTEXT7_API_KEY}'
+      REPLACE: '{{ eq .REPLACE "true" }}'
+    preconditions:
+      - sh: command -v claude >/dev/null 2>&1
+        msg: "'claude' must be installed first"
+    cmds:
+      - defer: |
+          {{if .EXIT_CODE}}
+          gum style \
+            --foreground 196 --border-foreground 196 --border double \
+            --align center --width 50 --margin "1 2" --padding "2 4" \
+            ' ❌ ERROR ' 'Failed to add Claude MCP servers!'
+          {{end}}
+      - for: { var: SERVERS, as: SERVER }
         cmd: |
-          cp "{{joinPath .ITEM | osClean}}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM | osDir}}"
+            {{- if eq .REPLACE "true" -}}
+            if claude mcp get {{ .SERVER.name }} >/dev/null 2&>1; then
+              {{ .gum_warn }} "{{ .SERVER.name }} already exists, replacing..."
+              claude mcp remove {{ .SERVER.name }}
+            {{- else -}}
+            if claude mcp get {{ .SERVER.name }} >/dev/null 2&>1; then
+              {{ .gum_warn }} "{{ .SERVER.name }} already exists, skipping..."
+            else
+            {{- end }}
+              claude mcp add \
+                --transport {{ .SERVER.transport }} \
+                {{ .SERVER.name }}
+                {{- if (eq .SERVER.transport "http") }} \
+                {{ .SERVER.url }}
+                {{- end }}
+                {{- if .SERVER.headers }} \
+                {{- range $i, $header := .SERVER.headers }}
+                --header "{{ $header }}"{{ if (lt (add $i 1) (len $.SERVER.headers)) }} \{{ end }}
+                {{- end }}
+                {{- end }}
+                {{- if .SERVER.scope }} \
+                --scope {{ .SERVER.scope }}
+                {{- end }}
+                {{ .gum_info }} "{{ .SERVER.name }} added."
+            fi
+      - '{{ .gum_ok }} "Claude MCP servers configured."'
+
+  install:darwin:
+    - echo "Not implemented yet."
+
+  configure:darwin:
+    - echo "Not implemented yet."
 
   install:
     desc: "[CLAUDE] ✨ Install Claude"
     silent: true
     cmds:
-      - task: install:windows
-        platforms: [windows]
-      - task: configure:windows
-        platforms: [windows]
-
-      - task: install:linux
-        platforms: [linux]
-      - task: configure:linux
-        platforms: [linux]
+      - task: "install:{{ OS }}"
+      - task: "configure:{{ OS }}"
