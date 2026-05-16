@@ -29,6 +29,7 @@ includes:
   k8s: tools/k8s.yaml
   lazygit: tools/lazygit.yaml
   lsd: tools/lsd.yaml
+  nu: tools/nushell.yaml
   nvim: tools/nvim.yaml
   omt: tools/omt.yaml
   openshift: tools/openshift.yaml

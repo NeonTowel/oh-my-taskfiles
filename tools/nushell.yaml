@@ -1,0 +1,46 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile tools/nushell.yaml
+
+  install:
+    desc: "[NU] ✨ Install nushell"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: configure:windows
+        platforms: [windows]
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: nu
+
+  configure:
+    desc: "[NU] Configure nushell"
+    silent: true
+    cmds:
+      - task: configure:windows
+        platforms: [windows]
+
+  configure:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - |
+        if [ ! -d "$HOME\AppData\Roaming\nushell" ]; then
+          echo "Creating config directory in: $HOME\AppData\Roaming\alacritty"
+          mkdir -p "$HOME\AppData\Roaming\nushell"
+        fi
+        echo "Copying config.nu to $HOME\AppData\Roaming\nushell\config.nu"
+        cp dotfiles/nushell/config.nu "$HOME\AppData\Roaming\nushell\config.nu"
+        echo "config.nu has been copied to $HOME\AppData\Roaming\nushell\config.nu"
+        echo "Copying env.nu to $HOME\AppData\Roaming\nushell\env.nu"
+        cp dotfiles/nushell/env.nu "$HOME\AppData\Roaming\nushell\env.nu"
+        echo "env.nu has been copied to $HOME\AppData\Roaming\nushell\env.nu"
