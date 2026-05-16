@@ -20,19 +20,19 @@
 # Clear the screen
 alias cls = clear
 
-alias ll='lsd -lh'
-alias ls='lsd'
-alias tree='ls --tree'
+alias ll = 'lsd -lh'
+alias ls = 'lsd'
+alias tree = 'ls --tree'
 
-alias cat='bat'
-alias ccat='bat --style=-grid,-numbers --paging=never'
+alias cat = 'bat'
+alias ccat = 'bat --style=-grid,-numbers --paging=never'
 
-alias gl='git log --graph --pretty=format:"%C(white)%s%Creset" --abbrev-commit'
-alias gll='git log --graph --decorate --pretty=oneline --abbrev-commit'
-alias gs='git status --renames'
+alias gl = 'git log --graph --pretty=format:"%C(white)%s%Creset" --abbrev-commit'
+alias gll = 'git log --graph --decorate --pretty=oneline --abbrev-commit'
+alias gs = 'git status --renames'
 
-alias ag='awesome-git'
+alias ag = 'awesome-git'
 
-alias k=kubectl
+alias k = kubectl
 
-alias vim=helix
+alias vim = helix
