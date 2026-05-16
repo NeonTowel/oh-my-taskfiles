@@ -68,7 +68,7 @@ function deduplicate-path() {
 }
 
 $global:__COMMANDS = @{}
-@('omt', 'which', 'lsd', 'bat', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
+@('omt', 'which', 'lsd', 'bat', 'fnm', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
     $global:__COMMANDS[$_] = [bool](Get-Command -Name $_ -CommandType Application -ErrorAction SilentlyContinue)
 }
 
@@ -218,6 +218,11 @@ if ($global:__COMMANDS['claude']) {
             $env:CLAUDE_CODE_GIT_BASH_PATH = "$HOME\scoop\shims\bash.exe"
         }
     }
+}
+
+# fnm (node) configuration
+if ($global:__COMMANDS['fnm']) {
+  fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 }
 
 if ($pathsToAdd.Count -gt 0) {
