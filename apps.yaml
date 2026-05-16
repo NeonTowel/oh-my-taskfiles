@@ -12,7 +12,7 @@ includes:
   gemini: apps/gemini.yaml
   heroic: apps/heroic.yaml
   joplin: apps/joplin.yaml
-  librehardwaremonitor: apps/librehardwaremonitor.yaml
+  lite-xl: apps/lite-xl.yaml
   mods: apps/mods.yaml
   opencode: apps/opencode.yaml
   podman-desktop: apps/podman-desktop.yaml

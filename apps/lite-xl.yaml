@@ -1,0 +1,147 @@
+version: '3'
+
+tasks:
+  default:
+    - task --list --taskfile apps/lite-xl.yaml
+
+  # public tasks
+
+  install:
+    desc: "[LITE-XL] ✨ Install Lite XL text editor"
+    silent: true
+    cmds:
+      - task: "install:{{ OS }}"
+      - task: configure
+
+  configure:
+    desc: "[LITE-XL] Configure Lite XL text editor"
+    silent: true
+    cmds:
+      - task: "configure:{{ OS }}"
+
+  # internal tasks
+
+  # Windows
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:install
+        vars:
+          APP: lite-xl
+
+  configure:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: configure:windows:settings
+      - task: configure:windows:plugins
+
+  configure:windows:settings:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      CONFIG_FILE: init.lua
+      CONFIG_SOURCE_PATH: "dotfiles/lite-xl"
+      CONFIG_DEST_PATH: "$HOME/.config/lite-xl"
+      CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
+      CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
+      CONFIG_FILE_EXISTS:
+          sh: >-
+              [ -f "{{ .CONFIG_DEST_FILE }}" ] && echo "yes" || true
+    cmds:
+    - |
+      if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+        mkdir -p "{{ .CONFIG_DEST_PATH }}"
+      fi
+      {{ if .UNATTENDED }}
+      {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
+      if [ ! -f "{{ .CONFIG_DEST_FILE }}" ]; then
+        cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+        {{ .gum_ok }} "Configuration saved successfully."
+      else
+        {{ .gum_warn }} "Configuration already exist, skipping configuration."
+      fi
+      {{ else }}
+      if [ -f "{{ .CONFIG_DEST_FILE }}" ]; then
+        if ! gum confirm "Configuration already exist, overwrite?"; then
+          {{ .gum_warn }} "Configuration already exist, skipping configuration."
+          exit 0
+        fi
+      fi
+      cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
+      {{ .gum_ok }} "Configuration saved successfully."
+      {{ end }}
+
+  configure:windows:plugins:
+    platforms: [windows]
+    internal: true
+    silent: true
+    vars:
+      PLUGINS:
+        - rose-pine-dawn
+        - rose-pine-moon
+        - catppuccin-mocha
+        - catppuccin-macchiato
+        - catppuccin-frappe
+        - nerdicons
+        - editorconfig
+        - minimap
+        - rainbowparen
+        - selectionhighlight
+        - wordcount
+        - language_powershell
+        - language_ruby
+        - language_rust
+        - language_sh
+        - language_toml
+        - language_ts
+        - language_yaml
+    cmds:
+      - |
+        if ! command -v lpm >/dev/null 2>&1; then
+          echo "Installing Lite XL plugin manager..."
+          curl -L "https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.x86_64-windows.exe" -o "~/bin/lpm.exe"
+          lpm install plugin_manager --assume-yes
+        fi
+      - echo "Installing Lite XL plugins..."
+      - for: { var: PLUGINS, as: PLUGIN }
+        cmd: |
+          lpm install {{ .PLUGIN }}
+      - echo "Plugins installed successfully."
+
+  # Linux
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - echo "Not implemented yet."
+
+  configure:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - echo "Not implemented yet."
+
+  # MacOS (Darwin)
+
+  install:darwin:
+    platforms: [darwin]
+    internal: true
+    silent: true
+    cmds:
+      - echo "Not implemented yet."
+
+  configure:darwin:
+    platforms: [darwin]
+    internal: true
+    silent: true
+    cmds:
+      - echo "Not implemented yet."
