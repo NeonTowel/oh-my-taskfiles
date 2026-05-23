@@ -1,72 +1,7 @@
 version: '3'
 
 tasks:
-  dra:present:
-    internal: true
-    status:
-      - command -v dra
-    cmds:
-      - task: :::tools:dra:install
-
-  install:v3:
-    if: '{{eq (default "false" .USE_V3) "true"}}'
-    internal: true
-    deps: [ dra:present ]
-    vars:
-      GH_AUTH_TOKEN_YAML:
-        sh: |
-          if [ -f ~/.config/gh/hosts.yml ]; then
-            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
-          else
-            echo ""
-          fi
-      GH_AUTH_TOKEN:
-        ref: 'fromYaml .GH_AUTH_TOKEN_YAML'
-    cmds:
-      - |
-        if ! command -v {{ .EXECUTABLE }} >/dev/null 2>&1; then
-          attempts=0
-          max_attempts=3
-          sleep_times=(5 10 15)
-          {{- if (and
-            .GH_AUTH_TOKEN
-            (gt (len .GH_AUTH_TOKEN) 0)
-            (hasKey .GH_AUTH_TOKEN "oauth_token")
-          ) }}
-          export DRA_GITHUB_TOKEN="{{ .GH_AUTH_TOKEN.oauth_token }}"
-          {{- end }}
-          while ! ({{ .gum_spin }}dra download {{ if .SELECT_ASSET }}--select '{{ .SELECT_ASSET }}'{{ else }}--automatic{{ end }} --output '{{ expandenv .BINARY_PATH }}' {{ if .BINARY_RELEASE }}--install{{ else }}--install-file '{{ .EXECUTABLE }}'{{ end }} {{ .REPO }}); do
-            if [ $attempts -ge $max_attempts ]; then
-            {{ .gum_error }} " ⚠️   Install failed because we are unable to download the asset, bailing out..."
-              exit 1
-            fi
-            wait_time=${sleep_times[$attempts]}
-            {{ .gum_warn }} " ⏳  Download failed, retrying in ${wait_time}s:"
-            {{ .gum_spin }}sleep $wait_time
-            ((attempts++))
-          done
-          if [ -x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
-            {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
-          else
-            {{- if .ALT_EXECUTABLE }}
-            if [ -f "{{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}" ]; then
-              mv "{{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}" "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
-              chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
-            else
-              {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .ALT_EXECUTABLE }}"
-            fi
-            {{- else }}
-            {{ .gum_error }} " ⚠️   Install failed: Extracted binary not found or not executable: {{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
-            {{- end }}
-          fi
-        {{- if .CLI_VERBOSE }}
-        else
-          {{ .gum_info }} "{{ .EXECUTABLE }} is already installed."
-          {{- end }}
-        fi
-
-  install:v2:
-    if: '{{eq (default "true" .USE_V2) "true"}}'
+  install:exec:
     internal: true
     silent: false
     requires:
@@ -194,10 +129,7 @@ tasks:
     status:
       - command -v {{ .EXECUTABLE }}
     cmds:
-      - task: install:v2
-        vars:
-          EXECUTABLE: '{{ .EXECUTABLE }}'
-      - task: install:v3
+      - task: install:exec
         vars:
           EXECUTABLE: '{{ .EXECUTABLE }}'
 
