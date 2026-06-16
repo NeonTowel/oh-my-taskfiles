@@ -57,12 +57,14 @@
     "dock": "left",
     "cancel_generation_on_terminal_stop": false,
     "single_file_review": false,
-    "play_sound_when_agent_done": false,
+    "play_sound_when_agent_done": "never",
     "message_editor_min_lines": 4,
     "use_modifier_to_send": false,
     "expand_edit_card": true,
     "expand_terminal_card": true,
     "enable_feedback": true,
+
+    "commit_message_instructions": "Write commit message in a short and punchy format following conventional commits style and utf8 gitmoji prefix in the header, prefer bullet point list (dash), overly simplified but still relevant and technical.",
 
     "tool_permissions": {
       "default": "confirm",
