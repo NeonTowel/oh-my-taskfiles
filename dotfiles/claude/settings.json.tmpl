@@ -1,12 +1,12 @@
 {
   "env": {
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-7",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6",
-    "CLAUDE_CODE_SHELL": "bash",
+    "CLAUDE_CODE_SHELL": "{{ .Env.CLAUDE_CODE_GIT_BASH_PATH }}",
     "CLAUDE_CODE_RESUME_INTERRUPTED_TURN": "1",
     "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "200000",
-    "ANTHROPIC_FOUNDRY_RESOURCE": "{{ .Env.ANTHROPIC_FOUNDRY_RESOURCE }}",
+    "ANTHROPIC_FOUNDRY_RESOURCE": "{{ .Env.ANTHROPIC_FOUNDRY_BASE_URL }}",
     "ANTHROPIC_FOUNDRY_API_KEY": "{{ .Env.ANTHROPIC_FOUNDRY_API_KEY }}",
     "CLAUDE_CODE_USE_FOUNDRY": "{{ .Env.CLAUDE_CODE_USE_FOUNDRY }}",
     "CLAUDE_CODE_GIT_BASH_PATH": "{{ .Env.CLAUDE_CODE_GIT_BASH_PATH }}",
@@ -32,8 +32,7 @@
   },
   "permissions": {
     "additionalDirectories": [
-      "~/.claude/shared",
-      "/tmp/**"
+      "~/.claude/shared"
     ],
     "allow": [
       "WebFetch",
@@ -116,10 +115,5 @@
       "Searching for meaning in a pile of floats",
       "Preparing vaguely helpful insights"
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 2
   }
 }

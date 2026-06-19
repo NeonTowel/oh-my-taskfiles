@@ -183,6 +183,12 @@ tasks:
           url: https://mcp.context7.com/mcp
           headers:
             - 'CONTEXT7_API_KEY: \${CONTEXT7_API_KEY}'
+        - name: memory
+          scope: user
+          transport: stdio
+          cmd: npx -y @modelcontextprotocol/server-memory
+          env:
+            - 'MEMORY_FILE_PATH="~/.mcp-memory.jsonl"'
       REPLACE: '{{ eq .REPLACE "true" }}'
     preconditions:
       - sh: command -v claude >/dev/null 2>&1
@@ -217,8 +223,16 @@ tasks:
                 --header "{{ $header }}"{{ if (lt (add $i 1) (len $.SERVER.headers)) }} \{{ end }}
                 {{- end }}
                 {{- end }}
+                {{- if .SERVER.env }} \
+                {{- range $i, $env := .SERVER.env }}
+                --env {{ $env }}{{ if (lt (add $i 1) (len $.SERVER.env)) }} \{{ end }}
+                {{- end }}
+                {{- end }}
                 {{- if .SERVER.scope }} \
                 --scope {{ .SERVER.scope }}
+                {{- end }}
+                {{- if (eq .SERVER.transport "stdio") }} \
+                -- {{ .SERVER.cmd }}
                 {{- end }}
                 {{ .gum_info }} "{{ .SERVER.name }} added."
             fi

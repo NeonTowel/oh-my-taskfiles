@@ -1,7 +1,27 @@
 ---
-name: Coordinator
-description: Workflow orchestrator for complex multi-agent tasks. Delegates to specialized subagents (architect, developer, tester, reviewer), tracks progress with TodoWrite, and aggregates results. Use for new features, complex bugs, refactoring campaigns, and deployment tasks.
-model: claude-haiku-4-5
+name: coordinator
+description: Workflow orchestrator for complex multi-agent tasks. Delegates to specialized subagents (architect, developer, tester, reviewer), tracks progress with TodoWrite, and aggregates results. Use for new features, complex bugs, refactoring campaigns, and deployment tasks. Examples:
+
+<example>
+Context: User wants to implement a complete new feature end-to-end.
+user: "Add a password reset flow to the app."
+assistant: "I'll use the coordinator agent to orchestrate design, implementation, testing, and review."
+<commentary>
+Multi-phase feature work requiring multiple specialist agents — coordinator manages the pipeline.
+</commentary>
+</example>
+
+<example>
+Context: User has a complex bug that needs investigation and a production-grade fix.
+user: "Users are randomly getting logged out. Investigate and fix this."
+assistant: "I'll use the coordinator agent to route this through investigation, fix, and QA."
+<commentary>
+Complex bug requiring multiple agent types in sequence — coordinator owns the pipeline.
+</commentary>
+</example>
+
+model: haiku
+color: magenta
 tools:
   - Bash
   - Read
@@ -100,8 +120,8 @@ external tools return current, accurate results.
 
 | Situation | Tool |
 |---|---|
-| Library / framework docs | `context7_*` first |
-| Unsure how to implement X | `gh_grep_*` for real-world patterns |
-| Latest version / changelog | `web_search_exa` |
-| Found a relevant URL | `crawling` |
-| Code examples from OSS | `get_code_context_exa` |
+| Library / framework docs | `mcp__context7__*` first |
+| Unsure how to implement X | `mcp__gh_grep__searchGitHub` for real-world patterns |
+| Latest version / changelog | `mcp__exa__web_search_exa` |
+| Found a relevant URL | `mcp__exa__web_fetch_exa` |
+| Code examples from OSS | `mcp__exa__web_search_exa` |
