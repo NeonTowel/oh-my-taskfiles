@@ -82,6 +82,10 @@ tasks:
       KEY         = file name where the certificate private key will be saved to (eg. cert-key.pem)
       SAN         = subject's alternative name (eg. dog.domain.com)
       VALIDITY    = validity duration of the certificate (eg. '365d' or '24h')
+      QUICK       = create the certificate quickly while using defaults for most parameters but the subject
+
+      You can pass additional cli arguments to step cli using '--' followed by the step cli arguments, for
+      example: '-- --kty EC --curve P-256'.
     cmds:
       - |
         {{- if not .SUBJECT }}
@@ -90,6 +94,7 @@ tasks:
         SUBJECT="{{ .SUBJECT }}"
         {{- end }}
 
+        {{- if not .QUICK }} # standard configuration
         {{- if not .CERT }}
         CERT_FILE=$(gum input --placeholder "file name to save cert (eg. cert.pem)" --header "New Certificate: Cert file")
         {{- else }}
@@ -113,4 +118,22 @@ tasks:
         {{- else }}
         VALIDITY_DURATION="{{ .VALIDITY }}"
         {{- end }}
-        step ca certificate "${SUBJECT}" "${CERT_FILE}" "${KEY_FILE}" --san "${SAN}" --not-after "${VALIDITY_DURATION}" --kty EC --curve P-25
+
+        {{- else }} # quick configuration
+        CERT_FILE="${SUBJECT//\//}-cert.pem"
+        KEY_FILE="${SUBJECT//\//}-key.pem"
+
+        {{- if not .SAN }}
+        SAN="${SUBJECT}"
+        {{- else }}
+        SAN="{{ .SAN }}"
+        {{- end }}
+
+        {{- if not .VALIDITY }}
+        VALIDITY_DURATION="365d"
+        {{- else }}
+        VALIDITY_DURATION="{{ .VALIDITY }}"
+        {{- end }}
+
+        {{- end }}
+        step ca certificate "${SUBJECT}" "${CERT_FILE}" "${KEY_FILE}" --san "${SAN}" --not-after "${VALIDITY_DURATION}"{{ if .CLI_ARGS }} {{ .CLI_ARGS }}{{ end }}
