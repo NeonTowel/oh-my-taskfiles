@@ -1,0 +1,116 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[SMALLSTEP] ✨  "
+      REPO: smallstep/cli
+      DOWNLOAD_LINUX: 'step_linux_%s_amd64.tar.gz'
+      DOWNLOAD_DARWIN: 'step_darwin_%d_amd64.tar.gz'
+      DOWNLOAD_WINDOWS: ''
+      TAR_HAS_SUBFOLDER: true
+      TAR_STRIP_COMPONENTS: 2
+      BINARY_LINUX: '**/step'
+      BINARY_DARWIN: '**/step'
+      BINARY_WINDOWS: 'step.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/smallstep.yaml
+
+  install:
+    desc: "[SMALLSTEP] ✨ Install Smallstep CA cli"
+    silent: true
+    cmds:
+      - task: "install:{{ OS }}"
+
+  install:windows:
+    internal: true
+    silent: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:buckets:ensure
+        vars:
+          BUCKET: smallstep
+          BUCKET_URL: https://github.com/smallstep/scoop-bucket.git
+      - task: ::scoop:install
+        vars:
+          APP: smallstep/step
+
+  install:linux:
+    aliases: [ 'install:darwin']
+    platforms: [linux, darwin]
+    internal: true
+    silent: true
+    cmds:
+      - task: github:install
+
+  configure:
+    deps: [ '::tools:gum:install' ]
+    desc: "[SMALLSTEP] Configure step client for your Smallstep CA"
+    silent: true
+    cmds:
+      - |
+        echo "If you have already configured Smallstep CA in https://smallstep.com/app/, you can configure step cli."
+        echo ""
+        if gum confirm "Do you want to configure step cli to use your Smallstep CA?"; then
+          SMALLSTEP_CA_URL=$(gum input --placeholder "Enter your CA URL" --header "Smallstep CA")
+          SMALLSTEP_CA_FINGERPRINT=$(gum input --placeholder "Enter your CA fingerprint" --header "Smallstep CA")
+          if step ca bootstrap --ca-url "${SMALLSTEP_CA_URL}" --fingerprint "${SMALLSTEP_CA_FINGERPRINT}"; then
+            {{ .gum_ok }} "step cli configured successfully."
+          else
+            {{ .gum_info }} "step cli configuring failed."
+          fi
+        else
+          {{ .gum_info }} "Skipped step cli configuration."
+        fi
+
+  certificate:
+    desc: "[SMALLSTEP] Create a new certificate"
+    deps: [ '::tools:gum:install' ]
+    silent: true
+    summary: |
+      Create a new certificate using step cli and Smallstep CA, if configured.
+
+      Supports optional arguments that, when provided, selectively skips interactive setup.
+
+      SUBJECT     = subject of the certificate (eg. cat.domain.com)
+      CERT        = file name where the certificate will be saved to (eg. cert.pem)
+      KEY         = file name where the certificate private key will be saved to (eg. cert-key.pem)
+      SAN         = subject's alternative name (eg. dog.domain.com)
+      VALIDITY    = validity duration of the certificate (eg. '365d' or '24h')
+    cmds:
+      - |
+        {{- if not .SUBJECT }}
+        SUBJECT=$(gum input --placeholder "subject (eg. cat.domain.com)" --header "New Certificate: Subject")
+        {{- else }}
+        SUBJECT="{{ .SUBJECT }}"
+        {{- end }}
+
+        {{- if not .CERT }}
+        CERT_FILE=$(gum input --placeholder "file name to save cert (eg. cert.pem)" --header "New Certificate: Cert file")
+        {{- else }}
+        CERT_FILE="{{ .CERT }}"
+        {{- end }}
+
+        {{- if not .KEY }}
+        KEY_FILE=$(gum input --placeholder "file name to save cert key (eg. cert-key.pem)" --header "New Certificate: Key file")
+        {{- else }}
+        KEY_FILE="{{ .KEY }}"
+        {{- end }}
+
+        {{- if not .SAN }}
+        SAN=$(gum input --placeholder "subject alternative name (eg. dog.domain.com)" --header "New Certificate: SAN")
+        {{- else }}
+        SAN="{{ .SAN }}"
+        {{- end }}
+
+        {{- if not .VALIDITY }}
+        VALIDITY_DURATION=$(gum input --placeholder "validity duration (eg. 365d or 24h)" --header "New Certificate: Validity")
+        {{- else }}
+        VALIDITY_DURATION="{{ .VALIDITY }}"
+        {{- end }}
+        step ca certificate "${SUBJECT}" "${CERT_FILE}" "${KEY_FILE}" --san "${SAN}" --not-after "${VALIDITY_DURATION}" --kty EC --curve P-25

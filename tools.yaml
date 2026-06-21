@@ -35,6 +35,7 @@ includes:
   openshift: tools/openshift.yaml
   pwsh: tools/pwsh.yaml
   rose-pine-cursor: tools/rose-pine-cursor.yaml
+  smallstep: tools/smallstep.yaml
   starship: tools/starship.yaml
   task: tools/task.yaml
   tilt: tools/tilt.yaml

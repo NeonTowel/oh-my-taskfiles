@@ -1,7 +1,7 @@
 version: '3'
 
 includes:
-  buckets: 
+  buckets:
     internal: true
     taskfile: scoop-buckets.yaml
 
@@ -9,23 +9,18 @@ tasks:
   install:
     platforms: [windows]
     internal: true
+    vars:
+      SCOOP_HOME: '{{ default (env "USERPROFILE") (env "HOME") | replace "\\" "/" }}/scoop'
     required:
       vars: [ APP ]
     cmds:
-      - defer: |
-          {{if .EXIT_CODE}}
-          gum style \
-            --foreground 196 --border-foreground 196 --border double \
-            --align center --width 50 --margin "1 2" --padding "2 4" \
-            ' ❌ ERROR ' 'Installation of {{ .APP }} failed with code {{.EXIT_CODE}}!'
-          {{end}}
       - scoop install {{ .APP }} || true
-      - scoop list | findstr /C:"{{ .APP }}" >nul
-      - task: :install-success
+      - if: 'test -d "{{ .SCOOP_HOME }}/apps/{{ .APP }}"'
+        task: :install-success
         vars:
           APP: "{{ .APP }}"
     status:
-      - scoop list | findstr /C:"{{ .APP }}" >nul
+      - test -d "{{ .SCOOP_HOME }}/apps/{{ .APP }}"
 
   neontowel-install:
     platforms: [windows]

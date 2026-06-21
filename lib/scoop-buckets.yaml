@@ -3,20 +3,21 @@ version: '3'
 tasks:
   add:
     aliases: [ ensure ]
+    vars:
+      SCOOP_HOME: '{{ default (env "USERPROFILE") (env "HOME") | replace "\\" "/" }}/scoop'
     requires:
       vars: [ BUCKET ]
+    status:
+      - test -d "{{ .SCOOP_HOME }}/buckets/{{ .BUCKET }}"
     cmds:
       - |
-        # if scoop bucket does not already exist, add it
-        if ! scoop bucket list | findstr /C:"{{ .BUCKET }}" >nul; then
-          {{ if .BUCKET_URL }}
-          scoop bucket add {{ .BUCKET }} {{ .BUCKET_URL }}
-          {{ else }}
-          scoop bucket add {{ .BUCKET }}
-          {{ end }}
-          if ! [ "{{ .UNATTENDED }}" = "true" ]; then
-            {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been added successfully."
-          fi
+        {{ if .BUCKET_URL }}
+        scoop bucket add {{ .BUCKET }} {{ .BUCKET_URL }}
+        {{ else }}
+        scoop bucket add {{ .BUCKET }}
+        {{ end }}
+        if ! [ "{{ .UNATTENDED }}" = "true" ]; then
+          {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been added successfully."
         fi
 
   list:
@@ -29,7 +30,7 @@ tasks:
     cmds:
       - |
         # if scoop bucket exists, remove it
-        if scoop bucket list | findstr /C:"{{ .BUCKET }}"; then
+        if [ -d "{{ .SCOOP_HOME }}/buckets/{{ .BUCKET }}" ]; then
           scoop bucket rm {{ .BUCKET }}
           if ! [ "{{ .UNATTENDED }}" = "true" ]; then
             {{ .gum_ok }} " ✅ Scoop bucket {{ .BUCKET }} has been removed successfully."
