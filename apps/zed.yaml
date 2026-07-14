@@ -63,6 +63,7 @@ tasks:
           gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
           {{ .gum_info }} " Remember to set these environment variables to your Foundry API KEY:"
           {{ .gum_info }} "  - ZED_OPEN_AI_COMPATIBLE_EDIT_PREDICTION_API_KEY"
+          {{ .gum_info }} "  - FOUNDRY_ANTHROPIC_API_KEY"
           {{ .gum_info }} "  - FOUNDRY_CHAT_API_KEY"
           {{ .gum_info }} "  - FOUNDRY_RESPONSES_API_KEY"
         else
@@ -71,8 +72,55 @@ tasks:
         {{ .gum_ok }} "Configuration saved successfully."
         {{ end }}
 
+  skills:
+    desc: "[ZED] Configure skills"
+    vars:
+      SLASH_COMMANDS_SOURCE_DIR: '{{ "dotfiles/opencode/skills" | osClean }}'
+      SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.agents/skills" | osClean }}'
+    dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
+    sources:
+        - "**/*.md"
+    method: none
+    cmds:
+      - |-
+          if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
+            mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
+          fi
+      - for: sources
+        cmd: |-
+            {{- $dest_path:=osDir .ITEM }}
+            {{- if ne $dest_path "skills" -}}
+            mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
+            {{- end }}
+            cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
+
+  agents:
+    desc: "[ZED] Configure global AGENTS.md"
+    vars:
+      CONFIG_SOURCE_PATH: "dotfiles/zed"
+      CONFIG_DEST_PATH: '{{ if eq OS "Windows" }}$HOME/AppData/Roaming/Zed{{ else }}$HOME/.config/Zed{{ end }}'
+    dir: "{{ .CONFIG_SOURCE_PATH }}"
+    sources:
+      - AGENTS.md
+    method: none
+    cmds:
+      - |-
+          if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
+            mkdir -p "{{ .CONFIG_DEST_PATH }}"
+          fi
+      - for: sources
+        cmd: |-
+            {{- $dest_path:=osDir .ITEM }}
+            {{- if ne $dest_path "Zed" -}}
+            mkdir -p "{{ joinPath .CONFIG_DEST_PATH $dest_path }}"
+            {{- end }}
+            cp "{{ .ITEM }}" "{{joinPath .CONFIG_DEST_PATH .ITEM }}"
+      - echo "Agents configuration saved successfully."
+
   configure:
     desc: "[ZED] ⚙️  Configure Zed editor"
     silent: true
     cmds:
       - task: configure:windows
+      - task: skills
+      - task: agents

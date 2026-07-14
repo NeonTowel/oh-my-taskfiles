@@ -4,13 +4,13 @@
   "format_on_save": "off",
   "restore_on_startup": "last_session",
 
-  "agent_buffer_font_size": 16.0,
-  "agent_ui_font_size": 18.0,
+  "agent_buffer_font_size": 13.0,
+  "agent_ui_font_size": 14.0,
   "ui_font_family": "Cousine Nerd Font",
-  "ui_font_size": 17.5,
-  "ui_font_weight": 500.0,
+  "ui_font_size": 14.0,
+  "ui_font_weight": 400.0,
   "buffer_font_family": "FantasqueSansM Nerd Font Mono",
-  "buffer_font_size": 17.0,
+  "buffer_font_size": 16.0,
   "buffer_line_height": "standard",
   "buffer_font_weight": 400.0,
 
@@ -61,11 +61,50 @@
     }
   },
   "agent": {
+    "default_profile": "caveman",
+    "profiles": {
+      "caveman": {
+        "default_model": {
+          "provider": "Foundry_Anthropic",
+          "model": "claude-sonnet-5",
+          "enable_thinking": true
+        },
+        "name": "Caveman",
+        "tools": {
+          "write_file": true,
+          "update_title": true,
+          "update_plan": true,
+          "terminal": true,
+          "spawn_agent": true,
+          "skill": true,
+          "rename_symbol": true,
+          "read_file": true,
+          "move_path": true,
+          "list_directory": true,
+          "list_agents_and_models": true,
+          "grep": true,
+          "go_to_definition": true,
+          "get_code_actions": true,
+          "find_references": true,
+          "find_path": true,
+          "fetch": true,
+          "edit_file": true,
+          "diagnostics": true,
+          "delete_path": true,
+          "create_thread": true,
+          "create_directory": true,
+          "copy_path": true,
+          "apply_code_action": true
+        },
+        "enable_all_context_servers": true,
+        "context_servers": {}
+      }
+    },
     "dock": "left",
     "cancel_generation_on_terminal_stop": false,
     "single_file_review": false,
     "play_sound_when_agent_done": "never",
-    "message_editor_min_lines": 4,
+    "message_editor_min_lines": 2,
     "use_modifier_to_send": false,
     "expand_edit_card": true,
     "expand_terminal_card": true,
@@ -74,37 +113,37 @@
     "commit_message_instructions": "Write commit message in a short and punchy format following conventional commits style and utf8 gitmoji prefix in the header, prefer bullet point list (dash), overly simplified but still relevant and technical.",
 
     "default_model": {
-      "provider": "Foundry_Responses",
-      "model": "gpt-5.3-codex",
+      "provider": "Foundry_Chat",
+      "model": "gpt-5.5",
       "enable_thinking": true
     },
 
     "inline_assistant_model": {
-      "provider": "openai_compatible:Foundry_Responses",
-      "model": "gpt-5.3-codex",
-      "enable_thinking": false
+      "provider": "openai_compatible:Foundry_Chat",
+      "model": "gpt-5.5",
+      "enable_thinking": true
     },
 
     "commit_message_model": {
-      "provider": "openai_compatible:Foundry_Responses",
+      "provider": "openai_compatible:Foundry_Chat",
       "model": "gpt-5.4-nano",
       "enable_thinking": false
     },
 
     "thread_summary_model": {
-      "provider": "openai_compatible:Foundry_Responses",
+      "provider": "openai_compatible:Foundry_Chat",
       "model": "gpt-5.4-nano",
       "enable_thinking": false
     },
 
     "favorite_models": [
       {
-        "provider": "openai_compatible:Foundry_Responses",
-        "model": "gpt-5.4-mini"
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "gpt-5.5"
       },
       {
-        "provider": "openai_compatible:Foundry_Responses",
-        "model": "gpt-5.4-nano"
+        "provider": "openai_compatible:Foundry_Chat",
+        "model": "gpt-5.3-codex"
       },
       {
         "provider": "openai_compatible:Foundry_Chat",
@@ -163,6 +202,57 @@
   // LANGUAGE MODEL PROVIDERS
   // ============================================================================
   "language_models": {
+    "anthropic_compatible": {
+      "Foundry_Anthropic": {
+        "api_url": "https://{{ .Env.FOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/anthropic",
+        "available_models": [
+          {
+            "name": "claude-opus-4-8",
+            "display_name": "Claude Opus 4.8",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "prompt_caching": true
+            }
+          },
+          {
+            "name": "claude-sonnet-5",
+            "display_name": "Claude Sonnet 5",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "prompt_caching": true
+            }
+          },
+          {
+            "name": "claude-sonnet-4-6",
+            "display_name": "Claude Sonnet 4.6",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "prompt_caching": true
+            }
+          },
+          {
+            "name": "claude-haiku-4-5",
+            "display_name": "Claude Haiku 4.5",
+            "max_tokens": 200000,
+            "max_output_tokens": 64000,
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "prompt_caching": true
+            }
+          }
+        ]
+      }
+    },
     "openai_compatible": {
       // FOUNDRY REASONING - /responses endpoint
       // GPT-5.4-mini and GPT-5.4-nano: 400K context window
