@@ -98,7 +98,7 @@ tasks:
     desc: "[ZED] Configure global AGENTS.md"
     vars:
       CONFIG_SOURCE_PATH: "dotfiles/zed"
-      CONFIG_DEST_PATH: '{{ if eq OS "Windows" }}$HOME/AppData/Roaming/Zed{{ else }}$HOME/.config/Zed{{ end }}'
+      CONFIG_DEST_PATH: '{{ if eq OS "windows" }}$HOME/AppData/Roaming/Zed{{ else }}$HOME/.config/Zed{{ end }}'
     dir: "{{ .CONFIG_SOURCE_PATH }}"
     sources:
       - AGENTS.md
