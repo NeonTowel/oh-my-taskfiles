@@ -93,6 +93,7 @@ tasks:
             mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
             {{- end }}
             cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
+      - echo "Skills configuration saved successfully."
 
   agents:
     desc: "[ZED] Configure global AGENTS.md"
