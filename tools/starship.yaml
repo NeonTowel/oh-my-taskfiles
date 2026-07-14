@@ -25,9 +25,9 @@ tasks:
         if [ ! -d "$HOME/.config" ]; then
           mkdir -p "$HOME/.config"
         fi
-        cp "$HOME/.omt/dotfiles/starship.toml" "$HOME/.config/starship.toml"
+        cp "$HOME/.omt/dotfiles/starship/starship.toml" "$HOME/.config/starship.toml"
         echo "starship has been configured successfully."
-  
+
   install:
     desc: "[STARSHIP] ✨ Install and configure starship prompt"
     cmds:

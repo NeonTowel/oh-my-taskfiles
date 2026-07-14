@@ -26,7 +26,7 @@ tasks:
     cmds:
       - |
         if [ ! -d "$HOME/scoop/persist/flow-launcher/UserData" ]; then
-          echo "ERROR: flow-launcher scoop persit UserData folder not found:"
+          echo "ERROR: flow-launcher scoop persist UserData folder not found:"
           echo "  $HOME/scoop/persist/flow-launcher/UserData"
           echo "Please install flow-launcher first."
           exit 1

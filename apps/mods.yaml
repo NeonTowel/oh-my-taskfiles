@@ -24,7 +24,7 @@ tasks:
     vars:
       CONFIG_FILE: 'mods.yml'
       CONFIG_SOURCE_PATH: 'dotfiles/mods'
-      CONFIG_DEST_PATH: '{{ if eq OS "windows" }}$HOME/Appdata/Local/mods{{ else }}$HOME/.config/mods{{ end }}'
+      CONFIG_DEST_PATH: '{{ if eq OS "windows" }}$HOME/AppData/Local/mods{{ else }}$HOME/.config/mods{{ end }}'
       CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
       CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
     cmds:

@@ -144,9 +144,9 @@ tasks:
     dir: "{{ .CONFIG_SOURCE_PATH }}"
     sources:
       - agents/*.md
-      - skills/*.md
+      - skills/**/*.md
       - shared/*.md
-      - AGENTS.md
+      - CLAUDE.md
     method: none
     cmds:
       - |-

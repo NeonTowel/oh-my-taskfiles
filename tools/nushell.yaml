@@ -35,7 +35,7 @@ tasks:
     cmds:
       - |
         if [ ! -d "$HOME\AppData\Roaming\nushell" ]; then
-          echo "Creating config directory in: $HOME\AppData\Roaming\alacritty"
+          echo "Creating config directory in: $HOME\AppData\Roaming\nushell"
           mkdir -p "$HOME\AppData\Roaming\nushell"
         fi
         echo "Copying config.nu to $HOME\AppData\Roaming\nushell\config.nu"

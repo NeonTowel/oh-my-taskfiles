@@ -38,13 +38,13 @@ tasks:
         {{ if .UNATTENDED }}
         {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
         if [ ! -f "$HOME/.codex/config.toml" ]; then
-          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/settings.toml"
+          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/config.toml"
           {{ .gum_ok }} "Codex settings have been configured successfully."
         else
           {{ .gum_warn }} "Codex settings already exist, skipping configuration."
         fi
         {{ else }}
-        if [ -f "$HOME/.codex/settings.toml" ]; then
+        if [ -f "$HOME/.codex/config.toml" ]; then
           if ! gum confirm "Codex settings already exist, overwrite?"; then
             {{ .gum_warn }} "Codex settings already exist, skipping configuration."
             exit 0
@@ -60,7 +60,7 @@ tasks:
           gomplate -f "dotfiles/codex/config.toml.tmpl" -o "$HOME/.codex/config.toml"
           {{ .gum_warn }} "Codex with Foundry requires API key: remember to set AZURE_OPENAI_API_KEY environment variable!"
         else
-          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/settings.toml"
+          cp "dotfiles/codex/config.default.toml" "$HOME/.codex/config.toml"
         fi
         {{ .gum_ok }} "Codex settings have been configured successfully."
         {{ end }}
