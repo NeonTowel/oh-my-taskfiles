@@ -37,8 +37,7 @@ tasks:
     cmds:
       - |
         shopt -s extglob
-        tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name | gsub("[\\r\\n\\t]"; "")')
-        tag_name=${tag_name%?}
+        tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name | gsub("[\\r\\n\\t]"; "")' | tr -d '\r')
         version=${tag_name#v}
         version_z=${version//./}
         if [ -z "${tag_name}" ]; then
@@ -52,8 +51,7 @@ tasks:
         download='{{ if eq OS "linux" }}{{ .DOWNLOAD_LINUX }}{{ else if eq OS "darwin" }}{{ .DOWNLOAD_DARWIN }}{{ else if eq OS "windows" }}{{ .DOWNLOAD_WINDOWS }}{{ end }}'
         download=${download//\%s/$version}
         download=${download//\%z/$version_z}
-        download=$(printf %s "$download" | jq -sRr @uri)
-        download=${download%?}
+        download=$(printf %s "$download" | jq -sRr @uri | tr -d '\r')
         {{ if .CLI_VERBOSE }}
         {{ .gum_info }} "Computed download asset: '$download'"
         {{ end }}
