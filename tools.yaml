@@ -16,6 +16,7 @@ includes:
   dra: tools/dra.yaml
   flow-launcher: tools/flow-launcher.yaml
   fonts: tools/fonts.yaml
+  fresh: tools/fresh.yaml
   fzf: tools/fzf.yaml
   gcloud: tools/gcloud.yaml
   github: tools/github.yaml
