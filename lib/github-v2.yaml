@@ -36,7 +36,7 @@ tasks:
           {{- end }}
     cmds:
       - |
-        shopt -s extglob
+        #shopt -s extglob
         tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name | gsub("[\\r\\n\\t]"; "")' | tr -d '\r')
         version=${tag_name#v}
         version_z=${version//./}
