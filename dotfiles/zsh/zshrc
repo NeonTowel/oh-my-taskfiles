@@ -110,7 +110,6 @@ if [ -x "$HOME/.opencode/bin/opencode" ]; then
   export PATH=$HOME/.opencode/bin:$PATH
 fi
 
-
 # fnm configuration
 if [ -x "$HOME/.local/share/fnm/fnm" ]; then
   FNM_PATH="$HOME/.local/share/fnm"
@@ -125,4 +124,28 @@ if [ -x "$HOME/.bun/bin/bun" ]; then
   [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
+# zed configuration
+if [ -f "/mnt/c/WINDOWS/System32/cmd.exe" -a -z "$WSL_HOME" ]; then
+  WSL_USER=$(cd /mnt/c/WINDOWS/System32 && /mnt/c/WINDOWS/System32/cmd.exe /c "echo %USERNAME%" | tr -d '\r')
+  WSL_HOME="/mnt/c/Users/${WSL_USER}"
+  export WSL_USERNAME="${WSL_USER}"
+  export WSL_USER="${WSL_USER}"
+  export WSL_HOME="${WSL_HOME}"
+  file "${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe"
+  if [ -f "${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe" ]; then
+    alias zed="${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe"
+  fi
+fi
+
+# browser configuration
+if [ -f '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' -a -z "$BROWSER" -a ! -h "$BROWSER" ]; then
+  if [ ! -h "${HOME}/.local/bin/brave" ]; then
+    mkdir -p ${HOME}/.local/bin
+    ln -s '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' ~/.local/bin/brave
+  fi
+  if [ -h "${HOME}/.local/bin/brave" ]; then
+    export BROWSER="${HOME}/.local/bin/brave"
+  fi
 fi
