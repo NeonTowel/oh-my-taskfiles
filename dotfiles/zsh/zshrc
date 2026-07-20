@@ -133,9 +133,8 @@ if [ -f "/mnt/c/WINDOWS/System32/cmd.exe" -a -z "$WSL_HOME" ]; then
   export WSL_USERNAME="${WSL_USER}"
   export WSL_USER="${WSL_USER}"
   export WSL_HOME="${WSL_HOME}"
-  file "${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe"
-  if [ -f "${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe" ]; then
-    alias zed="${WSL_HOME}/scoop/apps/zed/current/bin/zed.exe"
+  if [ -f "${WSL_HOME}/scoop/apps/zed/current/bin/zed" ]; then
+    alias zed="${WSL_HOME}/scoop/apps/zed/current/bin/zed"
   fi
 fi
 
