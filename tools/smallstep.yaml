@@ -120,8 +120,10 @@ tasks:
         {{- end }}
 
         {{- else }} # quick configuration
-        CERT_FILE="${SUBJECT//\//}-cert.pem"
-        KEY_FILE="${SUBJECT//\//}-key.pem"
+        CERT_FILE="${SUBJECT//\//}"
+        KEY_FILE="${SUBJECT//\//}"
+        CERT_FILE="${CERT_FILE//\*/star}-cert.pem"
+        KEY_FILE="${KEY_FILE//\*/star}-key.pem"
 
         {{- if not .SAN }}
         SAN="${SUBJECT}"
@@ -130,7 +132,7 @@ tasks:
         {{- end }}
 
         {{- if not .VALIDITY }}
-        VALIDITY_DURATION="365d"
+        VALIDITY_DURATION="8760h"
         {{- else }}
         VALIDITY_DURATION="{{ .VALIDITY }}"
         {{- end }}
