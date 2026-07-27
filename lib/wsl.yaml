@@ -196,5 +196,29 @@ tasks:
     silent: true
     desc: "[WSL] ✨ Configure 1Password SSH Agent forwarding from Windows to WSL"
     cmds:
-      - task: 1password:configure:help
-      - task: 1password:configure:windows
+      #- task: 1password:configure:help
+      #- task: 1password:configure:windows
+      #  platforms: [windows]
+      - cmd: |
+          echo "OS {{ OS }} is not supported. Switch to WSL linux and try again."
+        platforms: [windows, darwin]
+      - task: 1password:configure:linux
+        platforms: [linux]
+
+  1password:configure:linux:
+    internal: true
+    platforms: [linux]
+    vars:
+      BIN_PATH: '{{ printf "%s/bin" (default (env "USERPROFILE") (env "HOME")) }}'
+    precondition:
+      - sh: test -d "${BIN_PATH}"
+        msg: 'folder $BIN_PATH not found!'
+    cmds:
+      - curl -L https://github.com/mame/wsl2-ssh-agent/releases/latest/download/wsl2-ssh-agent -o {{ .BIN_PATH }}/wsl2-ssh-agent
+      - |
+        if [ -f "{{ .BIN_PATH }}/wsl2-ssh-agent" ]; then
+          chmod +x {{ .BIN_PATH }}/wsl2-ssh-agent
+          echo "wsl2-ssh-agent installed to {{ .BIN_PATH }}"
+        else
+          echo "ERROR: Failed to download wsl2-ssh-agent to {{ .BIN_PATH }}!"
+        fi

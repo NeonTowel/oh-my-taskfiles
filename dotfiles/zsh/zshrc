@@ -148,3 +148,8 @@ if [ -f '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe'
     export BROWSER="${HOME}/.local/bin/brave"
   fi
 fi
+
+# wsl2-ssh-agent configuration
+if [ -x "$HOME/bin/wsl2-ssh-agent" ]; then
+  eval $($HOME/bin/wsl2-ssh-agent)
+fi
