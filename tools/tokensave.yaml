@@ -7,9 +7,9 @@ includes:
     vars:
       HELP_PREFIX: "[TOKENSAVE] ✨  "
       REPO: aovestdipaperino/tokensave
-      DOWNLOAD_LINUX: 'tokensave-v%d-x86_64-linux.tar.gz'
-      DOWNLOAD_DARWIN: 'tokensave-v%d-aarch64-macos.tar.gz'
-      DOWNLOAD_WINDOWS: 'tokensave-v%d-x86_64-windows.zip'
+      DOWNLOAD_LINUX: 'tokensave-v%z-x86_64-linux.tar.gz'
+      DOWNLOAD_DARWIN: 'tokensave-v%z-aarch64-macos.tar.gz'
+      DOWNLOAD_WINDOWS: 'tokensave-v%z-x86_64-windows.zip'
       BINARY_LINUX: 'tokensave'
       BINARY_DARWIN: 'tokensave'
       BINARY_WINDOWS: 'tokensave.exe'
