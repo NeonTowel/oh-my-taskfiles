@@ -139,13 +139,17 @@ if [ -f "/mnt/c/WINDOWS/System32/cmd.exe" -a -z "$WSL_HOME" ]; then
 fi
 
 # browser configuration
-if [ -f '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' -a -z "$BROWSER" -a ! -h "$BROWSER" ]; then
-  if [ ! -h "${HOME}/.local/bin/brave" ]; then
+if [ -z "$BROWSER" -a ! -h "$BROWSER" ]; then
+  if [ ! -h "${HOME}/.local/bin/wsl-browser" ]; then
     mkdir -p ${HOME}/.local/bin
-    ln -s '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' ~/.local/bin/brave
+    if [ -f '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' ]; then
+      ln -s '/mnt/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe' ~/.local/bin/wsl-browser
+    elif [ -n "$WSL_USER" -a -n "$WSL_HOME" -a -d "$WSL_HOME" -a -f "${WSL_HOME}/scoop/apps/brave/current/brave.exe"]; then
+      ln -s "${WSL_HOME}/scoop/apps/brave/current/brave.exe" ~/.local/bin/wsl-browser
+    fi
   fi
-  if [ -h "${HOME}/.local/bin/brave" ]; then
-    export BROWSER="${HOME}/.local/bin/brave"
+  if [ -h "${HOME}/.local/bin/wsl-browser" ]; then
+    export BROWSER="${HOME}/.local/bin/wsl-browser"
   fi
 fi
 
