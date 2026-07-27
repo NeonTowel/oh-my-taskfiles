@@ -1,0 +1,58 @@
+version: '3'
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[TOKENSAVE] ✨  "
+      REPO: aovestdipaperino/tokensave
+      DOWNLOAD_LINUX: 'tokensave-v%d-x86_64-linux.tar.gz'
+      DOWNLOAD_DARWIN: 'tokensave-v%d-aarch64-macos.tar.gz'
+      DOWNLOAD_WINDOWS: 'tokensave-v%d-x86_64-windows.zip'
+      BINARY_LINUX: 'tokensave'
+      BINARY_DARWIN: 'tokensave'
+      BINARY_WINDOWS: 'tokensave.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/tokensave.yaml
+
+  install:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:buckets:ensure
+        vars:
+          BUCKET: tokensave
+          BUCKET_URL: https://github.com/aovestdipaperino/scoop-bucket
+      - task: ::scoop:install
+        vars:
+          APP: tokensave
+
+  install:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - github:install
+
+  install:darwin:
+    platforms: [darwin]
+    internal: true
+    silent: true
+    cmds:
+      - brew install aovestdipaperino/tap/tokensave
+
+  install:
+    desc: "[TOKENSAVE] ✨ Install Tokensave MCP server"
+    silent: true
+    cmds:
+      - task: install:windows
+        platforms: [windows]
+      - task: install:linux
+        platforms: [linux]
+      - task: install:darwin
+        platforms: [darwin]

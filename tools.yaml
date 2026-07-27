@@ -40,6 +40,7 @@ includes:
   starship: tools/starship.yaml
   task: tools/task.yaml
   tilt: tools/tilt.yaml
+  tokensave: tools/tokensave.yaml
   translucenttb: tools/translucenttb.yaml
   yasb: tools/yasb.yaml
   zenity: tools/zenity.yaml
