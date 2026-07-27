@@ -37,7 +37,7 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - github:install
+      - task: github:install
 
   install:darwin:
     platforms: [darwin]
