@@ -4,17 +4,133 @@ tasks:
   default:
     - task --list --taskfile tools/pake.yaml
 
+  create:
+    desc: "[PAKE] Package website as standalone app"
+    dir: '{{ .USER_WORKING_DIR }}'
+    summary: |
+      Create native app from a website.
+
+      Supports optional arguments, or prompts interactively if omitted:
+        URL     =   The web URL you want to package
+        NAME    =   Application name
+        ICON    =   Application icon
+        QUICK   =   Accept defaults for optional settings:
+                      Title:              Application name
+                      Maximized window:   Enabled
+                      Fullscreen window:  Disabled
+                      Always on top:      Disabled
+                      Force dark mode:    Enabled
+
+    preconditions:
+      - sh: command -v pake >/dev/null 2>&1
+        msg: command 'pake' not found, install pake first using 'omt tools:pake:install'
+      - sh: command -v gum >/dev/null 2>&1
+        msg: command gum' not found, we need it for interactive prompts. install gum first using 'omt tools:gum:install'
+    cmds:
+      - |
+        {{- if not .URL }}
+        URL="$(gum input --header 'Enter website URL' --placeholder 'https://example.com')" || {
+          {{ .gum_warn }} "Cancelled..."
+          exit 0
+        }
+        {{- else }}
+        URL="{{ .URL }}"
+        {{- end }}
+        [ -n "$URL" ] || {
+          {{ .gum_warn }} "Cancelled..."
+          exit 0
+        }
+
+        {{- if not .NAME }}
+        NAME="$(gum input --header 'Enter App name' --placeholder 'Example App')" || {
+          {{ .gum_warn }} "Cancelled..."
+          exit 0
+        }
+        {{- else }}
+        NAME="{{ .NAME }}"
+        {{- end }}
+        [ -n "$NAME" ] || {
+          {{ .gum_warn }} "Cancelled..."
+          exit 0
+        }
+
+        {{- if not .ICON }}
+        ICON="$(gum input --header '(optional): [ICON] Enter app icon file path or URL' || true)"
+        ICON="${ICON:-default}"
+        {{- else }}
+        ICON="{{ .ICON }}"
+        {{- end }}
+
+        ICON="${ICON//[\"\'\`]/}"
+        ICON="${ICON//\\//}"
+
+        {{- if not .QUICK }}
+        TITLE="$(gum input --header '(optional): [TITLE] Set the window title bar text' --placeholder $NAME --value $NAME --timeout=5s)"
+        MAXIMIZE="$(gum confirm '(optional): [MAXIMIZE] Enable whether the app launches with a maximized window?' --default=1 --timeout=5s || true)"
+        FULLSCREEN="$(gum confirm '(optional): [FULLSCREEN] Enable whether the app launches with a fullscreen window?' --default=0 --timeout=5s || true)"
+        ALWAYSONTOP="$(gum confirm '(optional): [ALWAYS-ON-TOP] Enable whether the window is always at the top level?' --default=0  --timeout=5s || true)"
+        DARKMODE="$(gum confirm '(optional): [DARK-MODE] Force dark mode?' --default=1 --timeout=5s || true)"
+        {{- end }}
+
+        TITLE="${TITLE:-$NAME}"
+        MAXIMIZE="${MAXIMIZE:-yes}"
+        FULLSCREEN="${FULLSCREEN:-no}"
+        ALWAYSONTOP="${ALWAYSONTOP:-no}"
+        DARKMODE="${DARKMODE:-yes}"
+
+        echo -e "About to create an app with these settings:\n"
+        echo -e "\t Name: \t\t ${NAME}"
+        echo -e "\t URL: \t\t ${URL}"
+        echo -e "\t Saving to: \t{{ .USER_WORKING_DIR }}\n"
+        echo -e "\t ============ OPTIONAL SETTINGS ============\n"
+        echo -e "\t Window title: \t\t ${TITLE}"
+        echo -e "\t App Icon: \t\t ${ICON}"
+        echo -e "\t Maximize Window: \t ${MAXIMIZE}"
+        echo -e "\t Fullscreen Window: \t ${FULLSCREEN}"
+        echo -e "\t Always on Top Window: \t ${ALWAYSONTOP}"
+        echo -e "\t Dark Mode: \t\t ${DARKMODE}\n"
+
+        {{- if not .QUICK }}
+        gum confirm "Create app?" --default=1 --timeout=7s || {
+          {{ .gum_warn }} "Cancelled..."
+          exit $?
+        }
+        {{- end }}
+
+        PAKE_OPTS="--ignore-certificate-errors --new-window"
+        [ -n "${TITLE}" ]  && PAKE_OPTS="$PAKE_OPTS --title \"${TITLE}\""
+        [ -n "${ICON}" -a "${ICON}" != "default" ] && PAKE_OPTS="$PAKE_OPTS --icon \"${ICON}\""
+        [ -n "${MAXIMIZE}" -a "${MAXIMIZE}" == "yes" ] && PAKE_OPTS="$PAKE_OPTS --maximize"
+        [ -n "${FULLSCREEN}" -a "${FULLSCREEN}" == "yes" ] && PAKE_OPTS="$PAKE_OPTS --fullscreen"
+        [ -n "${ALWAYSONTOP}" -a "${ALWAYSONTOP}" == "yes" ] && PAKE_OPTS="$PAKE_OPTS --always-on-top"
+        [ -n "${DARKMODE}" -a "${DARKMODE}" == "yes" ] && PAKE_OPTS="$PAKE_OPTS --dark-mode"
+
+        PAKE_CMD="pake ${URL} --name ${NAME} ${PAKE_OPTS}"
+        echo -e "Executing:\n\t$PAKE_CMD\n"
+        eval $PAKE_CMD
+
+  install:msi:
+    desc: "[PAKE] Install MSI package as User (Windows)"
+    platforms: [windows]
+    dir: '{{ .USER_WORKING_DIR }}'
+    silent: true
+    requires:
+      vars:
+        - MSI
+    cmds:
+      - msiexec /i {{ .MSI }} ALLUSERS=2 MSIINSTALLPERUSER=1
+
   install:
-    deps: [":pnpm:install"]
-    desc: "[PAKE] ✨ Install pake cli (pnpm, global)"
+    deps: ["::lang:node:install"]
+    desc: "[PAKE] ✨ Install pake cli (npm, global)"
     preconditions:
       - sh: command -v node >/dev/null 2>&1
         msg: command 'node' not found
       - sh: command -v pnpm >/dev/null 2>&1
-        msg: command 'pnpm' not found
+        msg: command 'npm' not found
     status:
       - pake --version
     cmds:
       - cmd: >-
-          {{ .gum_spin }} pnpm install -g pake-cli
+          {{ .gum_spin }} npm install -g pake-cli
         if: '! command -v pake >/dev/null 2>&1'
