@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile tools/pnpm.yaml
+
+  install:
+    deps: ["::lang:node:install"]
+    desc: "[PNPM] ✨ Install pnpm cli (npm, global)"
+    preconditions:
+      - sh: command -v node >/dev/null 2>&1
+        msg: command 'node' not found
+      - sh: command -v npm >/dev/null 2>&1
+        msg: command 'npm' not found
+    status:
+      - pnpm --version
+    cmds:
+      - cmd: >-
+          {{ .gum_spin }} npm install -g pnpm
+        if: '! command -v pnpm >/dev/null 2>&1'

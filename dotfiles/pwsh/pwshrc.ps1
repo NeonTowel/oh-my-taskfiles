@@ -68,7 +68,7 @@ function deduplicate-path() {
 }
 
 $global:__COMMANDS = @{}
-@('omt', 'which', 'lsd', 'bat', 'fnm', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
+@('omt', 'which', 'lsd', 'bat', 'fnm', 'pnpm', 'direnv', 'starship', 'task', 'awesome-git', 'helix', 'claude') | ForEach-Object {
     $global:__COMMANDS[$_] = [bool](Get-Command -Name $_ -CommandType Application -ErrorAction SilentlyContinue)
 }
 
@@ -81,6 +81,7 @@ $global:__PATHS = @{}
     @{Key='cargo_env'; Path="$HOME\.cargo\env"},
     @{Key='cargo_bin'; Path="$HOME\.cargo\bin"},
     @{Key='nvm_ps1'; Path="$HOME\.nvm\nvm.ps1"},
+    @{Key='pnpm_bin'; Path="$env:LOCALAPPDATA\pnpm\bin"}
     @{Key='nvm_scoop'; Path="$HOME\scoop\apps\nvm\current\nvm.exe"},
     @{Key='agent_bridge'; Path="$HOME\.agent-bridge.ps1"},
     @{Key='1password_sock'; Path="$HOME\.1password\agent.sock"},
@@ -222,7 +223,16 @@ if ($global:__COMMANDS['claude']) {
 
 # fnm (node) configuration
 if ($global:__COMMANDS['fnm']) {
-  fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
+    fnm env --use-on-cd --version-file-strategy=recursive --shell powershell | Out-String | Invoke-Expression
+}
+
+# pnpm (node) configuration
+if ($global:__COMMANDS['pnpm'])
+{
+    if ($global:__PATHS['pnpm_bin'])
+    {
+        $pathsToAdd += "$Env:LOCALAPPDATA\pnpm\bin"
+    }
 }
 
 if ($pathsToAdd.Count -gt 0) {

@@ -1,51 +1,29 @@
 version: '3'
 
-vars:
-  NVM_VERSION: "0.40.4"
-
 tasks:
   default:
     - task --list --taskfile languages/node.yaml
 
-  install:linux:
+  install:node:
     internal: true
-    platforms: [linux]
     ignore_error: true
+    deps: [ '::tools:fnm:install' ]
+    preconditions:
+      - sh: command -v fnm >/dev/null 2>&1
+        msg: command 'fnm' not found, we need it to install NodeJS
+    status:
+      - node --version
     cmds:
       - |
-        if ! command -v fnm >/dev/null 2>&1; then
-          curl -fsSL https://fnm.vercel.app/install | bash
-        fi
-        export FNM_PATH="$HOME/.local/share/fnm"
-        export PATH=$FNM_PATH:$PATH
-        eval "$(fnm env --shell bash)"
-        fnm install --lts --use
-        fnm default
-
-  install:windows:
-    internal: true
-    platforms: [windows]
-    vars:
-      APP_NAME: nvm
-    cmds:
-      - |
-        if [ ! -d "$HOME/scoop/apps/{{ .APP_NAME }}/current" ]; then
-          scoop install {{ .APP_NAME }}
-          echo "{{ .APP_NAME }} has been installed successfully."
-        fi
-        if ! command -v nvm >/dev/null 2>&1; then
-          echo "❌ ERROR: nvm is not installed"
-          echo "Please install nvm first."
-          exit 1
-        fi
-      - |
-        nvm install --lts --default
-        nvm use --lts
+        eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell bash)"
+        {{ .gum_spin }} fnm install --lts --log-level quiet --progress never --use
+        {{- if .CLI_VERBOSE }}
+        {{ .gum_info }} "Node version is: $(node --version)"
+        {{- end }}
 
   install:
     desc: "[NODE] ✨ Install node"
+    status:
+      - node --version
     cmds:
-      - task: install:linux
-        platforms: [linux]
-      - task: install:windows
-        platforms: [windows]
+      - task: install:node

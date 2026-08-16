@@ -111,12 +111,8 @@ if [ -x "$HOME/.opencode/bin/opencode" ]; then
 fi
 
 # fnm configuration
-if [ -x "$HOME/.local/share/fnm/fnm" ]; then
-  FNM_PATH="$HOME/.local/share/fnm"
-  if [ -d "$FNM_PATH" ]; then
-    export PATH="$FNM_PATH:$PATH"
-    eval "$(fnm env --shell zsh)"
-  fi
+if [ command -v fnm >/dev/null 2>&1 ]; then
+  eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell zsh)"
 fi
 
 # bun configuration

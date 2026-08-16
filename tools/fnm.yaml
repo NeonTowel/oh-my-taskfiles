@@ -1,0 +1,21 @@
+version: "3"
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[FNM] ✨  "
+      REPO: Schniz/fnm
+      DOWNLOAD_LINUX: 'fnm-linux.zip'
+      DOWNLOAD_DARWIN: 'fnm-macos.zip'
+      DOWNLOAD_WINDOWS: 'fnm-windows.zip'
+      RESOLVE_VERSION: false
+      BINARY_LINUX: 'fnm'
+      BINARY_DARWIN: 'fnm'
+      BINARY_WINDOWS: 'fnm.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/fnm.yaml
