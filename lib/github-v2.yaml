@@ -1,6 +1,161 @@
 version: '3'
 
 tasks:
+
+  confirm:overwrite:
+    internal: true
+    silent: true
+    requires:
+      vars:
+        - BINARY_PATH
+        - EXECUTABLE
+    status:
+      - test ! -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" -o "{{ .UNATTENDED }}" == "true"
+    cmds:
+      - cmd: |
+          if ! command -v gum; then
+            {{ .gum_error }} " ⚠️  ERROR: command 'gum' not found, and we need it confirm executable overwrite."
+            exit 1
+          fi
+          if ! gum confirm "Overwrite existing executable '{{ .BINARY_PATH }}/{{ .EXECUTABLE }}'?"; then
+            {{ .gum_error }} "Executable overwrite not confirmed, aborting installation!"
+            exit 1
+          fi
+        if: '[ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" -a "{{ .UNATTENDED }}" != "true" ]'
+
+  download:
+    internal: true
+    silent: true
+    requires:
+      vars:
+      - CACHE_ASSETS_DIR
+      - GH_AUTH_TOKEN
+      - REPO
+      - ASSET
+      - CACHE_ASSET
+      - RESOLVE_VERSION
+    cmds:
+      - |
+        download='{{ .ASSET }}'
+        {{- if and .RESOLVE_VERSION (eq .RESOLVE_VERSION "true") }}
+        if ! command -v jq; then
+          {{ .gum_error }} " ⚠️  ERROR: command 'jq' not found, and we need it to resolve the latest release tag from GitHub."
+          exit 1
+        fi
+        tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name | gsub("[\\r\\n\\t]"; "")' | tr -d '\r')
+        version=${tag_name#v}
+        version_z=${version//./}
+        if [ -z "${tag_name}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release tag_name!"
+          exit 1
+        fi
+        if [ -z "${version}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release version!"
+          exit 1
+        fi
+        download=${download//\%s/$version}
+        download=${download//\%z/$version_z}
+        download=$(printf %s "$download" | jq -sRr @uri | tr -d '\r')
+        {{- if .CLI_VERBOSE }}
+        {{ .gum_info }} "Computed download asset: '$download'"
+        {{- end }}
+        if [ -z "${download}" ]; then
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect download for OS!"
+          exit 1
+        fi
+        url="https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}"
+        {{- else }}
+        url="https://github.com/{{ .REPO }}/releases/latest/download/${download}"
+        {{- end }}
+        if [ ! -s "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" ]; then
+          {{- if .CLI_VERBOSE }}
+          {{ .gum_info }} "Downloading '${url}'"
+          {{- end }}
+          if [ ! -d "{{ .CACHE_ASSETS_DIR }}" ]; then
+            mkdir -p "{{ .CACHE_ASSETS_DIR }}"
+          fi
+          {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "${url}" -o "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}"
+          if [ ! -f "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" ]; then
+            {{ .gum_error }} " ⚠️  ERROR: Error while downloading asset: '${url}' to cache as {{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}"
+            exit 1
+          fi
+        else
+          {{ .gum_info }} "Found asset from local cache ({{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}), skipping download."
+        fi
+
+  # download:binary:
+  #   internal: true
+  #   silent: true
+  #   requires:
+  #     vars:
+  #       - URL
+  #       - GH_AUTH_TOKEN
+  #       - BINARY_PATH
+  #       - EXECUTABLE
+  #   cmds:
+  #     - |
+  #       {{- if .CLI_VERBOSE }}
+  #       {{ .gum_info }} "Downloading '{{ .URL }}'"
+  #       {{- end }}
+  #       {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "{{ .URL }}" -o "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+  #       if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+  #         chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+  #         {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
+  #       else
+  #         {{ .gum_error }} " ⚠️  ERROR: Error while downloading executable: {{ .URL }}"
+  #         exit 1
+  #       fi
+
+  extract:asset:
+    internal: true
+    silent: true
+    requires:
+      vars:
+        - CACHE_ASSETS_DIR
+        - CACHE_ASSET
+        - EXTRACT_BINARY
+        - BINARY_PATH
+        - EXECUTABLE
+    vars:
+      FILE_TYPE: '{{ ext .CACHE_ASSET }}'
+      FILE_TYPE_SUPPORTED: '{{ or (eq .FILE_TYPE ".zip") (hasPrefix ".tar" .FILE_TYPE) }}'
+    cmds:
+      - if: '[ "{{ .FILE_TYPE_SUPPORTED }}" != "true" ]'
+        cmd: |
+          {{ .gum_error }} " ⚠️  ERROR: Archive file type not supported: {{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }} ({{ .FILE_TYPE }})!"
+      - if: '[ "{{ .FILE_TYPE }}" == ".zip" ]'
+        cmd: |
+          if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" -a "{{ .UNATTENDED }}" == "true" ]; then
+            {{ .gum_warn }} "Unattended mode enabled, refusing to overwrite existing executable."
+          elif command -v 7z >/dev/null 2>&1; then
+            {{ .gum_spin }}7z e "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" {{ .EXTRACT_BINARY }} -o"{{ .BINARY_PATH }}" -bd -y
+          elif command -v unzip >/dev/null 2>&1; then
+            {{ .gum_spin }}unzip -o "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" "{{ .EXTRACT_BINARY }}" -d "{{ .BINARY_PATH }}"
+          else
+            {{ .gum_error }} " ⚠️  ERROR: '7z' or 'unzip' is not available to unpack cached {{ .CACHE_ASSET }} ({{ .FILE_TYPE }})!"
+          fi
+      - if: '[ \"{{ hasPrefix ".tar" .FILE_TYPE }}\" == "true" ]'
+        cmd: |
+          extract_binary='{{ .EXTRACT_BINARY }}'
+          {{- if not .TAR_HAS_SUBFOLDER }}
+            extract_binary="${extract_binary//\*/}"
+            extract_binary=${extract_binary#\/}
+          {{- end }}
+          if [ -z "${extract_binary}" ]; then
+            {{ .gum_error }} " ⚠️  ERROR: Unable to detect binary executable format for OS (extract_binary: '${extract_binary}')!"
+            exit 1
+          fi
+          {{- if .CLI_VERBOSE }}
+            {{ .gum_info }} "Extracting ${extract_binary} from {{ .CACHE_ASSET }} to {{ .BINARY_PATH }}:"
+          {{- end }}
+          if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" -a "{{ .UNATTENDED }}" == "true" ]; then
+            {{ .gum_warn }} "Unattended mode enabled, refusing to overwrite existing executable."
+          elif command -v tar >/dev/null 2>&1; then
+            {{ .gum_spin }}tar xfa "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" {{ if .TAR_HAS_SUBFOLDER }}--strip-components={{ if .TAR_STRIP_COMPONENTS }}{{ .TAR_STRIP_COMPONENTS }} {{ else }}1 {{ end }}{{ end }}-C {{ .BINARY_PATH }} $extract_binary
+          else
+            {{ .gum_error }} " ⚠️  ERROR: 'tar' not available to unpack cached {{ .CACHE_ASSET }} ({{ .FILE_TYPE }})!"
+          fi
+
   install:exec:
     internal: true
     silent: false
@@ -9,9 +164,102 @@ tasks:
         - DOWNLOAD_LINUX
         - DOWNLOAD_DARWIN
         - DOWNLOAD_WINDOWS
-    preconditions:
-      - sh: command -v jq
-        msg: 'requires jq to be installed'
+    vars:
+      CACHE_DIR: '{{ printf "%s/.config/omt/cache" (replace "\\" "/" (default (env "USERPROFILE") (env "HOME"))) }}'
+      CACHE_ASSETS_DIR: '{{ printf "%s/assets" .CACHE_DIR }}'
+      GH_AUTH_TOKEN_SH:
+        sh: |
+          if [ -f ~/.config/gh/hosts.yml ]; then
+            grep oauth_token ~/.config/gh/hosts.yml | head -n 1 | xargs
+          else
+            echo ""
+          fi
+      GH_AUTH_TOKEN_YAML:
+        ref: 'fromYaml .GH_AUTH_TOKEN_SH'
+      GH_AUTH_TOKEN:
+        sh: |
+          {{- if (and
+            .GH_AUTH_TOKEN_YAML
+            (gt (len .GH_AUTH_TOKEN_YAML) 0)
+            (hasKey .GH_AUTH_TOKEN_YAML "oauth_token")
+          ) }}echo {{ .GH_AUTH_TOKEN_YAML.oauth_token }}
+          {{ else }}
+            echo ""
+          {{- end }}
+      ASSET: '{{ if eq OS "linux" }}{{ .DOWNLOAD_LINUX }}{{ else if eq OS "darwin" }}{{ .DOWNLOAD_DARWIN }}{{ else if eq OS "windows" }}{{ .DOWNLOAD_WINDOWS }}{{ end }}'
+      CACHE_ASSET: '{{ base .REPO }}-latest-{{ OS }}{{ ext .ASSET }}'
+      EXTRACT_BINARY: '{{ if eq OS "windows" }}{{ .BINARY_WINDOWS }}{{ else if eq OS "linux" }}{{ .BINARY_LINUX }}{{ else if eq OS "darwin" }}{{ .BINARY_DARWIN }}{{ end }}'
+    cmds:
+      - task: download
+        vars:
+          GH_AUTH_TOKEN:
+            ref: .GH_AUTH_TOKEN
+          CACHE_ASSETS_DIR:
+            ref: .CACHE_ASSETS_DIR
+          REPO:
+            ref: .REPO
+          ASSET:
+            ref: .ASSET
+          CACHE_ASSET:
+            ref: .CACHE_ASSET
+          RESOLVE_VERSION:
+            ref: .RESOLVE_VERSION
+      - task: confirm:overwrite
+        vars:
+          BINARY_PATH:
+            ref: .BINARY_PATH
+          EXECUTABLE:
+            ref: .EXECUTABLE
+      - cmd: |
+          if [ -f "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" ]; then
+            if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" -a "{{ .UNATTENDED }}" == "true" ]; then
+              {{ .gum_warn }} "Unattended mode enabled, refusing to overwrite existing executable."
+            else
+              mv "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+            fi
+          else
+            {{ .gum_error }} "Binary executable not found in cache: {{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}!"
+          fi
+        if: '[ "{{ .BINARY_RELEASE }}" == "true" ]'
+      - task: extract:asset
+        if: '[ "{{ .BINARY_RELEASE }}" != "true" ]'
+        vars:
+          CACHE_ASSETS_DIR:
+            ref: .CACHE_ASSETS_DIR
+          CACHE_ASSET:
+            ref: .CACHE_ASSET
+          BINARY_PATH:
+            ref: .BINARY_PATH
+          EXECUTABLE:
+            ref: .EXECUTABLE
+          EXTRACT_BINARY:
+            ref: .EXTRACT_BINARY
+      - |
+        if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
+          {{- if .CLI_VERBOSE }}
+            {{ .gum_info }} "Marking ${extract_binary} as executable in {{ .BINARY_PATH }}."
+          {{- end }}
+          chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+          {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
+        else
+          {{- if .CLI_VERBOSE }}
+            {{ .gum_warn }} "File not found: {{ .BINARY_PATH }}/{{ .EXECUTABLE }}!"
+          {{- end }}
+          {{ .gum_error }} " ⚠️  ERROR: Installation failed: {{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}"
+          exit 1
+        fi
+        if [ -f "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}" ]; then
+          rm "{{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}"
+        fi
+
+  install:latest:exec:
+    internal: true
+    silent: false
+    requires:
+      vars:
+        - DOWNLOAD_LINUX
+        - DOWNLOAD_DARWIN
+        - DOWNLOAD_WINDOWS
     vars:
       CACHE_DIR: '{{ printf "%s/.config/omt/cache" (default (env "USERPROFILE") (env "HOME")) }}'
       CACHE_ASSETS_DIR: '{{ printf "%s/assets" .CACHE_DIR }}'
@@ -36,34 +284,19 @@ tasks:
           {{- end }}
     cmds:
       - |
-        #shopt -s extglob
-        tag_name=$(curl -sSf {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/vnd.github+json" https://api.github.com/repos/{{ .REPO }}/releases/latest | jq -r '.tag_name | gsub("[\\r\\n\\t]"; "")' | tr -d '\r')
-        version=${tag_name#v}
-        version_z=${version//./}
-        if [ -z "${tag_name}" ]; then
-          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release tag_name!"
-          exit 1
-        fi
-        if [ -z "${version}" ]; then
-          {{ .gum_error }} " ⚠️  ERROR: Unable to detect latest release version!"
-          exit 1
-        fi
         download='{{ if eq OS "linux" }}{{ .DOWNLOAD_LINUX }}{{ else if eq OS "darwin" }}{{ .DOWNLOAD_DARWIN }}{{ else if eq OS "windows" }}{{ .DOWNLOAD_WINDOWS }}{{ end }}'
-        download=${download//\%s/$version}
-        download=${download//\%z/$version_z}
-        download=$(printf %s "$download" | jq -sRr @uri | tr -d '\r')
         {{ if .CLI_VERBOSE }}
         {{ .gum_info }} "Computed download asset: '$download'"
         {{ end }}
         if [ -z "${download}" ]; then
-          {{ .gum_error }} " ⚠️  ERROR: Unable to detect download for OS!"
+          {{ .gum_error }} " ⚠️  ERROR: Unable to detect download for OS {{ OS }}!"
           exit 1
         fi
         {{ if .BINARY_RELEASE }}
         {{- if .CLI_VERBOSE }}
-        {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+        {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/latest/download/${download}'"
         {{- end }}
-        {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
+        {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/latest/download/${download}" -o "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
         if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
           chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
           {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
@@ -74,12 +307,12 @@ tasks:
         {{ else }}
         if [ ! -s "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
           {{- if .CLI_VERBOSE }}
-          {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}'"
+          {{ .gum_info }} "Downloading 'https://github.com/{{ .REPO }}/releases/latest/download/${download}'"
           {{- end }}
           if [ ! -d "{{ .CACHE_ASSETS_DIR }}" ]; then
             mkdir -p "{{ .CACHE_ASSETS_DIR }}"
           fi
-          {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}" -o "{{ .CACHE_ASSETS_DIR }}/$download"
+          {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "https://github.com/{{ .REPO }}/releases/latest/${tag_name}/${download}" -o "{{ .CACHE_ASSETS_DIR }}/$download"
           if [ ! -f "{{ .CACHE_ASSETS_DIR }}/$download" ]; then
             {{ .gum_error }} " ⚠️  ERROR: Error while downloading asset: https://github.com/{{ .REPO }}/releases/download/${tag_name}/${download}"
             exit 1
