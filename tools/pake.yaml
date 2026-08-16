@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  default:
+    - task --list --taskfile tools/pake.yaml
+
+  install:
+    deps: [":pnpm:install"]
+    desc: "[PAKE] ✨ Install pake cli (pnpm, global)"
+    preconditions:
+      - sh: command -v node >/dev/null 2>&1
+        msg: command 'node' not found
+      - sh: command -v pnpm >/dev/null 2>&1
+        msg: command 'pnpm' not found
+    status:
+      - pake --version
+    cmds:
+      - cmd: >-
+          {{ .gum_spin }} pnpm install -g pake-cli
+        if: '! command -v pake >/dev/null 2>&1'

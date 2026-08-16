@@ -15,6 +15,7 @@ includes:
   direnv: tools/direnv.yaml
   dra: tools/dra.yaml
   flow-launcher: tools/flow-launcher.yaml
+  fnm: tools/fnm.yaml
   fonts: tools/fonts.yaml
   fresh: tools/fresh.yaml
   fzf: tools/fzf.yaml
@@ -34,6 +35,8 @@ includes:
   nvim: tools/nvim.yaml
   omt: tools/omt.yaml
   openshift: tools/openshift.yaml
+  pake: tools/pake.yaml
+  pnpm: tools/pnpm.yaml
   pwsh: tools/pwsh.yaml
   rose-pine-cursor: tools/rose-pine-cursor.yaml
   rtk: tools/rtk.yaml
