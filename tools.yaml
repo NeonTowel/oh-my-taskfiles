@@ -38,6 +38,7 @@ includes:
   pake: tools/pake.yaml
   pnpm: tools/pnpm.yaml
   pwsh: tools/pwsh.yaml
+  rclone: tools/rclone.yaml
   rose-pine-cursor: tools/rose-pine-cursor.yaml
   rtk: tools/rtk.yaml
   smallstep: tools/smallstep.yaml

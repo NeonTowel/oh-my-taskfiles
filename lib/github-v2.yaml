@@ -37,8 +37,8 @@ tasks:
     cmds:
       - |
         download='{{ .ASSET }}'
-        {{- if and .RESOLVE_VERSION (eq .RESOLVE_VERSION "true") }}
-        if ! command -v jq; then
+        {{- if .RESOLVE_VERSION }}
+        if ! command -v jq >/dev/null 2>&1; then
           {{ .gum_error }} " ⚠️  ERROR: command 'jq' not found, and we need it to resolve the latest release tag from GitHub."
           exit 1
         fi
@@ -82,29 +82,6 @@ tasks:
         else
           {{ .gum_info }} "Found asset from local cache ({{ .CACHE_ASSETS_DIR }}/{{ .CACHE_ASSET }}), skipping download."
         fi
-
-  # download:binary:
-  #   internal: true
-  #   silent: true
-  #   requires:
-  #     vars:
-  #       - URL
-  #       - GH_AUTH_TOKEN
-  #       - BINARY_PATH
-  #       - EXECUTABLE
-  #   cmds:
-  #     - |
-  #       {{- if .CLI_VERBOSE }}
-  #       {{ .gum_info }} "Downloading '{{ .URL }}'"
-  #       {{- end }}
-  #       {{ .gum_spin }}curl -sL {{ if .GH_AUTH_TOKEN }}-H "Authorization: Bearer {{ .GH_AUTH_TOKEN }}" {{ end }}-H "Accept: application/octet-stream" "{{ .URL }}" -o "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
-  #       if [ -f "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}" ]; then
-  #         chmod +x "{{ .BINARY_PATH }}/{{ .EXECUTABLE }}"
-  #         {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} installed successfully."
-  #       else
-  #         {{ .gum_error }} " ⚠️  ERROR: Error while downloading executable: {{ .URL }}"
-  #         exit 1
-  #       fi
 
   extract:asset:
     internal: true
@@ -203,7 +180,7 @@ tasks:
           CACHE_ASSET:
             ref: .CACHE_ASSET
           RESOLVE_VERSION:
-            ref: .RESOLVE_VERSION
+            ref: not (eq false .RESOLVE_VERSION)
       - task: confirm:overwrite
         vars:
           BINARY_PATH:

@@ -1,0 +1,20 @@
+version: '3'
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[RCLONE] ✨  "
+      REPO: rclone/rclone
+      DOWNLOAD_LINUX: 'rclone-v%s-linux-amd64.zip'
+      DOWNLOAD_DARWIN: 'rclone-v%s-osx-amd64.zip'
+      DOWNLOAD_WINDOWS: 'rclone-v%s-windows-amd64.zip'
+      BINARY_LINUX: '**/rclone'
+      BINARY_DARWIN: '**/rclone'
+      BINARY_WINDOWS: '**/rclone.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/rclone.yaml
