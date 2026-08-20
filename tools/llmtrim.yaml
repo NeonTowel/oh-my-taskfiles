@@ -1,0 +1,20 @@
+version: '3'
+
+includes:
+  github:
+    taskfile: ../lib/github-v2.yaml
+    flatten: true
+    vars:
+      HELP_PREFIX: "[LLMTRIM] ✨  "
+      REPO: fkiene/llmtrim
+      DOWNLOAD_LINUX: 'llmtrim-x86_64-unknown-linux-musl.tar.gz'
+      DOWNLOAD_DARWIN: 'llmtrim-x86_64-apple-darwin.tar.gz'
+      DOWNLOAD_WINDOWS: 'llmtrim-x86_64-pc-windows-msvc.zip'
+      BINARY_LINUX: 'llmtrim'
+      BINARY_DARWIN: 'llmtrim'
+      BINARY_WINDOWS: 'llmtrim.exe'
+      BINARY_PATH: '$HOME/bin'
+
+tasks:
+  default:
+    - task --list --taskfile tools/llmtrim.yaml

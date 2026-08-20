@@ -30,6 +30,7 @@ includes:
   jq: tools/jq.yaml
   k8s: tools/k8s.yaml
   lazygit: tools/lazygit.yaml
+  llmtrim: tools/llmtrim.yaml
   lsd: tools/lsd.yaml
   nu: tools/nushell.yaml
   nvim: tools/nvim.yaml
