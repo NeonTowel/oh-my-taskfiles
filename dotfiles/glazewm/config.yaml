@@ -160,11 +160,22 @@ workspaces:
     bind_to_monitor: 2
 
 window_rules:
+  - commands: ["set-tiling"]
+    match:
+      - window_process: { equals: "RoyalTS" }
+        window_title: { regex: ".* - Royal TS" }
+
   - commands: ["ignore"]
     match:
       # Ignores any Zebar/yasb windows.
       - window_process: { equals: "zebar" }
       - window_process: { equals: "yasb" }
+      - window_process: { equals: "TranslucentTB" }
+      - window_process: { equals: "msrdc" }
+      - window_process: { equals: "DMT" }
+      - window_process: { equals: "Taskmgr" }
+      - window_process: { equals: "RoyalTS" }
+        window_title: { regex: ".* - .*" }
 
       # Ignores picture-in-picture windows for browsers.
       - window_title: { regex: "[Pp]icture.in.[Pp]icture" }
