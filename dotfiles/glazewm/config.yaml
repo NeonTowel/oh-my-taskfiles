@@ -25,12 +25,12 @@ general:
 
   cursor_jump:
     # Whether to automatically move the cursor on the specified trigger.
-    enabled: true
+    enabled: false
 
     # Trigger for cursor jump:
     # - 'monitor_focus': Jump when focus changes between monitors.
     # - 'window_focus': Jump when focus changes between windows.
-    trigger: "monitor_focus"
+    trigger: "window_focus"
 
   # How windows should be hidden when switching workspaces.
   # - 'cloak': Recommended. Hides windows with no animation.
@@ -49,14 +49,14 @@ gaps:
   scale_with_dpi: true
 
   # Gap between adjacent windows.
-  inner_gap: "20px"
+  inner_gap: "6px"
 
   # Gap between windows and the screen edge.
   outer_gap:
-    top: "10px"
-    right: "40px"
-    bottom: "20px"
-    left: "40px"
+    top: "4px"
+    right: "12px"
+    bottom: "12px"
+    left: "4px"
 
 window_effects:
   # Visual effects to apply to the focused window.
@@ -89,7 +89,7 @@ window_effects:
   # Visual effects to apply to non-focused windows.
   other_windows:
     border:
-      enabled: true
+      enabled: false
       color: "#6c7086"
     hide_title_bar:
       enabled: false
@@ -111,10 +111,10 @@ window_behavior:
   state_defaults:
     floating:
       # Whether to center floating windows by default.
-      centered: true
+      centered: false
 
       # Whether to show floating windows as always on top.
-      shown_on_top: false
+      shown_on_top: true
 
     fullscreen:
       # Maximize the window if possible. If the window doesn't have a
@@ -122,7 +122,7 @@ window_behavior:
       maximized: false
 
       # Whether to show fullscreen windows as always on top.
-      shown_on_top: false
+      shown_on_top: true
 
 workspaces:
   - name: "1"
@@ -132,35 +132,39 @@ workspaces:
   - name: "2"
     display_name: ""
     keep_alive: true
-    bind_to_monitor: 1
+    bind_to_monitor: 0
   - name: "3"
     display_name: ""
     keep_alive: true
-    bind_to_monitor: 0
+    bind_to_monitor: 1
   - name: "4"
     display_name: ""
     bind_to_monitor: 1
   - name: "5"
     display_name: ""
-    bind_to_monitor: 0
+    bind_to_monitor: 1
   - name: "6"
     display_name: ""
     bind_to_monitor: 1
   - name: "7"
     display_name: ""
-    bind_to_monitor: 0
+    bind_to_monitor: 1
   - name: "8"
     display_name: ""
     bind_to_monitor: 1
   - name: "9"
     display_name: ""
-    bind_to_monitor: 0
+    bind_to_monitor: 1
+  - name: "10"
+    display_name: ""
+    bind_to_monitor: 2
 
 window_rules:
   - commands: ["ignore"]
     match:
-      # Ignores any Zebar windows.
+      # Ignores any Zebar/yasb windows.
       - window_process: { equals: "zebar" }
+      - window_process: { equals: "yasb" }
 
       # Ignores picture-in-picture windows for browsers.
       - window_title: { regex: "[Pp]icture.in.[Pp]icture" }
@@ -191,9 +195,6 @@ binding_modes:
         bindings: ["escape", "enter"]
 
 keybindings:
-  - command: "exec Cursor.exe"
-    bindings: ["alt+c"]
-
   # Shift focus in a given direction.
   - commands: ["focus --direction left"]
     bindings: ["alt+h", "alt+left"]
@@ -313,6 +314,8 @@ keybindings:
     bindings: ["ctrl+8"]
   - commands: ["focus --workspace 9"]
     bindings: ["ctrl+9"]
+  - commands: ["focus --workspace 10"]
+    bindings: ["ctrl+0"]
 
   # Move the focused window's parent workspace to a monitor in a given
   # direction.
@@ -344,3 +347,5 @@ keybindings:
     bindings: ["ctrl+shift+8"]
   - commands: ["move --workspace 9", "focus --workspace 9"]
     bindings: ["ctrl+shift+9"]
+  - commands: ["move --workspace 10", "focus --workspace 10"]
+    bindings: ["ctrl+shift+0"]
