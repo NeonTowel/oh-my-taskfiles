@@ -22,33 +22,37 @@
     --surface2: #585b70;
     --surface1: #45475a;
     --surface0: #282936;
-    --base: rgba(50, 50, 50, 0.5);
+    --base: rgba(70, 30, 20, 0.35);
     --mantle: rgba(24, 24, 37, 1);
     --crust: rgba(17, 17, 27, 0.5);
     --widget: rgba(58, 36, 55, 0.7);
 }
 
 * {
-        font-size: 14px;
-        color: var(--text);
-        font-weight: 400;
-        font-family: "Mononoki Nerd Font";
-        margin: 0;
-        padding: 0;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 400;
+    font-family: "Mononoki Nerd Font";
+    margin: 0;
+    padding: 0;
 }
 .yasb-bar {
-        padding: 3px;
-        margin: 0;
+    background-color: var(--base);
+    border-radius: 6px;
+    padding: 3px;
+    margin: 0;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 .widget {
-        padding: 0 12px;
+    padding: 0 12px;
     margin: 0 10px 0 0;
 }
 .icon {
-        font-size: 14px;
+    font-size: 14px;
 }
 .widget .label {
-        padding: 0px 10px 0 5px;
+    padding: 0px 10px 0 5px;
 }
 
 /* Home */
@@ -88,7 +92,9 @@
 /* GlazeWM */
 
 .glazewm-workspaces {
-    background-color: var(--widget);
+    padding-left: 0px;
+    background-color: transparent;
+    /*background-color: var(--widget);*/
     border-radius: 15px;
     height: 35px;
 }
@@ -112,7 +118,7 @@
 }
 .glazewm-workspaces .ws-btn.populated,
 .glazewm-workspaces .ws-btn.empty {
-    color: var(--overlay1);
+    color: var(--surface1);
     border: none;
 }
 
@@ -141,7 +147,7 @@
     min-width: 420px;
     max-width: 420px;
     background-color: #181825;
-        border-radius: 8px;
+    border-radius: 8px;
 }
 .media-menu .title,
 .media-menu .artist,
@@ -170,7 +176,7 @@
     min-height: 40px;
     max-height: 40px;
     border-radius: 20px;
-        color: var(--overlay0) ;
+    color: var(--overlay0) ;
 }
 .media-menu .btn.prev {
     margin-left: 10px;
@@ -220,7 +226,8 @@
 /* Clock */
 
 .clock-widget .widget-container {
-    background-color: var(--widget);
+    background-color: transparent;
+    /*background-color: var(--widget);*/
     border-radius: 15px;
     height: 35px;
 }
@@ -298,7 +305,8 @@
 /* Wifi */
 
 .wifi-widget {
-    background-color: var(--widget);
+    background-color: transparent;
+    /*background-color: var(--widget);*/
     border-radius: 15px;
     height: 35px;
 }
@@ -319,7 +327,8 @@
 /* Volume */
 
 .volume-widget {
-    background-color: var(--widget);
+    background-color: transparent;
+    /*background-color: var(--widget);*/
     border-radius: 15px;
     height: 35px;
 }
@@ -328,7 +337,7 @@
 }
 .volume-widget .icon {
     font-size: 16px;
-        color: var(--peach);
+    color: var(--peach);
     padding: 0 0 0 5px;
 }
 .audio-menu {
@@ -338,7 +347,8 @@
 /* Battery */
 
 .battery-widget .widget-container {
-    background-color: rgba(36, 39, 58, 0.5);
+    background-color: transparent;
+    /*background-color: rgba(36, 39, 58, 0.5);*/
     border-radius: 15px;
     height: 35px;
 }
@@ -363,56 +373,56 @@
 /* Power menu */
 
 .power-menu-widget {
-    background-color: var(--widget);
+    background-color: transparent;
+    /*background-color: var(--widget);*/
     border-radius: 15px;
     height: 35px;
     margin: 0 0 0 0;
 }
 .power-menu-widget .label {
-        color: var(--red);
-        font-size: 14px;
+    font-size: 14px;
     padding: 0 5px 0 0;
 }
 .power-menu-popup {
-        background-color: transparent;
+    background-color: transparent;
 }
 .power-menu-popup .button {
-        padding: 0;
-        width: 180px;
-        height: 230px;
-        border-radius: 8px;
-        background-color: var(--base);
-        color:var(--text);
-        border-left: 4px solid rgba(58, 59, 83, 0);
+    padding: 0;
+    width: 180px;
+    height: 230px;
+    border-radius: 8px;
+    background-color: var(--base);
+    color:var(--text);
+    border-left: 4px solid rgba(58, 59, 83, 0);
     border-right: 4px solid rgba(58, 59, 83, 0);
     border-top: 8px solid rgba(58, 59, 83, 0);
     border-bottom: 8px solid rgba(58, 59, 83, 0);
-        margin: 0px;
+    margin: 0px;
 }
 .power-menu-popup .button.hover {
-        background-color:var(--surface0);
-        border-left: 4px solid var(--surface0);
+    background-color:var(--surface0);
+    border-left: 4px solid var(--surface0);
     border-right: 4px solid var(--surface0);
     border-top: 8px solid var(--surface0);
     border-bottom: 8px solid var(--surface0);
 }
 .power-menu-popup .button .label {
-        margin-bottom: 8px;
-        font-size: 16px;
-        font-weight: 500;
-        color: var(--subtext1);
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--subtext1);
 }
 .power-menu-popup .button .icon {
-        font-size: 64px;
-        padding-top: 32px;
-        color: var(--subtext1);
+    font-size: 64px;
+    padding-top: 32px;
+    color: var(--subtext1);
 }
 .power-menu-popup .button.cancel .icon {
     padding: 0;
     margin: 0;
 }
 .power-menu-popup .button.cancel .label {
-        color: var(--red);
+    color: var(--red);
     margin: 0;
 }
 .power-menu-popup .button.cancel {
@@ -420,9 +430,9 @@
     border-radius: 4px;
 }
 .uptime {
-        font-size: 14px;
-        margin-bottom: 10px;
-        color: var(--subtext0);
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: var(--subtext0);
 }
 
 /* Weather */
