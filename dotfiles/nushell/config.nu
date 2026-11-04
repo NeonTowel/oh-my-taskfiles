@@ -70,5 +70,10 @@ if (which claude | is-not-empty) {
 }
 
 if (which starship | is-not-empty) {
-    starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+    let scoop = ($env.SCOOP? | default ($home | path join "scoop"))
+    let shim = ($scoop | path join "shims" "starship.exe")
+    let real = ($scoop | path join "apps" "starship" "current" "starship.exe")
+    let init = (starship init nu)
+    let init = if ($real | path exists) { $init | str replace --all $shim $real } else { $init }
+    $"($init)\n$env.PROMPT_COMMAND_RIGHT = \"\"\n" | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 }
