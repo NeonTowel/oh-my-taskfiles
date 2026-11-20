@@ -1,0 +1,199 @@
+{
+  "file_finder": {
+    "include_ignored": "smart"
+  },
+  "search": {
+    "include_ignored": true
+  },
+  "agent_buffer_font_family": "Afacad Flux",
+  "agent_ui_font_family": "DM Sans 14pt",
+  "code_lens": "on",
+  "inlay_hints": {
+    "enabled": true
+  },
+  "indent_guides": {
+    "background_coloring": "indent_aware",
+    "coloring": "indent_aware",
+    "enabled": true
+  },
+  "toolbar": {
+    "code_actions": false,
+    "quick_actions": true,
+    "breadcrumbs": true
+  },
+  "minimap": {
+    "max_width_columns": 120,
+    "current_line_highlight": "line",
+    "thumb": "always",
+    "thumb_border": "left_open",
+    "show": "never"
+  },
+  "scrollbar": {
+    "git_diff": true
+  },
+  "gutter": {
+    "min_line_number_digits": 4,
+    "breakpoints": true,
+    "runnables": true,
+    "line_numbers": true
+  },
+  "edit_predictions": {
+    "allow_data_collection": "no"
+  },
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Zed (Default)",
+    "dark": "Catppuccin Macchiato"
+  },
+  "text_rendering_mode": "platform_default",
+  "markdown_preview_font_family": "SN Pro",
+  "soft_wrap": "editor_width",
+  "markdown_preview_code_font_family": "Red Hat Mono",
+  "markdown_preview_font_size": 20.0,
+  "cursor_shape": "block",
+  "cli_default_open_behavior": "existing_window",
+  "tab_size": 2,
+  "format_on_save": "modifications_if_available",
+  "restore_on_startup": "last_session",
+
+  "agent_buffer_font_size": 18.0,
+  "agent_ui_font_size": 18.0,
+  "ui_font_family": "DM Sans 14pt",
+  "ui_font_size": 18.0,
+  "ui_font_weight": 400.0,
+  "buffer_font_family": "MonaspiceNe Nerd Font Propo",
+  "buffer_font_size": 14.0,
+  "buffer_line_height": {
+    "custom": 1.4800000190734863
+  },
+  "buffer_font_weight": 300.0,
+
+  "theme": {
+    "mode": "dark",
+    "light": "Catppuccin Latte (Blur) [Light]",
+    "dark": "Zenburn Transparent"
+  },
+  "line_indicator_format": "long",
+  "title_bar": {
+    "show_branch_status_icon": false,
+    "show_branch_name": true,
+    "show_worktree_name": true,
+    "show_project_items": true,
+    "show_onboarding_banner": false,
+    "show_user_picture": false,
+    "show_user_menu": false,
+    "show_sign_in": false,
+    "show_menus": false
+  },
+  "bottom_dock_layout": "contained",
+  "theme_overrides": {
+    "Catppuccin Latte (Blur) [Light]": {
+      "background.appearance": "transparent",
+      "background": "#F9FAFCA0",
+      "status_bar.background": "#F9FAFCA0",
+      "title_bar.background": "#F9FAFCA0",
+      "panel.overlay_hover": "#F9FAFCA0"
+    },
+    "Zenburn Transparent": {
+      "background.appearance": "transparent",
+      "background": "#1A1A2AEA",
+      "status_bar.background": "#1A1A2AD0",
+      "title_bar.background": "#1A1A2AD0"
+    },
+    "Catppuccin Mocha (Blur) [Light]": {
+      "background.appearance": "transparent",
+      "background": "#1A1A2AE0",
+      "editor.foreground": "#B3ADADFF",
+      "editor.background": "#1A1A2A00",
+      "element.background": "#1A1A2A20",
+      "ghost_element.background": "#11111b00",
+      "ghost_element.active": "#cba6f715",
+      "editor.active_line.background": "#1A1A2A1A",
+      "terminal.background": "#1E1E2E00",
+      "ghost_element.hover": "#18182540",
+      "tab.inactive_background": "#282838FF",
+      "tab.active_background": "#181825",
+      "editor.line_number": "#AB9696FF",
+      "editor.active_line_number": "#E0D3D3FF",
+      "editor.hover_line_number": "#E0D3D3FF",
+      "scrollbar.thumb.background": "#B3ADAD70",
+      "scrollbar.thumb.hover_background": "#cba6f75A",
+      "scrollbar.thumb.active_background": "#cba6f770",
+      "text.accent": "#7AA3F0FF",
+      "created": "#C5D6F0FF",
+      "text": "#C4BBBBFF",
+      "text.muted": "#9C9191FF",
+      "text.disabled": "#80808040",
+      "text.placeholder": "#cccccc99",
+      "editor.gutter.background": "#1A1A2A00",
+      "status_bar.background": "#1A1A2AD0",
+      "title_bar.background": "#1A1A2AD0",
+      "panel.overlay_background": "#1A1A2A",
+      "players": [
+        {
+          "selection": "#1A1A2A20"
+        }
+      ],
+      "syntax": {
+        "text": {
+          "color": "#C4BBBBFF"
+        },
+        "title": {
+          "color": "#cccccc99",
+          "font_weight": 200
+        },
+        "comment": {
+          "color": "#786667FF"
+        },
+        "variable": {
+          "color": "#C8D2DBFF"
+        },
+        "string": {
+          "color": "#94C291FF"
+        },
+        "property": {
+          "color": "#7AA3F0FF"
+        }
+      }
+    }
+  },
+
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "project_panel": {
+    "dock": "right"
+  },
+  "git_panel": {
+    "dock": "right",
+    "tree_view": true
+  },
+  "terminal": {
+    "show_count_badge": true,
+    "working_directory": "current_project_directory",
+    "shell": {
+      "program": "nu"
+    },
+    "flexible": true,
+    "font_weight": 400.0,
+    "dock": "bottom",
+    "font_family": "Mononoki Nerd Font",
+    "font_size": 16.0
+  },
+  "auto_update": false,
+  "colorize_brackets": true,
+  "markdown_preview": {
+    "max_width": 1200.0,
+    "limit_content_width": true
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  }
+}

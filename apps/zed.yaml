@@ -125,3 +125,32 @@ tasks:
       - task: configure:windows
       - task: skills
       - task: agents
+
+  config:build:
+    desc: "[ZED] Build Zed settings"
+    vars:
+      BASE: settings_base.json
+      OVERRIDES:
+        - settings_override_preferences.json
+        - settings_override_agents.json
+        - settings_override_language_models.json
+        - settings_override_mcp_servers.json
+      TO: settings.json
+      CONFIG_PATH: '{{ expandenv (default "$HOME/AppData/Roaming/Zed" .CONFIG_PATH) | replace "\\" "/" }}'
+      SETTINGS_BACKUP:
+        sh: echo settings-`date '+%Y-%m-%d-%H-%M'`-$$.json
+    preconditions:
+      - sh: test -d '{{ .CONFIG_PATH }}'
+        msg: 'path does not exist: {{ .CONFIG_PATH }}'
+      - sh: test ! -f '{{ .CONFIG_PATH }}/{{ .CONFIG_PATH }}'
+        msg: 'would overwrite existing backup: {{ .CONFIG_PATH }}/{{ .SETTINGS_BACKUP }}'
+    cmds:
+      - |
+        cp {{ .CONFIG_PATH }}/{{ .TO }} {{ .CONFIG_PATH }}/{{ .SETTINGS_BACKUP }}
+        {{- range .OVERRIDES }}
+        if ! test -f "{{ $.CONFIG_PATH }}/{{ . }}"; then
+          echo "WARN: '{{ . }}' does not exist, creating empty override..."
+          echo '{}' > "{{ $.CONFIG_PATH }}/{{ . }}"
+        fi
+        {{- end }}
+        jq -s 'reduce .[] as $obj ({}; . * $obj)' dotfiles/zed/{{ .BASE }} {{ range .OVERRIDES }}{{ $.CONFIG_PATH }}/{{ . }} {{ end }}> {{ $.CONFIG_PATH }}/{{ .TO }}

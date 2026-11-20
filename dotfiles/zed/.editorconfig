@@ -1,0 +1,10 @@
+{
+  "json": {
+    "parser": {
+      "allowTrailingCommas": false,
+    },
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  }
+}
