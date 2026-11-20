@@ -136,7 +136,8 @@ tasks:
         - settings_override_language_models.json
         - settings_override_mcp_servers.json
       TO: settings.json
-      CONFIG_PATH: '{{ expandenv (default "$HOME/AppData/Roaming/Zed" .CONFIG_PATH) | replace "\\" "/" }}'
+      USER_HOME: '{{ default (env "USERPROFILE") (env "HOME") }}'
+      CONFIG_PATH: '{{ expandenv (default (joinPath .USER_HOME "/AppData/Roaming/Zed") .CONFIG_PATH) | replace "\\" "/" }}'
       SETTINGS_BACKUP:
         sh: echo settings-`date '+%Y-%m-%d-%H-%M'`-$$.json
     preconditions:
