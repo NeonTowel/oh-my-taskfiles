@@ -6,7 +6,16 @@ includes:
     taskfile: scoop-buckets.yaml
 
 tasks:
+  ensure:
+    internal: true
+    platforms: [windows]
+    run: once
+    preconditions:
+      - sh: command -v scoop >/dev/null 2>&1
+        msg: command 'scoop' not found
+
   install:
+    deps: [ensure]
     platforms: [windows]
     internal: true
     vars:
@@ -19,6 +28,19 @@ tasks:
         task: :install-success
         vars:
           APP: "{{ .APP }}"
+    status:
+      - test -d "{{ .SCOOP_HOME }}/apps/{{ .APP }}"
+
+  update:
+    deps: [ensure]
+    platforms: [windows]
+    internal: true
+    vars:
+      SCOOP_HOME: '{{ default (env "USERPROFILE") (env "HOME") | replace "\\" "/" }}/scoop'
+    required:
+      vars: [ APP ]
+    cmds:
+      - scoop update {{ .APP }}
     status:
       - test -d "{{ .SCOOP_HOME }}/apps/{{ .APP }}"
 

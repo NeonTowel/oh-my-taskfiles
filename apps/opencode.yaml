@@ -1,152 +1,118 @@
 version: "3"
 
 tasks:
-    default:
-        - task --list --taskfile apps/opencode.yaml
+  default:
+      - task --list --taskfile apps/opencode.yaml
 
     configure:
         desc: "[OPENCODE] ⚙️  Configure OpenCode"
         vars:
-            CONFIG_FILE: opencode.json
-            TUI_FILE: tui.json
-            CONFIG_SOURCE_PATH: "dotfiles/opencode"
-            CONFIG_DEST_PATH: "$HOME/.config/opencode"
-            CONFIG_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .CONFIG_FILE | join "/")}}'
-            CONFIG_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .CONFIG_FILE | join "/")}}'
-            TUI_SOURCE_FILE: '{{ osClean (list .CONFIG_SOURCE_PATH .TUI_FILE | join "/")}}'
-            TUI_DEST_FILE: '{{ osClean (list .CONFIG_DEST_PATH .TUI_FILE | join "/")}}'
-            CONFIG_FILE_EXISTS:
-                sh: >-
-                    [ -f "{{ .CONFIG_DEST_FILE }}" ] && echo "yes" || true
-            CONFIG_FILE_DATA_RAW:
-                sh: '{{ if .CONFIG_FILE_EXISTS }}cat "{{ .CONFIG_DEST_FILE }}"{{ end }}'
-            CONFIG_FILE_DATA:
-                ref: "fromJson .CONFIG_FILE_DATA_RAW"
-        cmds:
-            - |
-                if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
-                  mkdir -p "{{ .CONFIG_DEST_PATH }}"
-                fi
-                {{ if .UNATTENDED }}
-                {{ .gum_info }} "Unattended mode enabled, skipping interactive configuration."
-                if [ ! -f "{{ .CONFIG_DEST_FILE }}" ]; then
-                  cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
-                  cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
-                  {{ .gum_ok }} "Configuration saved successfully."
-                else
-                  {{ .gum_warn }} "Configuration already exist, skipping configuration."
-                fi
-                {{ else }}
-                if [ -f "{{ .CONFIG_DEST_FILE }}" ]; then
-                  if ! gum confirm "Configuration already exist, overwrite?"; then
-                    {{ .gum_warn }} "Configuration already exist, skipping configuration."
-                    exit 0
-                  fi
-                fi
-                if gum confirm "Do you want to configure OpenCode to use Microsoft Foundry and Google Vertex?"; then
-                  {{- if (and .CONFIG_FILE_EXISTS (index .CONFIG_FILE_DATA.provider "azure-cognitive-services")) }}
-                  FOUNDRY_RESOURCE_NAME_DEFAULT="{{ (index .CONFIG_FILE_DATA.provider "azure-cognitive-services").options.resourceName }}"
-                  {{- else }}
-                  FOUNDRY_RESOURCE_NAME_DEFAULT=""
-                  {{- end }}
-                  FOUNDRY_RESOURCE_NAME=$(gum input --placeholder "Enter your Microsoft Foundry Resource Name" --value "$FOUNDRY_RESOURCE_NAME_DEFAULT" --header "Microsoft Foundry Resource Name")
-                  if [ -n $GOOGLE_CLOUD_LOCATION ]; then
-                    VERTEX_LOCATION_DEFAULT=$GOOGLE_CLOUD_LOCATION
-                  else
-                    VERTEX_LOCATION_DEFAULT=""
-                  fi
-                  if [ -n $GOOGLE_CLOUD_PROJECT ]; then
-                    VERTEX_PROJECT_DEFAULT=$GOOGLE_CLOUD_PROJECT
-                  else
-                    VERTEX_PROJECT_DEFAULT=""
-                  fi
-                  VERTEX_PROJECT_NAME=$(gum input --placeholder "Enter your Google Vertex Project Name" --value "$VERTEX_PROJECT_DEFAULT" --header "Google Vertex Project Name")
-                  VERTEX_LOCATION=$(gum input --placeholder "Enter your Google Vertex Location" --value "$VERTEX_LOCATION_DEFAULT" --header "Google Vertex Location")
-                  export VERTEX_PROJECT_NAME="$VERTEX_PROJECT_NAME"
-                  export VERTEX_LOCATION="$VERTEX_LOCATION"
-                  export FOUNDRY_RESOURCE_NAME="$FOUNDRY_RESOURCE_NAME"
-                  gomplate -f "{{ .CONFIG_SOURCE_FILE }}.tmpl" -o "{{ .CONFIG_DEST_FILE }}"
-                  cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
-                  {{ .gum_info }} " Remember to set environment variable AZURE_OPENAI_API_KEY to your api key!"
-                else
-                  cp "{{ .CONFIG_SOURCE_FILE }}" "{{ .CONFIG_DEST_FILE }}"
-                  cp "{{ .TUI_SOURCE_FILE }}" "{{ .TUI_DEST_FILE }}"
-                fi
-                {{ .gum_ok }} "Configuration saved successfully."
-                {{ end }}
+            APP: "opencode"
 
-    install:linux:
-        internal: true
-        platforms: [linux]
-        cmds:
-            - |
-                echo "Installing OpenCode..."
-                curl -fsSL https://opencode.ai/install | bash
+  update:windows:
+    internal: true
+    platforms: [windows]
+    preconditions:
+      - sh: command -v opencode >/dev/null 2>&1
+        msg: command 'opencode' not found
+    cmds:
+      - task: ::scoop:update
+        vars:
+          APP: "opencode"
 
-    install:windows:
-        internal: true
+  install:
+    desc: "[OPENCODE] ✨ Install OpenCode cli"
+    silent: true
+    cmds:
+      - task: install:windows
         platforms: [windows]
-        cmds:
-            - task: ::scoop:extras-install
-              vars:
-                  APP: "opencode"
+      - task: install:linux
+        platforms: [linux]
+      - task: configure
 
-    install:
-        desc: "[OPENCODE] ✨ Install OpenCode cli"
-        silent: true
-        cmds:
-            - task: install:windows
-              platforms: [windows]
-            - task: install:linux
-              platforms: [linux]
-            - task: configure
-            - task: slash-commands
-            - task: agents
+  update:
+    aliases: [upgrade]
+    desc: "[OPENCODE] Update OpenCode"
+    silent: true
+    cmds:
+      - task: update:windows
+        platforms: [windows]
+      - task: update:linux
+        platforms: [linux]
+      - task: configure
 
-    slash-commands:
-        aliases: [skills]
-        desc: "[OPENCODE] Configure OpenCode skills"
-        vars:
-            SLASH_COMMANDS_SOURCE_DIR: '{{ "dotfiles/opencode/skills" | osClean }}'
-            SLASH_COMMANDS_DEST_DIR: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/opencode/skills" | osClean }}'
-        dir: "{{ .SLASH_COMMANDS_SOURCE_DIR }}"
-        sources:
-            - "**/*.md"
-        method: none
-        cmds:
-            - |-
-                if [ ! -d "{{ .SLASH_COMMANDS_DEST_DIR }}" ]; then
-                  mkdir -p "{{ .SLASH_COMMANDS_DEST_DIR }}"
-                fi
-            - for: sources
-              cmd: |-
-                  {{- $dest_path:=osDir .ITEM }}
-                  {{- if ne $dest_path "skills" -}}
-                  mkdir -p "{{ joinPath .SLASH_COMMANDS_DEST_DIR $dest_path }}"
-                  {{- end }}
-                  cp "{{ .ITEM }}" "{{joinPath .SLASH_COMMANDS_DEST_DIR .ITEM }}"
+  agents:instructions:
+    desc: "[OPENCODE] Configure OpenCode AGENTS.md instructions"
+    vars:
+      SOURCE_PATH: '{{ "dotfiles/agents" | osClean }}'
+      DEST_PATH: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/opencode" | osClean }}'
+    dir: "{{ .SOURCE_PATH }}"
+    sources:
+      - "AGENTS.md"
+    method: none
+    preconditions:
+      - sh: test -f 'AGENTS.md'
+        msg: 'source file not found: {{ .SOURCE_PATH }}/AGENTS.md'
+    cmds:
+      - |-
+        if [ ! -d "{{ .DEST_PATH }}" ]; then
+          mkdir -p "{{ .DEST_PATH }}"
+        fi
+      - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          cp "{{ .ITEM }}" "{{joinPath .DEST_PATH .ITEM }}"
 
-    agents:
-        desc: "[OPENCODE] Configure OpenCode agents"
-        vars:
-            CONFIG_SOURCE_PATH: "dotfiles/opencode"
-            CONFIG_DEST_PATH: "$HOME/.config/opencode"
-        dir: "{{ .CONFIG_SOURCE_PATH }}"
-        sources:
-            - prompts/*.md
-            - shared/*.md
-            - AGENTS.md
-        method: none
-        cmds:
-            - |-
-                if [ ! -d "{{ .CONFIG_DEST_PATH }}" ]; then
-                  mkdir -p "{{ .CONFIG_DEST_PATH }}"
-                fi
-            - for: sources
-              cmd: |-
-                  {{- $dest_path:=osDir .ITEM }}
-                  {{- if ne $dest_path "opencode" -}}
-                  mkdir -p "{{ joinPath .CONFIG_DEST_PATH $dest_path }}"
-                  {{- end }}
-                  cp "{{ .ITEM }}" "{{joinPath .CONFIG_DEST_PATH .ITEM }}"
-            - echo "Agents configuration saved successfully."
+  agents:skills:
+    desc: "[OPENCODE] Configure OpenCode agents skills"
+    vars:
+      SOURCE_PATH: '{{ "dotfiles/agents/skills" | osClean }}'
+      DEST_PATH: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/opencode/skills" | osClean }}'
+    dir: "{{ .SOURCE_PATH }}"
+    sources:
+      - "**/*.md"
+    method: none
+    cmds:
+      - |-
+        if [ ! -d "{{ .DEST_PATH }}" ]; then
+          mkdir -p "{{ .DEST_PATH }}"
+        fi
+      - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          {{- if ne $dest_path "skills" -}}
+          mkdir -p "{{ joinPath .DEST_PATH $dest_path }}"
+          {{- end }}
+          cp "{{ .ITEM }}" "{{joinPath .DEST_PATH .ITEM }}"
+
+  config:build:
+    desc: "[OPENCODE] Build OpenCode settings"
+    vars:
+      BASE: opencode_base.json
+      OVERRIDES:
+        - opencode_override_preferences.json
+        - opencode_override_agents.json
+        - opencode_override_providers.json
+        - opencode_override_mcp_servers.json
+      TO: opencode.json
+      USER_HOME: '{{ default (env "USERPROFILE") (env "HOME") }}'
+      CONFIG_PATH: '{{ expandenv (default (joinPath .USER_HOME "/.config/opencode") .CONFIG_PATH) | replace "\\" "/" }}'
+      SETTINGS_BACKUP:
+        sh: echo opencode-`date '+%Y-%m-%d-%H-%M'`-$$.json
+    preconditions:
+      - sh: test -d '{{ .CONFIG_PATH }}'
+        msg: 'path does not exist: {{ .CONFIG_PATH }}'
+      - sh: test ! -f '{{ .CONFIG_PATH }}/{{ .CONFIG_PATH }}'
+        msg: 'would overwrite existing backup: {{ .CONFIG_PATH }}/{{ .SETTINGS_BACKUP }}'
+    cmds:
+      - |
+        if test -f '{{ .CONFIG_PATH }}/{{ .TO }}'; then
+          cp {{ .CONFIG_PATH }}/{{ .TO }} {{ .CONFIG_PATH }}/{{ .SETTINGS_BACKUP }}
+        fi
+        {{- range .OVERRIDES }}
+        if ! test -f "{{ $.CONFIG_PATH }}/{{ . }}"; then
+          echo "WARN: '{{ . }}' does not exist, creating empty override..."
+          echo '{}' > "{{ $.CONFIG_PATH }}/{{ . }}"
+        fi
+        {{- end }}
+        jq -s 'reduce .[] as $obj ({}; . * $obj)' dotfiles/opencode/{{ .BASE }} {{ range .OVERRIDES }}{{ $.CONFIG_PATH }}/{{ . }} {{ end }}> {{ $.CONFIG_PATH }}/{{ .TO }}

@@ -13,11 +13,12 @@ description: Reduce context size and token use to drive costs down. Use when res
 ## Edit Discipline
 
 - Perform precise and atomic code edits.
-- Prefer `tokensave` MCP tools if they are available in the project.
+- Prefer `tokensave` tools if they are available in the project.
 
 ## Command Output
 
-- Use `tokensave` MCP tools extensively when reading files and code in the project. If `tokensave` MCP tools not available, fallback to byte-capped shell commands.
+- Use `tokensave` tools and `rtk` commands extensively when reading files and code in the project. If not available, fallback to byte-capped shell commands.
+- See [the rtk guide](references/rtk.md) for instructions on how to use rtk commands.
 - Byte-cap unknown or large output. Line caps fail — a single line can be massive.
 
 ```bash

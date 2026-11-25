@@ -4,14 +4,14 @@
 
 ### File Size Limits
 
-- **Maximum 250 lines per file** (excluding tests) [web:21][web:25]
+- **Maximum 250 lines per file** (excluding tests)
 - **Maximum 150 lines preferred** for optimal maintainability
 - Files exceeding limits indicate insufficient decomposition
-- Extract to new modules rather than growing existing files [web:25]
+- Extract to new modules rather than growing existing files
 
 ### One Responsibility Per File
 
-- Single top-level class/interface/module per file [web:25]
+- Single top-level class/interface/module per file
 - File name must match primary export exactly
 - Related types (delegates, enums) can share a file only if < 50 lines total
 - Test files are exception: one test file per implementation file
@@ -30,8 +30,8 @@ module/
 
 ### Function Guidelines
 
-- **Maximum 20 lines per function** [web:23][web:28]
-- **Maximum 3 parameters** [web:28]
+- **Maximum 20 lines per function**
+- **Maximum 3 parameters**
 - Use parameter objects for > 3 related values
 - Single responsibility: function does ONE thing well
 - No side effects beyond function name's promise
@@ -53,13 +53,13 @@ module/
 
 ### Line Length
 
-- **Maximum 100 characters** per line [web:28]
+- **Maximum 100 characters** per line
 - Break at logical boundaries (after operators, before parameters)
 - Indent continuation lines by 4 spaces
 
 ## Modular Architecture
 
-### Domain-Driven Design [web:27][web:30]
+### Domain-Driven Design
 
 - **Bounded Contexts**: Clear module boundaries with explicit interfaces
 - **Domain Models**: Business logic isolated from infrastructure
@@ -73,7 +73,7 @@ module/
 - **Infrastructure**: Implements domain interfaces
 - Dependencies flow inward only (ports & adapters pattern)
 
-### Self-Contained Modules [web:27][web:29]
+### Self-Contained Modules
 
 - Each module can be understood independently
 - Public API defined in single `index` file
@@ -81,7 +81,7 @@ module/
 - No circular dependencies between modules
 - Document module boundaries in README
 
-## Idiomatic Code Patterns [web:26][web:29]
+## Idiomatic Code Patterns
 
 ### Error Handling
 
@@ -158,7 +158,7 @@ func processUser(user *User) error {
 
 ### Test File Structure
 
-- `_test` suffix matching implementation file [web:25]
+- `_test` suffix matching implementation file
 - Test functions named `TestFunctionName_Scenario`
 - Table-driven tests for multiple inputs
 - Arrange-Act-Assert structure

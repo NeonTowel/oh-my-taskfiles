@@ -2,6 +2,7 @@ version: '3'
 
 tasks:
   add:
+    deps: [':ensure']
     aliases: [ ensure ]
     vars:
       SCOOP_HOME: '{{ default (env "USERPROFILE") (env "HOME") | replace "\\" "/" }}/scoop'
@@ -21,10 +22,12 @@ tasks:
         fi
 
   list:
+    deps: [':ensure']
+    cmds:
     - scoop bucket list
 
   remove:
-    deps: [ "::tools:coreutils:install" ]
+    deps: [ '::tools:coreutils:install',':ensure' ]
     requires:
       vars: [ BUCKET ]
     cmds:

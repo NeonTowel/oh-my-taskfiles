@@ -1,0 +1,77 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "update": "notify",
+  "share": "disabled",
+  "formatter": true,
+  "permissions": [
+    {
+      "action": "external_directory",
+      "resource": "~/.config/opencode/**",
+      "effect": "allow"
+    },
+    {
+      "action": "external_directory",
+      "resource": "/tmp/**",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -fr /*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -f /*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -r /*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "README.md",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": "AGENTS.md",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": ".ai/plans/**",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.config/opencode/**",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.config/opencode/**/*.md",
+      "effect": "ask"
+    },
+    {
+      "action": "edit",
+      "resource": "*.env",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": ".env",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": ".*ignore",
+      "effect": "deny"
+    }
+  ],
+  "compaction": {
+    "auto": true,
+    "buffer": 16384
+  }
+}

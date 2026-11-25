@@ -23,10 +23,10 @@ description: Development principles to follow before delegating any implementati
 
 Before delegating any implementation, fix, or deployment task:
 
-1. Use `tokensave` MCP tools to read existing patterns, tooling conventions,
+1. Use `tokensave` and `rtk` tools - if they are available - to read existing patterns, tooling conventions,
    and prescribed workflows in the current project.
 2. Identify the established method for the task type in this codebase.
-3. Cross-reference with memory — prior sessions may contain relevant project context.
+3. Cross-reference with memory — prior sessions may contain relevant project context (invoke `self-improvement` skill for instructions).
 4. Delegate tasks **within** the established workflow.
    Never substitute an alternative approach because the prescribed one is failing.
 
@@ -38,10 +38,20 @@ Before delegating any implementation, fix, or deployment task:
 
 When making changes on a Git repo, see [the commit practices guide](references/commit-practices.md) for details.
 
-## Code Quality
+## Code Style Instructions
 
-When designing or writing code, see [the code quality guide](references/code-quality.md) for details.
+1. Before any task to work with the codebase, invoke the `clean-code` and `codebase-design` skills.
+3. When designing new features, or writing code, see [the code style guide](references/code-style.md) for details.
 
-## Testing
+## Edit Discipline
 
-When designing or writing tests, see [the testing guide](references/testing.md) for details.
+1. Perform precise and atomic code edits.
+2. Prefer `tokensave` MCP tools if they are available in the project.
+
+## Testing Instructions
+
+Touch only related tests. Cover happy path and everything-on-fire path.
+
+## Quality Gates
+
+See [the quality gates guide](references/quality-gates.md) for details.
