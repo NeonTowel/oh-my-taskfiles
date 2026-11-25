@@ -46,6 +46,22 @@ includes:
       BINARY_WINDOWS: '**/kubens.exe'
       BINARY_PATH: '$HOME/bin'
 
+  helm:
+    taskfile: ../lib/github-v2.yaml
+    internal: true
+    vars:
+      HELP_PREFIX: "[HELM] ✨  "
+      REPO: helm/helm
+      DOWNLOAD_BASEURL: https://get.helm.sh
+      DOWNLOAD_LINUX: 'helm-v%s-linux-amd64.tar.gz'
+      DOWNLOAD_DARWIN: 'helm-v%s-darwin-amd64.tar.gz'
+      DOWNLOAD_WINDOWS: 'helm-v%s-windows-amd64.zip'
+      TAR_HAS_SUBFOLDER: true
+      BINARY_LINUX: '**/helm'
+      BINARY_DARWIN: '**/helm'
+      BINARY_WINDOWS: '**/helm.exe'
+      BINARY_PATH: '$HOME/bin'
+
 tasks:
   default:
     - task --list --taskfile tools/k8s.yaml
@@ -75,6 +91,31 @@ tasks:
         vars:
           APP: helm
 
+  update:windows:
+    platforms: [windows]
+    internal: true
+    silent: true
+    cmds:
+      - task: ::scoop:buckets:ensure
+        vars:
+          BUCKET: lemon
+          BUCKET_URL: https://github.com/hoilc/scoop-lemon
+      - task: ::scoop:update
+        vars:
+          APP: kubecm
+      - task: ::scoop:update
+        vars:
+          APP: kubectx
+      - task: ::scoop:update
+        vars:
+          APP: kubens
+      - task: ::scoop:update
+        vars:
+          APP: kubectl
+      - task: ::scoop:update
+        vars:
+          APP: helm
+
   install:linux:
     platforms: [linux]
     internal: true
@@ -86,6 +127,19 @@ tasks:
       - task: kubectl:install
       - task: helm:install
 
+  update:linux:
+    platforms: [linux]
+    internal: true
+    silent: true
+    cmds:
+      - task: kubecm:update
+      - task: kubectx:update
+      - task: kubens:update
+      - task: kubectl:install
+        vars:
+          FORCE: true
+      - task: helm:update
+
   install:
     desc: "[K8S] ✨ Install Kubernetes tools (kubecm, kubectx, kubens, kubectl and helm)"
     cmds:
@@ -94,28 +148,39 @@ tasks:
       - task: install:linux
         platforms: [linux]
 
+  update:
+    desc: "[K8S] ✨ Update Kubernetes tools (kubecm, kubectx, kubens, kubectl and helm)"
+    cmds:
+      - task: update:windows
+        platforms: [windows]
+      - task: update:linux
+        platforms: [linux]
+
   ############################################################
 
   kubectl:install:
     internal: true
     platforms: [linux]
+    vars:
+      EXECUTABLE: kubectl
+      BINARY_PATH: '$HOME/bin'
+    status:
+      - command -v {{ .EXECUTABLE }} >/dev/null 2>&1 && [ "{{ empty .FORCE }}" == "true" ]
     cmds:
       - |
-        if ! command -v kubectl >/dev/null 2>&1; then
-          {{ .gum_spin }}curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o ~/bin/kubectl
-          chmod +x ~/bin/kubectl
-          {{ .gum_ok }} " ✅  kubectl has been installed successfully."
-        fi
+        {{ .gum_spin }}curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o {{ .BINARY_PATH }}/{{ .EXECUTABLE }}
+        chmod +x {{ .BINARY_PATH }}/{{ .EXECUTABLE }}
+        {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} has been installed successfully."
 
-  helm:install:
-    internal: true
-    platforms: [linux]
-    deps: [ '::tools:jq:install' ]
-    cmds:
-      - |
-        if ! command -v helm >/dev/null 2>&1; then
-          version=$(curl -sSf https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
-          {{ .gum_spin }}curl -sL "https://get.helm.sh/helm-${version}-linux-amd64.tar.gz" | tar xz --strip-components=1 --overwrite -C ~/bin "**/helm"
-          chmod +x ~/bin/helm
-          {{ .gum_ok }} " ✅  helm installed successfully."
-        fi
+  # helm:install:
+  #   internal: true
+  #   platforms: [linux]
+  #   deps: [ '::tools:jq:install' ]
+  #   cmds:
+  #     - |
+  #       if ! command -v helm >/dev/null 2>&1; then
+  #         version=$(curl -sSf https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
+  #         {{ .gum_spin }}curl -sL "https://get.helm.sh/helm-${version}-linux-amd64.tar.gz" | tar xz --strip-components=1 --overwrite -C ~/bin "**/helm"
+  #         chmod +x ~/bin/helm
+  #         {{ .gum_ok }} " ✅  helm installed successfully."
+  #       fi
