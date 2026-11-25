@@ -4,8 +4,54 @@ tasks:
   default:
       - task --list --taskfile apps/opencode.yaml
 
-    configure:
-        desc: "[OPENCODE] ⚙️  Configure OpenCode"
+  configure:
+    desc: "[OPENCODE] ⚙️  Configure OpenCode"
+    vars:
+      SOURCE_PATH: '{{ "dotfiles/agents" | osClean }}'
+      DEST_PATH: '{{ default "$HOME" (default (env "USERPROFILE") (env "HOME")) }}{{ "/.config/opencode" | osClean }}'
+    dir: "{{ .SOURCE_PATH }}"
+    sources:
+      - tui.json
+    method: none
+    cmds:
+      - |
+        if [ ! -d "{{ .DEST_PATH }}" ]; then
+          mkdir -p "{{ .DEST_PATH }}"
+        fi
+      - for: sources
+        cmd: |-
+          {{- $dest_path:=osDir .ITEM }}
+          cp "{{ .ITEM }}" "{{joinPath .DEST_PATH .ITEM }}"
+      - task: config:build
+      - task: agents:instructions
+      - task: agents:skills
+      - >-
+        {{ .gum_ok }} "✅ OpenCode configured."
+
+  install:linux:
+    internal: true
+    platforms: [linux]
+    cmds:
+      - |
+        echo "Installing OpenCode..."
+        curl -fsSL https://opencode.ai/install | bash
+
+  update:linux:
+    internal: true
+    platforms: [linux]
+    preconditions:
+      - sh: command -v opencode >/dev/null 2>&1
+        msg: command 'opencode' not found
+    cmds:
+      - |
+        echo "Updating OpenCode..."
+        opencode upgrade
+
+  install:windows:
+    internal: true
+    platforms: [windows]
+    cmds:
+      - task: ::scoop:extras-install
         vars:
             APP: "opencode"
 
