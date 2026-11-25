@@ -171,16 +171,3 @@ tasks:
         {{ .gum_spin }}curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o {{ .BINARY_PATH }}/{{ .EXECUTABLE }}
         chmod +x {{ .BINARY_PATH }}/{{ .EXECUTABLE }}
         {{ .gum_ok }} " ✅  {{ .EXECUTABLE }} has been installed successfully."
-
-  # helm:install:
-  #   internal: true
-  #   platforms: [linux]
-  #   deps: [ '::tools:jq:install' ]
-  #   cmds:
-  #     - |
-  #       if ! command -v helm >/dev/null 2>&1; then
-  #         version=$(curl -sSf https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
-  #         {{ .gum_spin }}curl -sL "https://get.helm.sh/helm-${version}-linux-amd64.tar.gz" | tar xz --strip-components=1 --overwrite -C ~/bin "**/helm"
-  #         chmod +x ~/bin/helm
-  #         {{ .gum_ok }} " ✅  helm installed successfully."
-  #       fi
